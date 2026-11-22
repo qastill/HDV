@@ -768,13 +768,13 @@ html,body{height:100%}body{overflow:hidden}
 .vbody{flex:1;min-height:0;overflow:auto;padding-bottom:4px}.pane{display:none}.pane.on{display:block}
 .vbody>.kpis{margin-bottom:10px}.pane>#mk{margin-bottom:10px}.pane>.g2:first-child,.pane>.kpis+.g2{margin-top:0}.pane>.kpis{margin-bottom:10px}
 .kpis{gap:8px;grid-template-columns:repeat(auto-fit,minmax(116px,1fr))}.kpi{padding:9px 12px}.kpi b{font-size:21px}.kpi span{font-size:12px}.g2{gap:12px}.pad{padding:14px}
-#peta{padding:10px}.top{flex:1;min-height:0;grid-template-rows:minmax(0,1fr);gap:10px}.mapbox{display:flex;flex-direction:column;min-height:0}.mapwrap{flex:1;min-height:0}#map{height:100%}.side{max-height:none;min-height:0}
+#peta{padding:10px}.pmap.on{display:flex;flex-direction:column;flex:1;min-height:0}#peta[data-pane="peta"] #det-b{display:none}.st button:disabled{opacity:.45;cursor:not-allowed}.st button:disabled:hover{border-color:var(--line)}.top{flex:1;min-height:0;grid-template-rows:minmax(0,1fr);gap:10px}.mapbox{display:flex;flex-direction:column;min-height:0}.mapwrap{flex:1;min-height:0}#map{height:100%}.side{max-height:none;min-height:0}
 .layers{max-height:calc(100% - 70px);overflow:auto}
 .dlist{flex:1;min-height:120px;overflow:auto;display:grid;grid-template-columns:minmax(0,1fr);gap:4px;align-content:start;margin:0 -4px;padding:0 4px}.dli{display:flex;gap:9px;align-items:center;width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 9px;color:var(--ink)}.dli:hover{border-color:var(--accent);background:#f1f7f7}.dli .sw{flex:none}.dlt{flex:1;min-width:0}.dlt b{display:block;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dlt small{display:block;font-size:11.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sfind{display:grid;grid-template-columns:1fr auto;gap:6px}.sfind input,.sfind select{padding:6px 8px;font-size:12.5px}.sfind select{width:auto}.fch{border:1px solid var(--line);background:#fff;border-radius:99px;padding:3px 10px;font-size:12px;color:var(--ink)}.fch.on{background:var(--ink);border-color:var(--ink);color:#fff}.btn.bk{align-self:flex-start}
 .det{display:grid;gap:12px}.det .dh{margin:0;padding:0;border:0}.g2c{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px}
 #mon .pane[data-pane=daftar] .tw{max-height:calc(100dvh - 232px)}.st .sep{width:1px;align-self:stretch;background:var(--line);margin:2px 4px}.pools{margin-top:0}
-@media(max-width:1050px){#peta.on{display:block;overflow:auto}.top{display:grid;grid-template-columns:1fr;grid-template-rows:auto}.mapwrap{height:60dvh;flex:none}.side{height:auto}}
+@media(max-width:1050px){#peta.on{display:block;overflow:auto}#peta .vh{margin-bottom:8px}.pmap.on{display:block}#det-b{overflow:visible}.top{display:grid;grid-template-columns:1fr;grid-template-rows:auto}.mapwrap{height:60dvh;flex:none}.side{height:auto}}
 @media(max-width:760px){.app,.app.mini{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}.sb{order:2;flex-direction:row;padding:4px 4px;gap:0;overflow:hidden}.sbh,.sbf{display:none}
  .menu{display:flex;gap:2px;flex:1}.menu button,.app.mini .menu button{flex:1 1 0;flex-direction:column;gap:1px;padding:5px 1px;font-size:10px;min-width:0;justify-content:center}.menu span,.app.mini .menu span{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis}.menu .bd{display:none}.menu i{font-size:17px}
  .view{padding:10px 12px}#peta{padding:8px}.vh h2{font-size:15.5px}.st button{padding:5px 10px;font-size:12px}}
@@ -808,8 +808,7 @@ html,body{height:100%}body{overflow:hidden}
 <aside class="sb" id="sb"><div class="sbh"><div><b>Pantau HDV</b><small>Depo–Gardu · IESR</small></div><button type="button" id="sb-t" aria-label="Lipat atau buka menu" title="Lipat atau buka menu">☰</button></div>
  <nav class="menu" aria-label="Menu utama">
   <button type="button" data-view="dash" class="on" title="Dasbor utama"><i>🏠</i><span>Dasbor</span></button>
-  <button type="button" data-view="peta" title="Peta"><i>🗺️</i><span>Peta</span></button>
-  <button type="button" data-view="detail-s" title="Detail pool"><i>🔎</i><span>Detail pool</span><em class="bd" id="m-det" hidden></em></button>
+  <button type="button" data-view="peta" title="Peta dan detail pool"><i>🗺️</i><span>Peta</span></button>
   <button type="button" data-view="mon" title="Monitoring"><i>📊</i><span>Monitoring</span></button>
   <button type="button" data-view="hasil" title="Hasil survei"><i>📈</i><span>Hasil survei</span></button>
   <button type="button" data-view="entri" title="Entri data"><i>📝</i><span>Entri data</span></button>
@@ -819,7 +818,9 @@ html,body{height:100%}body{overflow:hidden}
 <main class="main" id="main">
 <section class="view on" id="dash" aria-label="Dasbor utama"><div class="vbody"><div id="dash-b"><div class="card pad"><p class="note" style="margin:0">Memuat ringkasan…</p></div></div></div></section>
 
-<section class="view" id="peta" aria-label="Peta">
+<section class="view" id="peta" aria-label="Peta dan detail pool" data-pane="peta">
+<div class="vh"><div><h2>Peta &amp; detail pool</h2><p id="det-sub">Klik depo di peta atau di daftar untuk melihat detailnya.</p></div><div class="st" id="det-st"><button type="button" data-pane="peta" class="on">Peta</button><button type="button" data-pane="profil" disabled>Profil &amp; jaringan</button><button type="button" data-pane="skenario" disabled>Skenario</button><button type="button" data-pane="rekom" disabled>Rekomendasi</button></div></div>
+<div class="pane on pmap" data-pane="peta">
 <div class="top">
  <div class="card mapbox"><div class="mapwrap"><div id="map" role="application" aria-label="Peta depo truk, gardu induk dan transmisi"></div>
   <details class="layers" id="layers" open><summary><h3>Layer</h3></summary>
@@ -833,9 +834,9 @@ html,body{height:100%}body{overflow:hidden}
   <div class="jump" id="jump"></div></div><div class="vi" id="vi" aria-live="polite">Memuat peta…</div></div>
  <aside class="card side" id="side" aria-live="polite"></aside>
 </div>
+</div>
+<div class="vbody" id="det-b"><div id="detail"></div></div>
 </section>
-
-<section class="view" id="detail-s"><div class="vh"><div><h2>Detail pool</h2><p id="det-sub">Pilih satu depo di peta atau di daftar depo.</p></div><div class="st" id="det-st" hidden><button type="button" data-pane="profil" class="on">Profil &amp; jaringan</button><button type="button" data-pane="skenario">Skenario truk listrik</button><button type="button" data-pane="rekom">Rekomendasi</button></div></div><div class="vbody"><div id="detail"></div></div></section>
 
 <section class="view" id="hasil"><div class="vh"><div><h2>Hasil survei travel diary</h2><p id="hs-sub">Memuat…</p></div><div class="st"><button type="button" data-pane="simpul" class="on">Kesimpulan</button><button type="button" data-pane="kondisi">Kondisi operasi</button><button type="button" data-pane="charging">Analisis charging</button><button type="button" data-pane="proyeksi">Proyeksi</button><button type="button" data-pane="daya">Daya per pool</button><button type="button" data-pane="statistik">Statistik</button><button type="button" data-pane="unduh">Unduh data</button></div></div><div class="vbody"><div id="hs"><div class="card pad"><p class="note" style="margin:0">Bagian ini memerlukan berkas survei.js dan server. Bila halaman dibuka sebagai berkas lepas, bagian ini tidak aktif.</p></div></div></div></section>
 
@@ -1045,9 +1046,9 @@ function side(d){if(!d){if(!CBY)initCBY();const m=CBY[cby],n=D.DP.length,cnt={},
  <dl class="kv" style="margin-top:4px"><dt>Jarak garis lurus</dt><dd>${fmt(d.gi_km,1)} km</dd><dt>Tegangan</dt><dd>${esc(d.gi_v||'–')} kV</dd><dt>Kapasitas trafo</dt><dd>${cap?fmt(cap)+' MVA':'–'}${d.gi_ntr?' · '+d.gi_ntr+' trafo':''}</dd>${d.gi_ld!=null?`<dt>Beban puncak siang</dt><dd>${fmt(d.gi_ps,0)}%</dd><dt>Beban puncak malam</dt><dd>${fmt(d.gi_pm,0)}%</dd><dt>Trafo terpadat</dt><dd>${fmt(d.gi_ldmax,0)}%</dd><dt>Sisa s.d. batas 80%</dt><dd>${fmt(d.gi_s80,0)} MVA</dd>`:'<dt>Beban</dt><dd>di luar cakupan data</dd>'}</dl>
  ${d.q.k!=='n'?qbar(d.gi_ld,100*d.q.me/d.gi_cap,KD[d.q.k][0])+`<p class="note" style="margin:5px 0 0">${SCN.n} truk listrik butuh <b>${fmt(d.q.me,1)} MVA</b> dari sisa kuota <b>${fmt(d.q.s,0)} MVA</b>${d.q.n>1?`, dipakai bersama ${d.q.n} depo (total ${fmt(d.q.t,1)} MVA)`:''}.</p>`:''}</div>
  <div><h3>Bila dikonversi ke truk listrik</h3><div id="s-v" style="margin-top:6px"></div></div>
- <button class="btn pri" type="button" data-go="detail">Lihat analisis lengkap ↓</button>`}
+ <button class="btn pri" type="button" data-go="detail">Lihat analisis lengkap →</button>`}
 
-function detail(d){const el=$('detail');if(!d){$('det-st').hidden=true;el.innerHTML=`<div class="card pad"><p class="note" style="margin:0">Pilih satu depo di peta atau di daftar depo. Di sini akan muncul profil usahanya, kondisi jaringan listrik di sekitarnya, dan perkiraan dampaknya ke jaringan bila armadanya diganti truk listrik, lengkap dengan kesimpulan dan rekomendasi.</p></div>`;return}
+function detail(d){const el=$('detail');if(!d){document.querySelectorAll('#det-st button:not([data-pane=peta])').forEach(b=>b.disabled=true);$('det-sub').textContent='Klik depo di peta atau di daftar untuk melihat detailnya.';if(PANE.peta&&PANE.peta!=='peta')goPane($('peta'),'peta');el.innerHTML=`<div class="card pad"><p class="note" style="margin:0">Pilih satu depo di peta atau di daftar depo. Di sini akan muncul profil usahanya, kondisi jaringan listrik di sekitarnya, dan perkiraan dampaknya ke jaringan bila armadanya diganti truk listrik, lengkap dengan kesimpulan dan rekomendasi.</p></div>`;return}
  const P=D.DP,po=POLA[d.pola_operasi_iesr]||[d.pola_operasi_iesr,'',''],rk=P.filter(x=>x.gi_km<d.gi_km).length+1,same=k=>P.filter(x=>x[k]===d[k]).length,known=d.perusahaan&&!/tidak teridentifikasi/i.test(d.perusahaan);
  const ch=[node('🚛','Depo '+esc(d.id),esc(d.lokasi))];
  if(d.gd_nama){ch.push(link(fmt(d.gd_jarak_m)+' m'),node('⚡','Gardu distribusi '+esc(d.gd_nama),`${d.gd_kva?fmt(d.gd_kva)+' kVA':'kapasitas tidak tercatat'} · beban ${d.gd_beban_pct!=null?fmt(d.gd_beban_pct,0)+'%':'tidak ada data'} · ${fmt(d.gd_n_1km)} gardu dalam 1 km`,d.gd_beban_pct));
@@ -1069,7 +1070,7 @@ function detail(d){const el=$('detail');if(!d){$('det-st').hidden=true;el.innerH
    <p class="note" style="margin:8px 0 0">Angka awal ${fmt(kmOf(d))} km per hari adalah perumpamaan untuk pola ${esc(po[0].toLowerCase())}. Asumsi: 1,2 kWh/km, efisiensi 90%, keserempakan 0,8, faktor daya 0,95.</p></div>
   <div class="card pad"><h3>Dampak ke jaringan</h3><div class="imp" id="d-bars"></div><h3 style="margin-top:14px">Kesimpulan</h3><p id="d-c" style="margin:6px 0 0"></p></div></div></div>
  <div class="pane" data-pane="rekom"><div class="card pad"><h3>Rekomendasi</h3><div class="recs" id="d-r"></div><h3 style="margin-top:14px">Data yang masih harus dilengkapi</h3><ul class="gaps">${gaps(d).map(g=>`<li>${esc(g)}</li>`).join('')}</ul><p class="note" style="margin:8px 0 0">Kesimpulan dan rekomendasi dihitung otomatis dari data di halaman ini dan skenario di atas. Sifatnya indikatif dan belum divalidasi PLN.</p></div></div></div>`;
- $('det-st').hidden=false;$('det-sub').textContent=d.id+' · '+d.nama;$('m-det').hidden=false;$('m-det').textContent=d.id.replace('DEPO-','');goPane($('detail-s'),PANE['detail-s']||'profil');
+ document.querySelectorAll('#det-st button:not([data-pane=peta])').forEach(b=>b.disabled=false);$('det-sub').textContent='Terpilih: '+d.id+' · '+d.nama;goPane($('peta'),PANE.peta||'peta');
  const z=()=>{const n=+$('z1').value,km=+$('z2').value,h=+$('z3').value,a=assess(d,n,km,h),c=a.c;LAST.n=n;LAST.h=h;$('o1').textContent=n;$('o2').textContent=km;$('o3').textContent=fmt(h,1);
   $('z-mwh').textContent=fmt(c.e/1000,1)+' MWh';$('z-mw').textContent=fmt(c.p/1000,2)+' MW';$('z-mva').textContent=fmt(c.mva,2)+' MVA';$('z-chg').textContent=c.chg+' unit';
   const cn='GI '+esc(d.gi_n)+(a.cap?' · '+fmt(a.cap)+' MVA':''),B=d.gi_ps!=null?[capbar(cn+', bila charging siang',d.gi_ps,a.sh||0,''),capbar(cn+', bila charging malam',d.gi_pm,a.sh||0,`Abu-abu: beban puncak April 2022. Berwarna: tambahan charging ${fmt(a.sh,1)} poin.${d.gi_par?' Data beban hanya sebagian trafo GI ini.':''}`)]:[capbar(cn,null,a.sh||0,`Beban eksisting belum ada datanya (arsir). Tambahan charging ${fmt(a.sh||0,1)}% dari kapasitas terpasang.`)];
@@ -1108,8 +1109,8 @@ document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest
  if(t.classList.contains('lgg')){gflt=t.dataset.g||null;regi();return}
  if(t.classList.contains('lgi')){cflt=t.dataset.k||null;recolor();return}
  e.preventDefault();
- if(t.dataset.go){reveal($(t.dataset.go));return}
- if(!t.closest('#map'))goView('peta');
+ if(t.dataset.go){if(t.dataset.go==='detail')goView('peta','profil');else reveal($(t.dataset.go));return}
+ if(!t.closest('#map'))goView('peta','peta');
  if(t.dataset.dp)pick(D.DP.find(x=>x.id===t.dataset.dp),true);
  else{const g=giOf(t.dataset.gi);if(g&&g._m&&map&&map.hasLayer(LY.gi)){map.closePopup();map.setView([g.lat,g.lon],Math.max(map.getZoom(),11));g._m.openPopup()}}});
 
@@ -1181,7 +1182,7 @@ const COLS=[['id','ID'],['nama','Depo'],['qo','Kuota GI'],['siap','Siap'],['gi_n
 function table(){const s=$('q').value.toLowerCase(),F=D.DP.filter(d=>!s||(d.id+' '+d.nama+' '+d.perusahaan+' '+d.provinsi+' '+d.gi_n+' '+d.lokasi+' '+d.tipe_fasilitas+' '+d.komoditas_indikatif+' '+d.pola_operasi_iesr).toLowerCase().includes(s)).sort((a,b)=>{const x=a[sk],y=b[sk];if(x==null)return 1;if(y==null)return -1;return(x>y?1:x<y?-1:0)*sd});
  $('tb').tHead.rows[0].innerHTML=COLS.map(c=>`<th data-k="${c[0]}" class="${c[2]?'r':''}">${c[1]}${sk===c[0]?(sd>0?' ↑':' ↓'):''}</th>`).join('');
  $('tb').tBodies[0].innerHTML=F.map(d=>`<tr data-id="${d.id}">`+COLS.map(c=>c[0]==='siap'?`<td><span class="pill p${d.siap}">${d.siap==='N'?'–':d.siap}</span></td>`:c[0]==='qo'?`<td><span class="pill ${PC(KD[d.q.k][0])}" title="${KD[d.q.k][1]}">${KD[d.q.k][2]}</span></td>`:`<td class="${c[2]?'r':''}">${c[2]?fmt(d[c[0]],c[0]==='gi_km'||c[0]==='gi_ld'||c[0]==='qme'?1:0):esc(d[c[0]])}</td>`).join('')+'</tr>').join('')}
-$('tb').tHead.onclick=e=>{const k=e.target.dataset.k;if(!k)return;sd=sk===k?-sd:1;sk=k;table()};$('tb').tBodies[0].onclick=e=>{const tr=e.target.closest('tr');if(!tr)return;const d=D.DP.find(x=>x.id===tr.dataset.id);goView('peta');pick(d,true)};$('q').oninput=table;
+$('tb').tHead.onclick=e=>{const k=e.target.dataset.k;if(!k)return;sd=sk===k?-sd:1;sk=k;table()};$('tb').tBodies[0].onclick=e=>{const tr=e.target.closest('tr');if(!tr)return;const d=D.DP.find(x=>x.id===tr.dataset.id);goView('peta','peta');pick(d,true)};$('q').oninput=table;
 
 /* ---------- animasi: batang tumbuh, cincin terisi, angka menghitung (diulang tiap panel dibuka) ---------- */
 function animate(root){if(!root)return;const rm=matchMedia('(prefers-reduced-motion:reduce)').matches,two=f=>requestAnimationFrame(()=>requestAnimationFrame(f));
@@ -1225,7 +1226,7 @@ function dashMon(){const el=$('dash-mon');if(!el)return;const {tot}=agg(),n=now(
  el.innerHTML=`<div class="dbr">${ring(Math.min(100,100*tot/3500),css('--accent'),fmt(100*tot/3500,0)+'%',64)}<div><div class="goal">Pekerjaan survei</div><h3 style="margin-top:2px">${esc(phase())}</h3><p class="note" style="margin:4px 0 8px"><b>${fmt(tot)}</b> dari 3.500 truk-hari terkumpul · ${left>=0?left+' hari ke laporan final':'laporan final sudah lewat'} · ${nk} dari ${OUT.length} keluaran selesai.</p><button class="btn" type="button" data-nav="mon:jadwal">Lihat jadwal &amp; progres →</button></div></div>`}
 function dash(){const el=$('dash-b');if(!el)return;const P=D.DP,N=P.length,prov=new Set(P.map(d=>d.provinsi)).size,km=P.map(d=>d.gi_km).sort((a,b)=>a-b),med=km[Math.floor(N/2)],bins=BINS(),T=D.TR||[],nL=P.filter(d=>d.gi_ld!=null).length,nG=D.GI.filter(g=>g.ld!=null).length,cap=T.reduce((s,t)=>s+t[2],0),pk=T.map(t=>Math.max(t[3],t[4])),lb=LBIN.map(b=>[b[0],pk.filter(v=>v>=b[1]&&v<b[2]).length,b[3]]),lm=Math.max(...lb.map(b=>b[1]),1),cov=[['Lokasi dan GI terdekat',N],['Beban gardu induk',nL],['Gardu distribusi 20 kV',P.filter(d=>d.gd_nama).length],['Jumlah truk',P.filter(d=>d.jumlah_truk).length]];
  const tile=(vis,big,lab,sub)=>`<div class="card dtile">${vis}<div><b>${big}</b><span>${lab}</span><small>${sub}</small></div></div>`,dcard=(n,t,txt,vis,nav,lab)=>`<div class="card dcard"><div class="dch"><span class="dn">${n}</span><h3>${t}</h3></div><p>${txt}</p>${vis}<button class="btn" type="button" data-nav="${nav}">${lab} →</button></div>`;
- el.innerHTML=`<div class="card hero"><div class="hero-t"><div class="goal">Gambaran data dan progres</div><h2>Pantau HDV Depo–Gardu</h2><p>Riset belum dimulai, jadi halaman ini belum memuat kesimpulan. Yang ditampilkan adalah <b>data yang sudah terkumpul</b> dan <b>progres pekerjaan</b>: lokasi ${N} depo, gardu induk di sekitarnya, beban dan kapasitas trafonya, serta kemajuan survei travel diary.</p><div class="hero-a"><button class="btn pri" type="button" data-nav="peta">Buka peta</button><button class="btn" type="button" data-nav="mon:beban">Lihat data beban gardu induk</button></div></div><div class="hero-i">${scene()}</div></div>
+ el.innerHTML=`<div class="card hero"><div class="hero-t"><div class="goal">Gambaran data dan progres</div><h2>Pantau HDV Depo–Gardu</h2><div class="hero-a"><button class="btn pri" type="button" data-nav="peta:peta">Buka peta</button><button class="btn" type="button" data-nav="mon:beban">Lihat data beban gardu induk</button></div></div><div class="hero-i">${scene()}</div></div>
  <div class="dtg">${tile('<span class="dbig">🏭</span>',`<span data-to="${N}">0</span> depo`,'sudah terpetakan',`di ${prov} provinsi`)}${tile('<span class="dbig">⚡</span>',`<span data-to="${D.GI.length}">0</span> gardu induk`,'di peta nasional',`${nG} di antaranya punya data beban`)}${tile('<span class="dbig">🔌</span>',`<span data-to="${T.length}">0</span> trafo`,'tercatat bebannya',`${fmt(cap/1000,1)} GVA · PLN UID Jabar, April 2022`)}${tile(ring(100*nL/N,css('--accent'),fmt(100*nL/N,0)+'%'),`${nL} depo`,'punya data beban gardu induk',`${N-nL} depo di luar cakupan data`)}</div>
  <div class="di">${dcard(1,'Jarak depo ke gardu induk terdekat',`Median ${fmt(med,1)} km, garis lurus. Sebaran ${N} depo:`,pita(bins,N)+`<div class="pl2">${bins.map(b=>`<span><i class="sw" style="background:${b[2]}"></i>${b[0]} <b>${b[1]}</b></span>`).join('')}</div>`,'mon:ringkas','Rincian jarak')}
  ${dcard(2,'Beban puncak trafo gardu induk',`${T.length} trafo di Jawa Barat, April 2022, menurut beban puncaknya:`,`<div class="bars">${lb.map(b=>`<div class="bar"><span>${b[0]}</span><i style="width:0;background:${b[2]}" data-w="${Math.max(b[1]?2:0,100*b[1]/lm)}"></i><em>${b[1]}</em></div>`).join('')}</div>`,'mon:beban','Rincian beban')}
@@ -1235,12 +1236,13 @@ function dash(){const el=$('dash-b');if(!el)return;const P=D.DP,N=P.length,prov=
 
 /* ---------- satu layar: menu kiri memilih tampilan, sub-tab memilih panel ---------- */
 const PANE={};
-function goPane(view,pane){if(!view)return;PANE[view.id]=pane;view.querySelectorAll('.pane').forEach(x=>x.classList.toggle('on',x.dataset.pane===pane));view.querySelectorAll('.st button').forEach(b=>{b.classList.toggle('on',b.dataset.pane===pane);b.setAttribute('aria-pressed',b.dataset.pane===pane)});if(view.classList.contains('on'))animate(view.querySelector('.pane.on'))}
+function mapShown(){if(!map)return;map.invalidateSize();if(!LY.fit&&map.getSize().x>0){map.fitBounds(LY.v0);LY.fit=true}}
+function goPane(view,pane){if(!view)return;const ganti=PANE[view.id]!==pane;PANE[view.id]=pane;view.dataset.pane=pane;if(ganti&&view.id==='peta'){view.scrollTop=0;const b=$('det-b');if(b)b.scrollTop=0}view.querySelectorAll('.pane').forEach(x=>x.classList.toggle('on',x.dataset.pane===pane));view.querySelectorAll('.st button').forEach(b=>{b.classList.toggle('on',b.dataset.pane===pane);b.setAttribute('aria-pressed',b.dataset.pane===pane)});if(view.classList.contains('on')){animate(view.querySelector('.pane.on'));if(view.id==='peta'&&pane==='peta')mapShown()}}
 function goView(v,pane){const el=$(v);if(!el||!el.classList.contains('view'))return;document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x===el));document.querySelectorAll('.menu button').forEach(b=>{b.classList.toggle('on',b.dataset.view===v);if(b.dataset.view===v)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
  if(pane)goPane(el,pane);else animate(el);try{history.replaceState(null,'','#'+v)}catch(_){}
- if(v==='peta'&&map){map.invalidateSize();if(!LY.fit&&map.getSize().x>0){map.fitBounds(LY.v0);LY.fit=true}}}
+ if(v==='peta'&&(PANE.peta||'peta')==='peta')mapShown()}
 function reveal(el){if(!el)return;const v=el.closest('.view');if(!v)return;const pn=el.closest('.pane');if(!v.classList.contains('on'))goView(v.id);if(pn&&!pn.classList.contains('on'))goPane(v,pn.dataset.pane)}
-document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.menu button[data-view]');if(b)return goView(b.dataset.view);if(e.target.closest&&e.target.closest('[data-back]')){sel=null;if(selLayer)selLayer.clearLayers();if(map)map.closePopup();return side(null)}const nv=e.target.closest&&e.target.closest('[data-nav]');if(nv){const [v,pn]=nv.dataset.nav.split(':');return goView(v,pn)}const t=e.target.closest&&e.target.closest('.st button[data-pane]');if(t)goPane(t.closest('.view'),t.dataset.pane)});
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.menu button[data-view]');if(b)return goView(b.dataset.view);if(e.target.closest&&e.target.closest('[data-back]')){sel=null;if(selLayer)selLayer.clearLayers();if(map)map.closePopup();detail(null);return side(null)}const nv=e.target.closest&&e.target.closest('[data-nav]');if(nv){const [v,pn]=nv.dataset.nav.split(':');return goView(v,pn)}const t=e.target.closest&&e.target.closest('.st button[data-pane]');if(t)goPane(t.closest('.view'),t.dataset.pane)});
 $('sb-t').onclick=()=>{const m=$('app').classList.toggle('mini');try{localStorage.setItem('pantau-hdv-mini',m?'1':'')}catch(_){}if(map)setTimeout(()=>map.invalidateSize(),60)};
 try{if(localStorage.getItem('pantau-hdv-mini'))$('app').classList.add('mini')}catch(_){}
 window.addEventListener('resize',()=>{if(map)map.invalidateSize()});
@@ -1256,6 +1258,6 @@ head();gantt();mon();checks();setInterval(()=>{head();gantt()},6e4);
  if(!window.L){$('map').innerHTML='<p class="note" style="padding:16px">Pustaka peta (Leaflet) tidak termuat. Muat ulang halaman.</p>';try{side(null)}catch(e){console.error(e)}return}
  try{initMap(land);side(null)}catch(e){console.error(e);$('side').innerHTML='<p class="note">Peta gagal digambar ('+esc(e.message)+'). Menu lain, termasuk daftar depo di Monitoring, tetap bisa dipakai.</p>'}})();
 connect();
-{let h=decodeURIComponent(location.hash.slice(1));if(h==='rfp'||h==='info')h='mon';if(h&&$(h)&&$(h).classList.contains('view'))goView(h)}
+{let h=decodeURIComponent(location.hash.slice(1));if(h==='rfp'||h==='info')h='mon';if(h==='detail-s')h='peta';if(h&&$(h)&&$(h).classList.contains('view'))goView(h)}
 </script>
 <script src="survei.js" defer></script></body></html>
