@@ -7,7 +7,7 @@ mulai(){ pkill -f 'node server.js' 2>/dev/null; rm -f .data.json; env "$@" node 
 uji(){ local nama=$1; shift; local out; out=$(env "$@" node "$nama" 2>&1); local kode=$?; printf '%-28s %3s lolos, %s gagal\n' "$nama ${*}" "$(grep -c '^PASS' <<<"$out")" "$(grep -c '^FAIL' <<<"$out")"; [ $kode -eq 0 ] || { gagal=1; grep '^FAIL' <<<"$out" || tail -5 <<<"$out"; }; }
 node middleware.mjs >/dev/null 2>&1 && echo "middleware.mjs                lolos" || { echo "middleware.mjs                GAGAL"; gagal=1; }
 mulai X=1                                   # server bersih: keadaan tanpa entri
-for t in 09-kuota 08-menu-hasil 07-dasbor 01-dasar 02-peta 03-detail 06-satu-layar; do uji $t.js X=1; done
+for t in 10-kata 09-kuota 08-menu-hasil 07-dasbor 01-dasar 02-peta 03-detail 06-satu-layar; do uji $t.js X=1; done
 uji 04-entri.js X=1                         # alur entri F1–F3 (mengisi data)
 mulai X=1; node isi-contoh.js >/dev/null 2>&1 # data contoh 54 truk × 7 hari
 uji 07-dasbor.js SEED=1
