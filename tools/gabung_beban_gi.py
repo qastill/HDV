@@ -36,9 +36,10 @@ PETA = {
  'SBANG':('Subang',None),'SKMDI':('Sukamandi',None),'SKTNI':('Sukatani','150/20'),'SMDNG':('Sumedang',None),'SMDRA':('Sumadra',None),'SMNRU':('Semen Baru',None),
  'SNTSA':('Santosa',None),'SNTUL':('Sentul',None),'SPONG':('Serpong',None),'SRAGI':('Sunyaragi',None),'TGHRG':('Tegalherang',None),
  'TGKSA':('Tiga Raksa',None),'TLJBE':('Telukjambe',None),'TMBUN':('Tambun',None),'TSBRU':('Tasikmalaya Baru',None),'TSMYA':('Tasikmalaya',None),'TTJBR':('Tata Jabar',None),
+ 'UBRNG':('Gardu Induk New Ujungberung-2',None),  # dikonfirmasi pemilik proyek: GI Ujungberung (5 trafo, 300 MVA) = entri ini di peta
 }
 # sengaja tidak dipetakan (GI tidak ada di peta, atau padanannya meragukan):
-# BKASI, BNKOK, BRAGA, CMGIS, DPBR2, IDMRU, KTLPA, NUBRG, PRATU, RADEN, SSKAN, UBRNG
+# BKASI, BNKOK, BRAGA, CMGIS, DPBR2, IDMRU, KTLPA, NUBRG, PRATU, RADEN, SSKAN
 # BUNAR  (GI Bunar lama 2 x 30 MVA; di peta hanya ada "Bunar Baru" 120 MVA)
 # SMRCN  (Summarecon Bekasi; di peta hanya ada Summarecon Serpong, Banten)
 LUAR_JABAR = {'GDRIA': 'DKI Jakarta', 'GNDUL': 'DKI Jakarta', 'HNDAH': 'DKI Jakarta', 'JTNGN': 'DKI Jakarta', 'PDKLP': 'DKI Jakarta',
