@@ -8,7 +8,7 @@ ok(!(await p.content()).includes('Keyakinan titik'),name+': "Keyakinan titik" su
 ok((await T('vi')).includes('Di tampilan ini'),name+': insight tampilan peta → '+(await T('vi')).slice(0,150));
 ok((await p.locator('#i-ins li').count())===6&&!/NaN|undefined|Infinity/.test(await T('i-ins')),name+': 6 insight nasional tanpa NaN');
 ok((await p.locator('#i-pola circle').count())===3,name+': donut pola operasi 3 segmen');
-ok((await p.locator('#i-jenis .bar').count())===9&&(await p.locator('#i-kom .bar').count())===5,name+': batang jenis usaha (9) & komoditas (5)');
+ok((await p.locator('#i-jenis .bar').count())===11&&(await p.locator('#i-kom .bar').count())===6,name+': batang jenis usaha (11) & komoditas (6)');
 ok((await p.locator('#i-gi .gt2').count())===8,name+': 8 GI tumpuan');
 // pilih depo Jabar dengan data lengkap (DEPO-001) lewat API klik tabel
 await p.fill('#q','DEPO-001');await p.waitForTimeout(200);await p.locator('#tb tbody tr').first().click();await p.waitForTimeout(2500);
@@ -28,15 +28,15 @@ ok(/Perlu kajian khusus|penguatan/.test(await T('d-v'))&&!/NaN|undefined|Infinit
 await p.fill('#q','');
 // pewarnaan + filter legenda
 await p.evaluate(()=>{document.getElementById('layers').open=true;document.getElementById('map').scrollIntoView({block:'center'})});
-for(const m of ['ev','pola','jenis','jarak']){await p.selectOption('#cby',m);await p.waitForTimeout(150);const n=await p.locator('#lg .lgi').count();const sum=await p.evaluate(()=>[...document.querySelectorAll('#lg .lgi em')].reduce((s,e)=>s+ +e.textContent,0));ok(n>=3&&sum===25,name+`: warnai menurut ${m} → ${n} kelas, total ${sum}`)}
+for(const m of ['ev','pola','jenis','jarak']){await p.selectOption('#cby',m);await p.waitForTimeout(150);const n=await p.locator('#lg .lgi').count();const sum=await p.evaluate(()=>[...document.querySelectorAll('#lg .lgi em')].reduce((s,e)=>s+ +e.textContent,0));ok(n>=3&&sum===114,name+`: warnai menurut ${m} → ${n} kelas, total ${sum}`)}
 await p.selectOption('#cby','pola');await p.locator('#lg .lgi').first().click();await p.waitForTimeout(300);
-const dim=await p.evaluate(()=>({dim:D.DP.filter(d=>d._m.options.fillOpacity<1).length,vi:document.getElementById('vi').innerText}));ok(dim.dim===21&&/saring/.test(dim.vi),name+': klik legenda menyaring (21 depo diredupkan) dim='+dim.dim+' vi='+dim.vi.slice(0,60));
+const dim=await p.evaluate(()=>({dim:D.DP.filter(d=>d._m.options.fillOpacity<1).length,vi:document.getElementById('vi').innerText}));ok(dim.dim===54&&/saring/.test(dim.vi),name+': klik legenda menyaring (54 depo diredupkan) dim='+dim.dim+' vi='+dim.vi.slice(0,60));
 await p.locator('#lg .lgi').last().click();await p.selectOption('#cby','ev');await p.waitForTimeout(300);
 if(name==='desktop')await p.screenshot({path:`d-${TAG}-map-ev.png`,clip:{x:0,y:0,width:1400,height:1000}});
 // klik GI tumpuan dari daftar insight
 await p.locator('#i-gi .gt2').first().click();await p.waitForTimeout(2500);
 const gp=await p.evaluate(()=>({pop:document.querySelector('.leaflet-popup-content')?.innerText||'',lines:document.querySelectorAll('#map .leaflet-overlay-pane svg path').length}));
-ok(/4 depo/.test(gp.pop)&&/MVA/.test(gp.pop)&&gp.lines>=4,name+': klik GI tumpuan → popup + '+gp.lines+' garis ke depo');console.log('   POPUP GI:',gp.pop.replace(/\n/g,' | ').slice(0,260));
+ok(/13 depo/.test(gp.pop)&&/MVA/.test(gp.pop)&&gp.lines>=13,name+': klik GI tumpuan → popup + '+gp.lines+' garis ke depo');console.log('   POPUP GI:',gp.pop.replace(/\n/g,' | ').slice(0,260));
 if(name==='desktop'){await p.evaluate(()=>document.getElementById('map').scrollIntoView({block:'center'}));await p.waitForTimeout(1500);await p.screenshot({path:`d-${TAG}-gi.png`})}
 // klik depo dari popup GI
 await p.locator('.leaflet-popup-content a[data-dp]').first().click();await p.waitForTimeout(2500);ok((await T('detail')).toLowerCase().includes('detail pool'),name+': tautan depo di popup GI membuka detail');

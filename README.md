@@ -6,9 +6,9 @@ Dasbor pemantauan untuk pekerjaan survei truk berat (MDV/HDV) dan pemetaan depo�
 
 | Menu | Isi |
 |---|---|
-| Dasbor | Empat angka utama yang bisa diklik untuk rinciannya (depo, gardu induk, trafo, gardu distribusi), peta depo dan gardu induk berwarna menurut kecukupan kuota, ringkasan sebaran, daftar depo, serta detail tiap depo: profil dan jaringan, skenario truk listrik, rekomendasi. |
+| Dasbor | Tiga angka utama yang bisa diklik untuk rinciannya (depo, gardu induk beserta trafonya, gardu distribusi), peta seluruh depo dan gardu induk berwarna menurut kecukupan kuota, ringkasan sebaran, daftar depo, serta detail tiap depo: profil dan jaringan, skenario truk listrik, rekomendasi, dan tombol **Mulai survei**. |
 | Monitoring | Jadwal, progres per pool, lapor harian, gambaran depo–gardu, beban GI, statistik, daftar depo. |
-| Survei | Hasil survei (kesimpulan, kondisi operasi, analisis charging, proyeksi, daya per pool, statistik, unduh data) dan entri formulir F1–F3 dalam satu halaman. |
+| Survei | Daftar tugas menurut RFP, hasil survei (kesimpulan, kondisi operasi, analisis charging, proyeksi, daya per pool, statistik, unduh data) dan entri formulir F1–F3 dalam satu halaman. |
 
 ## Berkas
 
@@ -19,10 +19,14 @@ Dasbor pemantauan untuk pekerjaan survei truk berat (MDV/HDV) dan pemetaan depo�
 | `api/survey.js` | Penyimpanan entri survei di Vercel Blob. |
 | `middleware.js` | Kunci situs dengan kode akses. |
 | `tools/gabung_beban_gi.py` | Menggabungkan data beban GI (xlsx PLN) ke data yang tertanam di halaman. |
-| `tools/pilih_depo_berdata.py` | Memilih depo dan gardu induk yang datanya ada, memasangkan depo ke GI berdata terdekat, dan mengisi beban gardu distribusi yang kosong. |
+| `tools/pilih_depo_berdata.py` | Mengisi beban gardu distribusi yang kosong dari berkas Excel. Bisa juga membatasi tampilan ke depo yang datanya ada; `--semua` menampilkan lagi seluruh depo dan gardu induk (keadaan sekarang). |
 | `beban GI.xlsx` | Data sumber: beban trafo gardu induk. Tidak ikut ter-deploy. |
 | `Gardu_Beban_Lokasi_JABAR.xlsx` | Data sumber: beban dan lokasi gardu distribusi. Tidak ikut ter-deploy. |
 | `tests/` | Uji otomatis. Tidak ikut ter-deploy. |
+
+## Mulai survei dari kartu depo
+
+Klik satu depo di peta, lalu tekan **Mulai survei** di kartu atau detailnya dan pilih slot pool (P1–P10). Formulir F1 pool itu langsung terisi dari data depo (nama, lokasi, koordinat, pola operasi, gardu induk terdekat), dan menu Survei ikut berubah: pool tercatat berjalan, daftar tugasnya muncul, dan kartu depo menampilkan kemajuan truk dan lembar diary. Sambungan depo ↔ pool (`depo_id`) termasuk identitas rahasia: server hanya mengirimkannya ke pemegang PIN.
 
 ## Pengaturan di Vercel
 
@@ -55,6 +59,6 @@ bash tests/kunci-situs.sh
 ## Batasan data
 
 - Kedua berkas Excel adalah data mentah PLN yang lebih rinci daripada yang ditampilkan dasbor. Berkasnya dikecualikan dari deploy lewat `.vercelignore`.
-- Dasbor hanya menampilkan depo dan gardu induk yang tercakup data beban: 25 depo dan 101 gardu induk. Depo dan GI lain tetap tersimpan di data tertanam (`DPX`, `GIX`) dan muncul lagi bila data bebannya ditambahkan lalu `tools/pilih_depo_berdata.py` dijalankan ulang.
+- Dasbor menampilkan seluruh depo (114) dan gardu induk (933). Data beban baru ada untuk 101 gardu induk (346 trafo) dan gardu distribusi di sekitar 25 depo; depo dan GI lainnya diberi kelas “Data beban menyusul” sampai datanya ditambahkan lewat `tools/gabung_beban_gi.py`.
 - Warna kuota di peta memakai skenario 50 truk listrik per depo dan bersifat indikatif.
 - Angka di panel Proyeksi memakai asumsi yang bisa diubah; nilai awalnya perkiraan umum, bukan angka resmi.

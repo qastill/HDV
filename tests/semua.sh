@@ -8,6 +8,8 @@ uji(){ local nama=$1; shift; local out; out=$(env "$@" node "$nama" 2>&1); local
 node middleware.mjs >/dev/null 2>&1 && echo "middleware.mjs                lolos" || { echo "middleware.mjs                GAGAL"; gagal=1; }
 mulai X=1                                   # server bersih: keadaan tanpa entri
 for t in 12-tugas 11-gabung 10-kata 09-kuota 08-menu-hasil 07-dasbor 01-dasar 02-peta 03-detail 06-satu-layar; do uji $t.js X=1; done
+uji 13-mulai-survei.js X=1                  # Mulai survei dari kartu depo (mengisi data)
+mulai X=1
 uji 04-entri.js X=1                         # alur entri F1–F3 (mengisi data)
 mulai X=1; node isi-contoh.js >/dev/null 2>&1 # data contoh 54 truk × 7 hari
 uji 07-dasbor.js SEED=1

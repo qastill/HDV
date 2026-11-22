@@ -2,6 +2,7 @@
 """Data dulu, baru depo: tampilkan hanya depo dan gardu induk yang datanya ada.
 
 Pakai:  python3 -I tools/pilih_depo_berdata.py Gardu_Beban_Lokasi_JABAR.xlsx
+        python3 -I tools/pilih_depo_berdata.py --semua      (tampilkan lagi semua depo dan gardu induk)
 
 Yang dilakukan pada data tertanam di pantau_hdv_depo_gardu.html:
   1. Gardu induk (GI) yang punya data beban tetap di `GI`; sisanya dipindah ke `GIX` (tidak ditampilkan).
@@ -59,6 +60,14 @@ def main():
     D = json.loads(m.group(2))
     gi = D['GI'] + D.get('GIX', [])
     dp = D['DP'] + D.get('DPX', [])
+    if '--semua' in sys.argv:
+        # Semua depo dan gardu induk ditampilkan lagi; pengisian yang sudah dilakukan pada depo berdata tetap dipakai.
+        D['GI'], D['DP'] = sorted(gi, key=lambda g: g['id']), sorted(dp, key=lambda d: d['id'])
+        D.pop('GIX', None); D.pop('DPX', None)
+        out = json.dumps(D, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+        open(HTML, 'w', encoding='utf-8').write(s[:m.start(2)] + out + s[m.end(2):])
+        print(f"Semua ditampilkan: {len(D['GI'])} gardu induk, {len(D['DP'])} depo")
+        return
     D['GI'] = [g for g in gi if g.get('ld') is not None]
     D['GIX'] = [g for g in gi if g.get('ld') is None]
     D['DP'] = sorted([d for d in dp if d.get('gd_nama')], key=lambda d: d['id'])
