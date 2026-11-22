@@ -2,7 +2,7 @@
 """Gabungkan beban trafo gardu induk (lembar ' TOTAL TRAFO ' laporan PLN UID Jabar, April 2022)
 ke data tertanam di pantau_hdv_depo_gardu.html.
 
-Pakai:  python3 -I tools/gabung_beban_gi.py beban_GI.xlsx
+Pakai:  python3 -I tools/gabung_beban_gi.py "beban GI.xlsx"
 
 Yang dihitung per gardu induk (GI), dari semua trafonya di berkas:
   cap  = jumlah kapasitas trafo (MVA)
