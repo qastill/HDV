@@ -3,12 +3,14 @@ const {chromium}=require('playwright');const auto=require('./auto.js');let n=0,f
 (async()=>{const b=await chromium.launch();for(const [name,vw,vh] of [['laptop',1440,900],['ponsel',390,844]]){const c=await b.newContext({viewport:{width:vw,height:vh}});const p=await c.newPage();auto(p);const errs=[];p.on('pageerror',e=>errs.push(e.message));
  await p.goto((process.env.URL||'http://localhost:8765/')+'pantau_hdv_depo_gardu.html');await p.waitForTimeout(1500);const tx=s=>p.locator(s).first().evaluate(e=>e.textContent);
  const menu=await p.evaluate(()=>[...document.querySelectorAll('.sb .menu button[data-view]')].map(b=>b.dataset.view));
- ok(menu.join()==='dash,peta,mon,hasil,entri'&&!await p.locator('#detail-s').count(),name+': menu = '+menu.join());
+ ok(menu.join()==='peta,mon,hasil'&&!await p.locator('#detail-s,#dash,#entri').count(),name+': menu = '+menu.join());
  ok(!await p.locator('#info').count()&&!await p.locator('#rfp').count()&&!/Tentang data/.test(await tx('body')),name+': "Tentang data" dan menu RFP terpisah sudah tidak ada');
  ok((await tx('#mon h2'))==='Monitoring'&&await p.locator('#mon .st button').count()===9,name+': Monitoring memuat 9 sub-menu');
  {const q=await c.newPage();auto(q);let on=0;for(const h of ['#rfp','#info']){await q.goto('about:blank');await q.goto((process.env.URL||'http://localhost:8765/')+'pantau_hdv_depo_gardu.html'+h);await q.waitForTimeout(900);on+=await q.locator('#mon.on').count()}await q.close();ok(on===2,name+': tautan lama #rfp/#info mendarat di Monitoring')}
- // daftar depo
- await p.evaluate(()=>goView('peta'));await p.waitForTimeout(1200);
+ // panel samping: Ringkasan (bawaan) dan Daftar depo
+ await p.evaluate(()=>goView('peta','peta'));await p.waitForTimeout(1200);
+ ok(await p.locator('#s-tab button.on').getAttribute('data-m')==='ringkas'&&await p.locator('#side .rkc').count()===3&&!await p.locator('#s-list').count(),name+': panel samping dibuka di Ringkasan (3 sebaran)');
+ await p.locator('#s-tab [data-m="daftar"]').click();await p.waitForTimeout(300);
  const NDP=await p.evaluate(()=>D.DP.length);ok(NDP===25&&await p.locator('#s-list .dli').count()===NDP&&/25 depo/.test(await tx('#s-n')),name+': kartu depo berisi daftar 25 depo');
  const o=await p.evaluate(()=>{const r=document.querySelector('#s-list .dli').getBoundingClientRect(),s=document.getElementById('side').getBoundingClientRect();return r.right<=s.right+1&&r.width>150});ok(o,name+': baris daftar tidak terpotong');
  await p.fill('#s-q','cikarang');await p.waitForTimeout(250);const nq=await p.locator('#s-list .dli').count();ok(nq>0&&nq<NDP,name+': pencarian menyaring daftar → '+nq);
@@ -21,7 +23,7 @@ const {chromium}=require('playwright');const auto=require('./auto.js');let n=0,f
  await p.locator('#side [data-back]').click();await p.waitForTimeout(300);ok(await p.locator('#s-list .dli').count()===NDP&&await p.evaluate(()=>!sel),name+': tombol kembali → daftar depo lagi');
  // hasil survei: keadaan kosong
  await p.evaluate(()=>goView('hasil'));await p.waitForTimeout(500);
- ok(await p.locator('#hasil .st button').count()===7&&(await tx('#hasil .st button.on'))==='Kesimpulan',name+': Hasil survei punya 7 sub-menu, mulai dari Kesimpulan');
+ ok(await p.locator('#hasil .st button').count()===8&&(await tx('#hasil .st button.on'))==='Kesimpulan',name+': Survei punya 8 sub-menu (7 hasil + Entri data), mulai dari Kesimpulan');
  ok(/Belum ada entri survei/.test(await tx('#hasil .pane.on'))&&!await p.locator('#hs .sim').count(),name+': tanpa entri tidak ada kesimpulan, hanya penjelasan');
  // contoh tampilan
  ok(await p.evaluate(()=>new Set([...document.querySelectorAll('#hs [id]')].map(e=>e.id)).size===document.querySelectorAll('#hs [id]').length),name+': tidak ada id ganda di Hasil survei');await p.locator('#hasil .st button[data-pane="charging"]').click();await p.locator('#hasil .pane.on [data-demo]').click();await p.waitForTimeout(300);ok((await tx('#hasil .st button.on'))==='Analisis charging'&&/DATA SIMULASI/.test(await tx('#hs')),name+': tombol contoh di panel mana pun bekerja dan tetap di panel itu');await p.locator('#hasil .st button[data-pane="simpul"]').click();await p.waitForTimeout(500);

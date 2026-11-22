@@ -6,11 +6,9 @@ Dasbor pemantauan untuk pekerjaan survei truk berat (MDV/HDV) dan pemetaan depo�
 
 | Menu | Isi |
 |---|---|
-| Dasbor | Fakta: jumlah depo, gardu induk, trafo, gardu distribusi, dan sebaran bebannya. Tidak memuat kesimpulan. |
-| Peta | Depo (bulat) dan gardu induk (kotak) berwarna menurut kecukupan kuota GI, daftar depo, serta detail tiap depo: profil dan jaringan, skenario truk listrik, rekomendasi. |
+| Dasbor | Empat angka utama yang bisa diklik untuk rinciannya (depo, gardu induk, trafo, gardu distribusi), peta depo dan gardu induk berwarna menurut kecukupan kuota, ringkasan sebaran, daftar depo, serta detail tiap depo: profil dan jaringan, skenario truk listrik, rekomendasi. |
 | Monitoring | Jadwal, progres per pool, lapor harian, gambaran depo–gardu, beban GI, statistik, daftar depo. |
-| Hasil survei | Kesimpulan, kondisi operasi, analisis charging, proyeksi, daya per pool, statistik, unduh data. Dihitung dari entri F1–F3. |
-| Entri data | Formulir F1–F3 untuk admin lapangan. |
+| Survei | Hasil survei (kesimpulan, kondisi operasi, analisis charging, proyeksi, daya per pool, statistik, unduh data) dan entri formulir F1–F3 dalam satu halaman. |
 
 ## Berkas
 
