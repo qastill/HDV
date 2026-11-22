@@ -8,7 +8,7 @@ const fs = require('fs');
 const KEY = `survei/${process.env.VERCEL_ENV || 'lokal'}/data.json`;
 // PIN admin. Bawaan dipilih pemilik proyek; ganti lewat variabel lingkungan SURVEY_PIN tanpa mengubah kode.
 const PIN = process.env.SURVEY_PIN || '1234';
-const PRIV_F1 = ['perusahaan', 'nama_pool', 'alamat', 'lat', 'lon', 'narasumber', 'hp']; // rahasia per F1 bagian E
+const PRIV_F1 = ['perusahaan', 'nama_pool', 'alamat', 'lat', 'lon', 'narasumber', 'hp', 'depo_id']; // rahasia per F1 bagian E
 const MAX_REC = 24 * 1024, MAX_BATCH = 600, TTL = 30000;
 const ID = { f1: /^P([1-9]|10)$/, f2: /^P([1-9]|10)-\d{3}$/, f3: /^P([1-9]|10)-\d{3}:[1-7]$/ };
 const empty = () => ({ v: 1, recs: {} });

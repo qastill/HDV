@@ -11,7 +11,7 @@ const {chromium}=require('playwright');const auto=require('./auto.js');let n=0,f
  await p.evaluate(()=>goView('peta','peta'));await p.waitForTimeout(1200);
  ok(await p.locator('#s-tab button.on').getAttribute('data-m')==='ringkas'&&await p.locator('#side .rkc').count()===3&&!await p.locator('#s-list').count(),name+': panel samping dibuka di Ringkasan (3 sebaran)');
  await p.locator('#s-tab [data-m="daftar"]').click();await p.waitForTimeout(300);
- const NDP=await p.evaluate(()=>D.DP.length);ok(NDP===25&&await p.locator('#s-list .dli').count()===NDP&&/25 depo/.test(await tx('#s-n')),name+': kartu depo berisi daftar 25 depo');
+ const NDP=await p.evaluate(()=>D.DP.length);ok(NDP===114&&await p.locator('#s-list .dli').count()===NDP&&/114 depo/.test(await tx('#s-n')),name+': kartu depo berisi daftar 114 depo');
  const o=await p.evaluate(()=>{const r=document.querySelector('#s-list .dli').getBoundingClientRect(),s=document.getElementById('side').getBoundingClientRect();return r.right<=s.right+1&&r.width>150});ok(o,name+': baris daftar tidak terpotong');
  await p.fill('#s-q','cikarang');await p.waitForTimeout(250);const nq=await p.locator('#s-list .dli').count();ok(nq>0&&nq<NDP,name+': pencarian menyaring daftar → '+nq);
  await p.fill('#s-q','zzzz');await p.waitForTimeout(250);ok(/Tidak ada depo/.test(await tx('#s-list')),name+': pencarian tanpa hasil diberi tahu');await p.fill('#s-q','');await p.waitForTimeout(200);
