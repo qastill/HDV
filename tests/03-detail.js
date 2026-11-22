@@ -20,8 +20,8 @@ const c1=await T('d-c');await p.evaluate(()=>{const z=document.getElementById('z
 const c2=await T('d-c');ok(c1!==c2&&/300 truk/.test(c2),name+': geser skenario → kesimpulan berubah');
 console.log('   KESIMPULAN(300 truk, 600 km):',c2.slice(0,330));console.log('   VONIS:',await T('d-v'));
 if(name==='desktop'){await p.evaluate(()=>document.getElementById('detail').scrollIntoView());await p.waitForTimeout(400);await p.screenshot({path:`d-${TAG}-detail.png`,fullPage:false});
- await p.locator('#detail').screenshot({path:`d-${TAG}-detail-full.png`})}
-else await p.locator('#detail').screenshot({path:`d-${TAG}-detail-mobile.png`});
+ await p.evaluate(()=>goView('peta','profil'));await p.locator('#detail').screenshot({path:`d-${TAG}-detail-full.png`})}
+else{await p.evaluate(()=>goView('peta','profil'));await p.locator('#detail').screenshot({path:`d-${TAG}-detail-mobile.png`})}
 // depo luar Jabar
 await p.fill('#q','DEPO-074');await p.waitForTimeout(200);await p.locator('#tb tbody tr').first().click();await p.waitForTimeout(1500);det=await T('detail');
 ok(/Perlu kajian khusus|penguatan/.test(await T('d-v'))&&!/NaN|undefined|Infinity|null/.test(det),name+': DEPO-074 (GI 10,9 km) → '+(await T('d-v')));

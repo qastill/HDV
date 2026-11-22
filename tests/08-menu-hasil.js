@@ -3,7 +3,7 @@ const {chromium}=require('playwright');const auto=require('./auto.js');let n=0,f
 (async()=>{const b=await chromium.launch();for(const [name,vw,vh] of [['laptop',1440,900],['ponsel',390,844]]){const c=await b.newContext({viewport:{width:vw,height:vh}});const p=await c.newPage();auto(p);const errs=[];p.on('pageerror',e=>errs.push(e.message));
  await p.goto((process.env.URL||'http://localhost:8765/')+'pantau_hdv_depo_gardu.html');await p.waitForTimeout(1500);const tx=s=>p.locator(s).first().evaluate(e=>e.textContent);
  const menu=await p.evaluate(()=>[...document.querySelectorAll('.sb .menu button[data-view]')].map(b=>b.dataset.view));
- ok(menu.join()==='dash,peta,detail-s,mon,hasil,entri',name+': menu = '+menu.join());
+ ok(menu.join()==='dash,peta,mon,hasil,entri'&&!await p.locator('#detail-s').count(),name+': menu = '+menu.join());
  ok(!await p.locator('#info').count()&&!await p.locator('#rfp').count()&&!/Tentang data/.test(await tx('body')),name+': "Tentang data" dan menu RFP terpisah sudah tidak ada');
  ok((await tx('#mon h2'))==='Monitoring'&&await p.locator('#mon .st button').count()===9,name+': Monitoring memuat 9 sub-menu');
  {const q=await c.newPage();auto(q);let on=0;for(const h of ['#rfp','#info']){await q.goto('about:blank');await q.goto((process.env.URL||'http://localhost:8765/')+'pantau_hdv_depo_gardu.html'+h);await q.waitForTimeout(900);on+=await q.locator('#mon.on').count()}await q.close();ok(on===2,name+': tautan lama #rfp/#info mendarat di Monitoring')}
