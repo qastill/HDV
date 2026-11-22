@@ -812,6 +812,14 @@ html,body{height:100%}body{overflow:hidden}
 .trl{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0 0}
 .trl .pill{font-size:11px}
 .dsv{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.srcb{margin-top:8px;padding:10px 12px;border-radius:10px;background:#f1f7f7;border:1px solid #d5e6e6}
+.arh{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;font-size:13px}
+.arf{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:8px;align-items:end;margin-top:8px}
+.arf label{font-size:11.5px;color:var(--mut);display:flex;flex-direction:column;gap:3px}
+.arf input,#z1n{font:inherit;font-weight:600;padding:5px 7px;border:1px solid #c9d6dd;border-radius:8px;width:100%;box-sizing:border-box;background:#fff;color:var(--ink)}
+#z1n{text-align:right}
+.sl:has(#z1n){grid-template-columns:1fr 84px}
+@media(max-width:700px){.arf{grid-template-columns:1fr 1fr}.arf .btn{grid-column:1/-1}}
 .dsv:empty{display:none}
 .dsv .svs{font-size:12.5px;color:var(--mut)}
 .svd{border:0;border-radius:14px;padding:0;width:min(560px,94vw);max-height:90dvh;box-shadow:0 20px 70px #0007;color:var(--ink)}
@@ -980,7 +988,7 @@ async function connect(){const stop=setTimeout(()=>live('', 'Data harian belum t
 /* ---------- peta ---------- */
 /* ---------- profil usaha, skenario konversi listrik, insight ---------- */
 /* Jumlah truk per depo belum ada datanya. Semua angka kebutuhan daya adalah skenario yang bisa digeser, bukan data. */
-const KM0={'Pelabuhan':150,'Quasi-shuttle':250,'Regional multi-purpose':400},SCN={n:50,h:8},LAST={n:50,h:8},NGI={};
+const KM0={'Pelabuhan':150,'Quasi-shuttle':250,'Regional multi-purpose':400},SCN={n:50,h:8},NGI={};
 const POLA={'Pelabuhan':['Angkutan pelabuhan','Rit pendek berulang antara pelabuhan, depo kontainer dan kawasan industri.','Truk umumnya kembali ke pool setiap hari, sehingga pengisian malam di depo bisa menutup sebagian besar kebutuhan.'],
  'Quasi-shuttle':['Quasi-shuttle','Rute tetap bolak-balik antara dua titik, misalnya tambang–pelabuhan atau pabrik–gudang.','Jadwal yang berulang memudahkan penjadwalan charging; pengisian bisa dibagi antara depo dan ujung rute.'],
  'Regional multi-purpose':['Regional antarkota','Jarak menengah sampai jauh lintas kota atau provinsi dengan muatan beragam.','Jarak harian yang panjang berarti depo saja belum tentu cukup; perlu charging di koridor selain di pool.']};
@@ -1037,9 +1045,9 @@ function assess(d,n,km,h){const c=calc(n,km,h),cap=d.gi_cap||d.gi_mva,ld=d.gi_ld
  if(ld==null){fl.push('data beban gardu induk terdekat menyusul');if(lv<2)lv=3}
  return{c,hr,h80,sh,fl,lv,tp,pk,cap,k:NGI[d.gi_id]||1}}
 const a0=d=>assess(d,SCN.n,kmOf(d),SCN.h);
-function concl(d,a,n,km,h){const c=a.c,gi='GI '+esc(d.gi_n);
+function concl(d,a,n,km,h,tg){const c=a.c,gi='GI '+esc(d.gi_n);tg=tg||{};
  const ref=a.hr!=null?`${fmt(100*c.mva/Math.max(a.hr,.01),0)}% dari sisa kapasitas ${gi} (${fmt(a.hr,0)} MVA tersisa dari ${fmt(a.cap)} MVA; beban puncak ${fmt(d.gi_ld,0)}%)`:a.sh!=null?`${fmt(a.sh,1)}% dari kapasitas terpasang ${gi} (${fmt(a.cap)} MVA; data beban aktualnya menyusul)`:`belum bisa dibandingkan karena kapasitas ${gi} tidak diketahui`;
- return `Dengan ${n} truk, ${fmt(km)} km per hari dan waktu parkir ${fmt(h,1)} jam, depo ini butuh energi <b>${fmt(c.e/1000,1)} MWh per hari</b> dan beban puncak <b>${fmt(c.p/1000,2)} MW</b> (${fmt(c.mva,2)} MVA). Itu ${ref}, pada jarak ${fmt(d.gi_km,1)} km.`+(a.fl.length?` Yang perlu diperhatikan: ${a.fl.join('; ')}.`:' Dari jarak, beban, dan kapasitas yang tercatat tidak terlihat kendala di sisi gardu induk.')}
+ return `Dengan <b>${fmt(n)} truk</b>${tg.n?` (${tg.n})`:''}, ${fmt(km)} km per hari${tg.km&&!/angka awal/.test(tg.km)?` (${tg.km})`:''} dan waktu parkir ${fmt(h,1)} jam, depo ini butuh energi <b>${fmt(c.e/1000,1)} MWh per hari</b> dan beban puncak <b>${fmt(c.p/1000,2)} MW</b> (${fmt(c.mva,2)} MVA). Itu ${ref}, pada jarak ${fmt(d.gi_km,1)} km.`+(a.fl.length?` Yang perlu diperhatikan: ${a.fl.join('; ')}.`:' Dari jarak, beban, dan kapasitas yang tercatat tidak terlihat kendala di sisi gardu induk.')}
 function recs(d,a,n,km,h){const c=a.c,R=[];
  R.push(['🔌','Skema sambungan',c.kva<=200?`Kebutuhan ${fmt(c.kva)} kVA masih di kelas tegangan rendah (sampai 200 kVA). Sambungan bisa dari gardu distribusi terdekat bila sisa kapasitasnya cukup.`:c.mva<30?`Kebutuhan ${fmt(c.kva)} kVA berada di kelas tegangan menengah (di atas 200 kVA). Depo perlu menjadi pelanggan 20 kV dengan gardu sendiri, <b>${trafo(c.kva)}</b> pada pembebanan 80%.`:`Kebutuhan ${fmt(c.mva,1)} MVA masuk kelas tegangan tinggi (≥30 MVA). Perlu gardu induk pelanggan, atau beban dibagi ke beberapa lokasi.`]);
  R.push(['📏','Jalur ke gardu induk',d.gi_km<=5?`GI ${esc(d.gi_n)} berjarak ${fmt(d.gi_km,1)} km garis lurus, di bawah ambang 5 km yang dipakai tim. Penyulang 20 kV dari GI ini layak dijajaki.`:d.gi_km<=10?`Jarak ${fmt(d.gi_km,1)} km sudah panjang untuk beban megawatt. Minta PLN memeriksa jatuh tegangan dan kapasitas penyulang sebelum menetapkan daya.`:`Jarak ${fmt(d.gi_km,1)} km terlalu jauh untuk penyulang khusus yang ekonomis. Bandingkan tiga opsi: gardu hubung terdekat, GI lain, atau baterai (BESS) untuk memangkas beban puncak.`]);
@@ -1086,7 +1094,8 @@ function side(d){if(!d){if(!CBY)initCBY();const m=CBY[cby],n=D.DP.length,cnt={},
 
 /* Tombol Mulai survei dan status surveinya. Isinya dibuat survei.js; dipanggil lagi tiap ada entri baru. */
 const svHtml=d=>typeof window.svDepo==='function'?window.svDepo(d):'';
-function svSlot(){document.querySelectorAll('.dsv[data-sv]').forEach(el=>{const d=D&&D.DP.find(x=>x.id===el.dataset.sv);if(d)el.innerHTML=svHtml(d)})}
+let SKN=null;
+function svSlot(){try{if(SKN)SKN()}catch(e){console.error(e)}document.querySelectorAll('.dsv[data-sv]').forEach(el=>{const d=D&&D.DP.find(x=>x.id===el.dataset.sv);if(d)el.innerHTML=svHtml(d)})}
 function detail(d){const el=$('detail');if(!d){document.querySelectorAll('#det-st button:not([data-pane=peta])').forEach(b=>b.disabled=true);$('det-sub').textContent='Klik angka untuk rinciannya, atau klik depo di peta untuk detailnya.';if(PANE.peta&&PANE.peta!=='peta')goPane($('peta'),'peta');el.innerHTML=`<div class="card pad"><p class="note" style="margin:0">Pilih satu depo di peta atau di daftar depo. Di sini akan muncul profil usahanya, kondisi jaringan listrik di sekitarnya, dan perkiraan dampaknya ke jaringan bila armadanya diganti truk listrik, lengkap dengan kesimpulan dan rekomendasi.</p></div>`;return}
  const P=D.DP,po=POLA[d.pola_operasi_iesr]||[d.pola_operasi_iesr,'',''],rk=P.filter(x=>x.gi_km<d.gi_km).length+1,same=k=>P.filter(x=>x[k]===d[k]).length,known=d.perusahaan&&!/tidak teridentifikasi/i.test(d.perusahaan);
  const ch=[node('🚛','Depo '+esc(d.id),esc(d.lokasi))];
@@ -1101,24 +1110,38 @@ function detail(d){const el=$('detail');if(!d){document.querySelectorAll('#det-s
    </div>
   <div class="card pad"><h3>Kondisi jaringan di sekitar depo</h3><div class="chain">${ch.join('')}</div>${d.gd_nama?'':''}</div></div></div>
  <div class="pane" data-pane="skenario"><div class="g2c">
-  <div class="card pad"><h3>Skenario: 100% truk listrik</h3><div class="sl" style="margin-top:8px"><label for="z1">Jumlah truk</label><output id="o1"></output><input type="range" id="z1" min="5" max="300" step="5" value="${LAST.n}" style="grid-column:1/-1">
+  <div class="card pad"><h3>Skenario: 100% truk listrik</h3><div class="srcb" id="d-src"></div><div class="sl" style="margin-top:10px"><label for="z1n">Jumlah truk</label><input type="number" id="z1n" min="1" max="5000" step="1" inputmode="numeric" aria-describedby="z-src"><output id="o1" hidden></output><input type="range" id="z1" min="5" max="300" step="5" value="${SCN.n}" aria-label="Jumlah truk" style="grid-column:1/-1">
    <label for="z2">Jarak harian (km)</label><output id="o2"></output><input type="range" id="z2" min="40" max="600" step="10" value="${kmOf(d)}" style="grid-column:1/-1">
-   <label for="z3">Waktu parkir di depo (jam)</label><output id="o3"></output><input type="range" id="z3" min="2" max="14" step="0.5" value="${LAST.h}" style="grid-column:1/-1"></div>
+   <label for="z3">Waktu parkir di depo (jam)</label><output id="o3"></output><input type="range" id="z3" min="2" max="24" step="0.5" value="${SCN.h}" style="grid-column:1/-1"></div><p class="note" id="z-src" style="margin:6px 0 0"></p>
    <div class="tiles" style="margin-top:10px"><div class="tile"><small>Energi per hari</small><b class="big" id="z-mwh">–</b></div><div class="tile"><small>Beban puncak</small><b class="big" id="z-mw">–</b></div><div class="tile"><small>Daya tersambung</small><b class="big" id="z-mva">–</b></div><div class="tile"><small>Charger 230 kW</small><b class="big" id="z-chg">–</b></div></div>
    <p class="note" style="margin:8px 0 0">Angka awal ${fmt(kmOf(d))} km per hari untuk pola ${esc(po[0].toLowerCase())}. Asumsi: 1,2 kWh/km, efisiensi 90%, keserempakan 0,8, faktor daya 0,95.</p></div>
   <div class="card pad"><h3>Dampak ke jaringan</h3><div class="imp" id="d-bars"></div><h3 style="margin-top:14px">Kesimpulan</h3><p id="d-c" style="margin:6px 0 0"></p></div></div></div>
  <div class="pane" data-pane="rekom"><div class="card pad"><h3>Rekomendasi</h3><div class="recs" id="d-r"></div><h3 style="margin-top:14px">Data yang masih harus dilengkapi</h3><ul class="gaps">${gaps(d).map(g=>`<li>${esc(g)}</li>`).join('')}</ul><p class="note" style="margin:8px 0 0">Kesimpulan dan rekomendasi dihitung dari data di halaman ini dan skenario di atas.</p></div></div></div>`;
  document.querySelectorAll('#det-st button:not([data-pane=peta])').forEach(b=>b.disabled=false);$('det-sub').textContent='Terpilih: '+d.id+' · '+d.nama;goPane($('peta'),PANE.peta||'peta');
- const z=()=>{const n=+$('z1').value,km=+$('z2').value,h=+$('z3').value,a=assess(d,n,km,h),c=a.c;LAST.n=n;LAST.h=h;$('o1').textContent=n;$('o2').textContent=km;$('o3').textContent=fmt(h,1);
+ /* Angka skenario: dari survei (F1 armada, F2 truk terdaftar, F3 diary) bila depo ini sudah disambungkan ke pool survei; selain itu angka awal. Yang digeser pengguna tidak ditimpa. */
+ const V={n:SCN.n,km:kmOf(d),h:SCN.h},MAN={},TG={};let AR=null;const kl=(v,a,b)=>Math.min(b,Math.max(a,v));
+ const sumber=()=>{AR=typeof window.svArmada==='function'?window.svArmada(d):null;const A=AR,nS=A?(A.N||A.nt||null):null;
+  if(!MAN.n)V.n=nS||SCN.n;if(!MAN.km)V.km=A&&A.kmr!=null?Math.round(A.kmr):kmOf(d);if(!MAN.h)V.h=A&&A.dwm!=null?kl(Math.round(A.dwm*2)/2,2,24):SCN.h;
+  TG.n=MAN.n?'diisi manual':A&&A.N?`data F1 pool ${A.pool}`:A&&A.nt?`truk terdaftar F2 pool ${A.pool}`:'angka awal skenario, belum ada data';TG.km=MAN.km?'digeser manual':A&&A.kmr!=null?`rata-rata ${A.njl} lembar diary`:'angka awal pola';TG.h=MAN.h?'digeser manual':A&&A.dwm!=null?'median diary':'angka awal';
+  if(document.activeElement!==$('z1n'))$('z1n').value=V.n;$('z1').value=kl(V.n,5,300);$('z2').value=kl(V.km,40,600);$('z3').value=V.h;
+  const el=$('d-src');if(!el||(el.contains(document.activeElement)&&document.activeElement.tagName==='INPUT'))return;
+  if(!A){el.innerHTML=`<p class="note" style="margin:0"><b>Jumlah truk depo ini belum ada datanya.</b> ${SCN.n} truk adalah angka awal skenario; ganti di kolom Jumlah truk, atau mulai survei supaya terisi dari data pool (F1) dan data truk (F2).</p><div class="dsv" data-sv="${d.id}" style="margin-top:8px">${svHtml(d)}</div>`;return}
+  const f=A.f1,inp=(k,l)=>`<label>${l}<input type="number" min="0" step="1" inputmode="numeric" data-ar="${k}" value="${f[k]==null?'':f[k]}"></label>`;
+  el.innerHTML=`<div class="arh"><b>Data armada dari survei · pool ${A.pool}</b><span class="sub">tersimpan ke F1 dan langsung tersinkron</span></div><div class="arf">${inp('mdv_rigid','MDV rigid (unit)')}${inp('hdv_rigid','HDV rigid (unit)')}${inp('hdv_tt','HDV tractor + trailer (unit)')}${inp('parkir_unit','Parkir malam di pool (unit)')}<button class="btn pri" type="button" id="ar-save">Simpan</button></div><p class="note" id="ar-msg" style="margin:6px 0 0">Armada F1 <b>${A.N?fmt(A.N)+' unit':'belum diisi'}</b> · truk terdaftar F2 <b>${A.nt}/50</b> · lembar diary F3 <b>${fmt(A.nd)}/350</b>${A.kmr!=null?` · jarak harian rata-rata <b>${fmt(A.kmr,0)} km</b>`:''}${A.dwm!=null?` · parkir di pool median <b>${fmt(A.dwm,1)} jam</b>`:''}</p>`;
+  $('ar-save').onclick=()=>{const v={};el.querySelectorAll('[data-ar]').forEach(i=>v[i.dataset.ar]=i.value.trim()===''?null:Math.max(0,Math.round(+i.value)));MAN.n=false;if(window.svSimpanArmada(d.id,v)){const m=$('ar-msg');if(m)m.insertAdjacentHTML('afterbegin','<b style="color:var(--ok)">Tersimpan.</b> ')}}};
+ const z=()=>{const n=V.n,km=V.km,h=V.h,a=assess(d,n,km,h),c=a.c;$('o1').textContent=n;$('o2').textContent=km;$('o3').textContent=fmt(h,1);
+  $('z-src').innerHTML=`Jumlah truk: ${TG.n}. Jarak harian: ${TG.km}. Waktu parkir: ${TG.h}.${MAN.n||MAN.km||MAN.h?` <button class="lnk" type="button" id="z-reset">Kembalikan ke ${AR&&(AR.N||AR.nt)?'angka survei':'angka awal'}</button>`:''}`;{const r=$('z-reset');if(r)r.onclick=()=>{MAN.n=MAN.km=MAN.h=false;sumber();z()}}
   $('z-mwh').textContent=fmt(c.e/1000,1)+' MWh';$('z-mw').textContent=fmt(c.p/1000,2)+' MW';$('z-mva').textContent=fmt(c.mva,2)+' MVA';$('z-chg').textContent=c.chg+' unit';
   const cn='GI '+esc(d.gi_n)+(a.cap?' · '+fmt(a.cap)+' MVA':''),B=d.gi_ps!=null?[capbar(cn+', bila charging siang',d.gi_ps,a.sh||0,''),capbar(cn+', bila charging malam',d.gi_pm,a.sh||0,`Abu-abu: beban puncak GI. Berwarna: tambahan charging ${fmt(a.sh,1)} poin.`)]:[capbar(cn,null,a.sh||0,`Data beban eksisting menyusul (arsir). Tambahan charging ${fmt(a.sh||0,1)}% dari kapasitas terpasang.`)];
   if(d.gi_trafo_mva&&d.gi_siang_pct!=null)B.push(capbar('Trafo GI pemasok, bila charging siang',d.gi_siang_pct,a.tp,''),capbar('Trafo GI pemasok, bila charging malam',d.gi_malam_pct,a.tp,`${esc(d.gi_nama)} · trafo ${fmt(d.gi_trafo_mva)} MVA.`));
   if(d.gd_nama){const rows=[['Kebutuhan charging',c.kva,css('--accent')],['Trafo terdekat',d.gd_kva,'#9aa8b6'],['Sisa kapasitas ≤1 km',d.gd_sisa_kva_1km,'#9aa8b6']].filter(r=>r[1]!=null),mx=Math.max(...rows.map(r=>r[1]),1);
    B.push(`<div class="cb"><div class="cbh"><span>Sisi distribusi 20 kV (kVA)</span></div><div class="bars" style="margin-top:4px">${rows.map(r=>`<div class="bar w"><span>${r[0]}</span><i style="width:${Math.max(1,100*r[1]/mx)}%;background:${r[2]}"></i><em>${fmt(r[1])}</em></div>`).join('')}</div></div>`)}
-  $('d-bars').innerHTML=B.join('');$('d-v').innerHTML=vbox(a);$('d-c').innerHTML=concl(d,a,n,km,h);
+  $('d-bars').innerHTML=B.join('');$('d-v').innerHTML=vbox(a);$('d-c').innerHTML=concl(d,a,n,km,h,TG);
   $('d-r').innerHTML=recs(d,a,n,km,h).map(r=>`<div class="rec"><span class="ic">${r[0]}</span><div><b>${r[1]}</b><p>${r[2]}</p></div></div>`).join('');
   if($('s-v'))$('s-v').innerHTML=vbox(a,`${fmt(c.p/1000,2)} MW puncak · ${fmt(c.e/1000,1)} MWh per hari untuk ${n} truk`)};
- ['z1','z2','z3'].forEach(i=>$(i).oninput=z);z()}
+ $('z1').oninput=()=>{V.n=+$('z1').value;MAN.n=true;TG.n='diisi manual';$('z1n').value=V.n;z()};$('z2').oninput=()=>{V.km=+$('z2').value;MAN.km=true;TG.km='digeser manual';z()};$('z3').oninput=()=>{V.h=+$('z3').value;MAN.h=true;TG.h='digeser manual';z()};
+ $('z1n').oninput=()=>{const v=Math.round(+$('z1n').value);if(!(v>=1))return;V.n=Math.min(5000,v);MAN.n=true;TG.n='diisi manual';$('z1').value=kl(V.n,5,300);z()};
+ SKN=()=>{if(!document.body.contains($('z1n')))return;sumber();z()};sumber();z()}
 /* ---------- warna depo, legenda yang bisa diklik, insight tampilan peta ---------- */
 let CBY=null,cby='kuota',cflt=null,gflt=null,giLayer;
 function initCBY(){CBY={kuota:{f:d=>d.q.k,k:KD},
