@@ -6,9 +6,8 @@ Dasbor pemantauan untuk pekerjaan survei truk berat (MDV/HDV) dan pemetaan depoâ
 
 | Menu | Isi |
 |---|---|
-| Dasbor | Fakta dan progres: jumlah depo, gardu induk, cakupan data, kemajuan survei. Tidak memuat kesimpulan. |
-| Peta | Depo (bulat) dan gardu induk (kotak) berwarna menurut kecukupan kuota GI, daftar depo yang bisa dicari. |
-| Detail pool | Profil usaha, kondisi jaringan, skenario truk listrik, dan rekomendasi untuk satu depo. |
+| Dasbor | Fakta: jumlah depo, gardu induk, trafo, gardu distribusi, dan sebaran bebannya. Tidak memuat kesimpulan. |
+| Peta | Depo (bulat) dan gardu induk (kotak) berwarna menurut kecukupan kuota GI, daftar depo, serta detail tiap depo: profil dan jaringan, skenario truk listrik, rekomendasi. |
 | Monitoring | Jadwal, progres per pool, lapor harian, gambaran depoâ€“gardu, beban GI, statistik, daftar depo. |
 | Hasil survei | Kesimpulan, kondisi operasi, analisis charging, proyeksi, daya per pool, statistik, unduh data. Dihitung dari entri F1â€“F3. |
 | Entri data | Formulir F1â€“F3 untuk admin lapangan. |
@@ -22,6 +21,7 @@ Dasbor pemantauan untuk pekerjaan survei truk berat (MDV/HDV) dan pemetaan depoâ
 | `api/survey.js` | Penyimpanan entri survei di Vercel Blob. |
 | `middleware.js` | Kunci situs dengan kode akses. |
 | `tools/gabung_beban_gi.py` | Menggabungkan data beban GI (xlsx PLN) ke data yang tertanam di halaman. |
+| `tools/pilih_depo_berdata.py` | Memilih depo dan gardu induk yang datanya ada, memasangkan depo ke GI berdata terdekat, dan mengisi beban gardu distribusi yang kosong. |
 | `beban GI.xlsx` | Data sumber: beban trafo gardu induk, PLN UID Jawa Barat, April 2022. Tidak ikut ter-deploy. |
 | `Gardu_Beban_Lokasi_JABAR.xlsx` | Data sumber: beban dan lokasi gardu distribusi Jawa Barat. Tidak ikut ter-deploy. |
 | `tests/` | Uji otomatis. Tidak ikut ter-deploy. |
@@ -57,6 +57,6 @@ bash tests/kunci-situs.sh
 ## Batasan data
 
 - Kedua berkas Excel adalah data mentah PLN yang lebih rinci daripada yang ditampilkan dasbor. Berkasnya dikecualikan dari deploy lewat `.vercelignore`.
-- Beban gardu induk hanya dari PLN UID Jawa Barat, April 2022. Depo di luar cakupan itu belum bisa dinilai.
+- Data beban berasal dari PLN UID Jawa Barat (April 2022). Dasbor hanya menampilkan depo dan gardu induk yang tercakup data itu: 25 depo dan 101 gardu induk. Depo dan GI lain tetap tersimpan di data tertanam (`DPX`, `GIX`) dan muncul lagi bila data bebannya ditambahkan lalu `tools/pilih_depo_berdata.py` dijalankan ulang.
 - Warna kuota di peta memakai skenario 50 truk listrik per depo dan bersifat indikatif.
 - Angka di panel Proyeksi memakai asumsi yang bisa diubah; nilai awalnya perkiraan umum, bukan angka resmi.

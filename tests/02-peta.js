@@ -32,7 +32,7 @@ const o=gs.find(o=>o.q.x>X0&&o.q.x<m.width-60&&o.q.y>Y0&&o.q.y<m.height-90&&ds.e
 if(name==='mobile')await p.touchscreen.tap(g.x,g.y);else await p.mouse.click(g.x,g.y);await p.waitForTimeout(700);
 ok(((await p.evaluate(()=>document.querySelector('.leaflet-popup-content')?.innerText||''))).includes('GI '+g.n),name+': klik gardu induk → popup ('+g.n+')')}
 // klik garis transmisi: titik tengah segmen yang jauh dari marker
-await p.evaluate(()=>{map.closePopup()});
+await p.evaluate(()=>{map.closePopup();selLayer.clearLayers();giLayer.clearLayers()});await p.waitForTimeout(300);
 const l=await p.evaluate(()=>{const m=document.getElementById('map').getBoundingClientRect();const pts=[...D.DP.map(d=>[d.lat,d.lon]),...D.GI.map(g=>[g.lat,g.lon])].map(c=>map.latLngToContainerPoint(c));
 for(const [kv,c] of D.LN){for(let i=1;i<c.length;i++){const a=map.latLngToContainerPoint([c[i-1][1],c[i-1][0]]),b=map.latLngToContainerPoint([c[i][1],c[i][0]]);if(a.distanceTo(b)<30)continue;const q=L.point((a.x+b.x)/2,(a.y+b.y)/2);
  if(q.x>X0&&q.x<m.width-60&&q.y>Y0&&q.y<m.height-90&&pts.every(z=>z.distanceTo(q)>20))return{x:m.x+q.x,y:m.y+q.y,kv}}}return null});

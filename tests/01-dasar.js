@@ -6,7 +6,7 @@ p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.type()==='erro
 await p.goto('http://localhost:8765/');await p.waitForTimeout(2500);await p.evaluate(()=>goView('peta'));await p.waitForTimeout(1500);
 ok(p.url().includes('pantau_hdv_depo_gardu.html'),name+': root / mengarah ke dasbor');
 const s=await p.evaluate(()=>({cw:document.querySelector('#map canvas').getBoundingClientRect().width,rows:document.querySelectorAll('#tb tbody tr').length,k:document.getElementById('k0').textContent,g:document.querySelector('#gantt .sub').innerText,open:document.getElementById('layers').open,hs:document.documentElement.scrollWidth>innerWidth}));
-ok(s.cw>300,name+': canvas peta terlihat ('+s.cw+'px)');ok(s.rows===114,name+': tabel 114 depo');ok(s.k==='114',name+': KPI terisi');ok(s.g==='10 Nov – 17 Nov',name+': tanggal Gantt benar (TZ London)');ok(!s.hs,name+': tanpa scroll horizontal');
+ok(s.cw>300,name+': canvas peta terlihat ('+s.cw+'px)');ok(s.rows===25,name+': tabel 25 depo');ok(s.k==='25',name+': KPI terisi');ok(s.g==='10 Nov – 17 Nov',name+': tanggal Gantt benar (TZ London)');ok(!s.hs,name+': tanpa scroll horizontal');
 ok(s.open===(name==='desktop'),name+': panel Layer '+(s.open?'terbuka':'terlipat'));
 await p.screenshot({path:'final-'+name+'.png'});
 await p.locator('#tb tbody tr').first().click();await p.waitForTimeout(1200);ok((await p.innerText('#side')).toLowerCase().includes('truk listrik'),name+': klik tabel membuka kartu depo');
