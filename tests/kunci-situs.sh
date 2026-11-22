@@ -1,0 +1,23 @@
+U=${URL:-https://hdvproject.vercel.app}; D=$(mktemp -d); J=$D/kue.txt; O=$D/out.txt; f=0; ok(){ if [ "$1" = "$2" ]; then echo "PASS $3"; else echo "FAIL $3 (dapat: $1, harap: $2)"; f=1; fi; }
+c(){ curl -s -o $O -w '%{http_code}' --max-time 30 "$@"; }
+ok "$(c $U/)" 401 "tanpa kode: / terkunci"
+ok "$(c $U/pantau_hdv_depo_gardu.html)" 401 "tanpa kode: halaman dasbor terkunci"
+ok "$(grep -c 'd-core\|gi_km\|Kandang Sapi' $O)" 0 "tanpa kode: tidak ada data depo/GI di jawaban"
+ok "$(wc -c < $O | awk '{print ($1<4000)?"kecil":"besar"}')" kecil "tanpa kode: yang terkirim hanya halaman masuk"
+ok "$(c $U/survei.js)" 401 "tanpa kode: survei.js terkunci"
+ok "$(c $U/index.html)" 401 "tanpa kode: index.html terkunci"
+ok "$(c $U/api/survey)" 401 "tanpa kode: API terkunci"
+ok "$(c -X POST -H 'content-type: application/json' -H 'x-pin: 1234' -d '{"recs":[]}' $U/api/survey)" 401 "tanpa kode: API tulis terkunci walau PIN admin benar"
+ok "$(c $U/package.json)" 401 "tanpa kode: berkas lain terkunci"
+ok "$(c --form-string kode=0000 --form-string ke=/ $U/masuk)" 401 "kode salah ditolak"
+ok "$(c -H 'cookie: hdv_akses=palsu' $U/pantau_hdv_depo_gardu.html)" 401 "cookie palsu ditolak"
+ok "$(c -c $J --form-string kode=1234 --form-string ke=/pantau_hdv_depo_gardu.html $U/masuk)" 303 "kode 1234 diterima"
+ok "$(grep -c 'hdv_akses' $J)" 1 "cookie akses diberikan"
+ok "$(c -b $J $U/pantau_hdv_depo_gardu.html)" 200 "dengan kode: halaman dasbor terbuka"
+ok "$(grep -c 'id="d-core"' $O)" 1 "dengan kode: data termuat"
+ok "$(c -b $J $U/api/survey)" 200 "dengan kode: API terbuka"
+ok "$(c $U/pantau_hdv_depo_gardu.html)" 401 "sesudah ada yang masuk, pengunjung tanpa kode tetap terkunci (tidak bocor lewat cache)"
+ok "$(c $U/api/survey)" 401 "idem untuk API"
+ok "$(c -b $J -c $J $U/keluar)" 303 "keluar"
+ok "$(c -b $J $U/pantau_hdv_depo_gardu.html)" 401 "sesudah keluar: terkunci lagi"
+exit $f

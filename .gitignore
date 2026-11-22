@@ -2,3 +2,5 @@ node_modules/
 .vercel/
 __pycache__/
 *.pyc
+tests/.data.json
+.mw-uji.mjs

@@ -665,7 +665,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
 	}
 </style>
 <style>
-/* layout: peta lebar + kartu depo di kanan; di bawahnya gambaran RFP lalu monitoring harian */
+/* layout: menu di kiri; tiap tampilan satu layar. Peta lebar + kartu depo di kanan */
 :root{--paper:#edf0f3;--panel:#ffffff;--ink:#13212e;--mut:#5c6b7a;--line:#d6dce3;--accent:#0e6f73;--sea:#dbe5eb;--land:#f7f6f1;
 --ok:#1f8a5b;--warn:#d98a00;--bad:#c23b2e;--kv500:#c0392b;--kv275:#8e44ad;--kv150:#2f6fb0;--kv70:#3f9a6b;
 --disp:"Archivo","Arial Narrow",Arial,sans-serif;--body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light}
@@ -775,8 +775,8 @@ html,body{height:100%}body{overflow:hidden}
 .det{display:grid;gap:12px}.det .dh{margin:0;padding:0;border:0}.g2c{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px}
 #mon .pane[data-pane=daftar] .tw{max-height:calc(100dvh - 232px)}.st .sep{width:1px;align-self:stretch;background:var(--line);margin:2px 4px}.pools{margin-top:0}
 @media(max-width:1050px){#peta.on{display:block;overflow:auto}.top{display:grid;grid-template-columns:1fr;grid-template-rows:auto}.mapwrap{height:60dvh;flex:none}.side{height:auto}}
-@media(max-width:760px){.app,.app.mini{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}.sb{order:2;flex-direction:row;padding:4px 6px;gap:0;overflow-x:auto;overflow-y:hidden}.sbh,.sbf{display:none}
- .menu{display:flex;gap:2px;flex:1}.menu button,.app.mini .menu button{flex:1 0 auto;flex-direction:column;gap:1px;padding:5px 9px;font-size:10.5px;min-width:58px;justify-content:center}.menu span,.app.mini .menu span{display:block}.menu .bd{display:none}.menu i{font-size:17px}
+@media(max-width:760px){.app,.app.mini{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}.sb{order:2;flex-direction:row;padding:4px 4px;gap:0;overflow:hidden}.sbh,.sbf{display:none}
+ .menu{display:flex;gap:2px;flex:1}.menu button,.app.mini .menu button{flex:1 1 0;flex-direction:column;gap:1px;padding:5px 1px;font-size:10px;min-width:0;justify-content:center}.menu span,.app.mini .menu span{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis}.menu .bd{display:none}.menu i{font-size:17px}
  .view{padding:10px 12px}#peta{padding:8px}.vh h2{font-size:15.5px}.st button{padding:5px 10px;font-size:12px}}
 
 /* ===== dasbor utama & infografis ===== */
@@ -798,7 +798,7 @@ html,body{height:100%}body{overflow:hidden}
 .tmu{display:flex;gap:11px;padding:12px 14px;border-left:4px solid #9aa8b6}.tmu.t-ok{border-left-color:var(--ok)}.tmu.t-warn{border-left-color:var(--warn)}.tmu.t-bad{border-left-color:var(--bad)}
 .tmi{font-size:24px;line-height:1.1;flex:none}.tmu b{display:block;font:700 22px/1.1 var(--disp)}.tmu h4{margin:2px 0 3px;font-size:12.5px;font-weight:600}.tmu p{margin:0;font-size:12.5px;color:var(--mut)}
 .tl{position:relative;height:26px;border-radius:7px;background:#eef1f4;overflow:hidden;margin-top:10px}.tl i{position:absolute;top:0;bottom:0}.tl u{position:absolute;top:0;bottom:0;border:2px solid var(--warn);border-radius:4px;box-sizing:border-box}
-.bar.w3{grid-template-columns:110px 1fr 92px}.bar.w3 em{white-space:nowrap}.tlx{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mut);margin-top:2px}.tiles.t4{grid-template-columns:repeat(4,1fr)}
+.bar.w3{grid-template-columns:110px 1fr 92px}.bar.w3 em{white-space:nowrap}.pr2{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:900px){.pr2{grid-template-columns:minmax(0,1fr)}}.tlx{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mut);margin-top:2px}.tiles.t4{grid-template-columns:repeat(4,1fr)}
 .asf{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-top:10px}.asf label{font-size:12px;color:var(--mut);display:grid;gap:3px}.asf input{padding:5px 8px;font-size:13px}
 .lnk{background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;cursor:pointer;font:inherit}
 @media(max-width:900px){.tmg{grid-template-columns:1fr}.tiles.t4{grid-template-columns:1fr 1fr}.simr{flex-direction:column;align-items:flex-start}.asf{grid-template-columns:1fr}}
@@ -807,7 +807,7 @@ html,body{height:100%}body{overflow:hidden}
 </style></head><body><div class="app" id="app">
 <aside class="sb" id="sb"><div class="sbh"><div><b>Pantau HDV</b><small>Depo–Gardu · IESR</small></div><button type="button" id="sb-t" aria-label="Lipat atau buka menu" title="Lipat atau buka menu">☰</button></div>
  <nav class="menu" aria-label="Menu utama">
-  <button type="button" data-view="dash" class="on" title="Dasbor utama"><i>🏠</i><span>Dasbor utama</span></button>
+  <button type="button" data-view="dash" class="on" title="Dasbor utama"><i>🏠</i><span>Dasbor</span></button>
   <button type="button" data-view="peta" title="Peta"><i>🗺️</i><span>Peta</span></button>
   <button type="button" data-view="detail-s" title="Detail pool"><i>🔎</i><span>Detail pool</span><em class="bd" id="m-det" hidden></em></button>
   <button type="button" data-view="mon" title="Monitoring"><i>📊</i><span>Monitoring</span></button>
@@ -915,7 +915,7 @@ function agg(){const by={};POOLS.forEach(p=>by[p[0]]={th:0,reg:0,last:null});let
 function plan(d){const a=T('2026-11-23'),k=Math.floor((d-a)/DAY)+1;return Math.max(0,Math.min(14,k))*250}
 function mon(){const {by,tot,days,auto}=agg(),n=now(),pl=plan(n),reg=Object.values(by).reduce((a,b)=>a+b.reg,0),act=Object.values(by).filter(b=>b.th>0||b.reg>0).length;
  $('mk').innerHTML=[[fmt(tot)+' / 3.500','truk-hari terkumpul'],[fmt(100*tot/3500,1)+'%','dari target survei'],[fmt(pl),'rencana sampai hari ini'],[(tot-pl>=0?'+':'')+fmt(tot-pl),'selisih terhadap rencana'],[reg+' / 500','truk terdaftar'],[act+' / 10','pool berjalan']].map(k=>`<div class="card kpi"><b>${k[0]}</b><span>${k[1]}</span></div>`).join('');
- $('mon-sub').textContent=(Object.keys(H).length?Object.keys(H).length+' laporan harian manual. ':'')+(auto?fmt(auto)+' truk-hari dihitung otomatis dari entri formulir F3.':Object.keys(H).length?'':'Belum ada laporan. Angka di sini terisi otomatis dari entri formulir F3, atau dari lapor harian manual di bawah.');
+ $('mon-sub').textContent=(Object.keys(H).length?Object.keys(H).length+' laporan harian manual. ':'')+(auto?fmt(auto)+' truk-hari dihitung otomatis dari entri formulir F3.':Object.keys(H).length?'':'Belum ada laporan. Angka di sini terisi otomatis dari entri formulir F3, atau dari sub-menu “Lapor harian”.');
  $('pools').innerHTML=POOLS.map(p=>{const b=by[p[0]],pc=Math.min(100,100*b.th/350);return `<div class="card pool k-${p[2].split('-')[0]}"><div class="hd"><b>${p[0]}</b><span class="pill ${b.th>=350?'pA':b.th>0?'pB':'pN'}">${b.th>=350?'Selesai':b.th>0?'Berjalan':'Belum mulai'}</span></div><small>${esc(p[1])}<br>${esc(p[2])} · ${esc(p[3])}</small><div class="meter"><i style="width:${pc}%;background:${pc>=100?SC.A:css('--accent')}"></i></div><div class="sub" style="margin-top:5px">${fmt(b.th)} / 350 truk-hari · ${b.reg} / 50 truk${b.last?' · terakhir '+b.last.slice(5):''}</div></div>`}).join('');
  const rows=Object.values(H).sort((a,b)=>(b.tgl+b.pool).localeCompare(a.tgl+a.pool));$('tl').tBodies[0].innerHTML=rows.map(r=>`<tr><td>${esc(r.tgl)}</td><td>${esc(r.pool)}</td><td class="r">${esc(r.terdaftar??'–')}</td><td class="r">${esc(r.truk_hari)}</td><td style="white-space:normal">${esc(r.catatan||'')}</td></tr>`).join('')||'<tr><td colspan="5" class="note">Belum ada laporan.</td></tr>';
  chart(days);try{dashMon()}catch(_){}}
@@ -973,7 +973,7 @@ function prep(){const ix={};D.GI.forEach(g=>ix[g.id]=g);const L=D.GI.filter(g=>g
   d.siap=d.gi_ld==null?'N':d.gi_km<=5&&d.gi_ld<60?'A':d.gi_km<=10&&d.gi_ld<80?'B':'C';
   let best=null;L.forEach(x=>{if(x.id===d.gi_id)return;const km=hav(d.lat,d.lon,x.lat,x.lon);if(km<=10){const s=sisa80(x);if(!best||s>best.s)best={g:x,km,s}}});
   d.alt=best&&(d.gi_s80==null||best.s>d.gi_s80+5)?best:null});
- D.DP.forEach(d=>d.q=kuotaDP(d));D.GI.forEach(g=>g.q=kuotaGI(g))}
+ D.DP.forEach(d=>{d.q=kuotaDP(d);d.qo='cban'.indexOf(d.q.k);d.qme=d.q.me});D.GI.forEach(g=>g.q=kuotaGI(g))}
 const LBIN=[['<30%',0,30,'#8fc7a8'],['30–60%',30,60,'#1f8a5b'],['60–80%',60,80,'#d98a00'],['80–100%',80,100,'#c23b2e'],['≥100%',100,1e9,'#7d1f16']];
 function bebanGI(){if(!D.TR||!$('bg-kpi'))return;const T=D.TR,G=D.GL,P=D.DP,N=P.length,pk=T.map(t=>Math.max(t[3],t[4])),cap=T.reduce((s,t)=>s+t[2],0),w=i=>T.reduce((s,t)=>s+t[2]*t[i],0)/cap,n80=pk.filter(v=>v>=80).length,nL=P.filter(d=>d.gi_ld!=null).length,ktt=G.filter(g=>g[0]==='KTT').length,mal=T.filter(t=>t[4]>t[3]).length,akt=T.filter(t=>t[3]>0||t[4]>0).length;
  $('bg-kpi').innerHTML=[['🏭',G.length,0,'',`gardu induk (${ktt} milik pelanggan)`],['🔌',T.length,0,'','trafo'],['🔋',cap/1000,1,' GVA','kapasitas trafo'],['☀️',w(3),0,'%','puncak siang'],['🌙',w(4),0,'%','puncak malam'],['⚠️',n80,0,'','trafo ≥80%'],['🚛',nL,0,' / '+N,'depo berdata']].map(k=>`<div class="card kpi ki"><span class="kic">${k[0]}</span><div><b data-to="${k[1]}" data-d="${k[2]}" data-suf="${k[3]}">${fmt(k[1],k[2])}${k[3]}</b><span>${k[4]}</span></div></div>`).join('');
@@ -1047,14 +1047,14 @@ function side(d){if(!d){if(!CBY)initCBY();const m=CBY[cby],n=D.DP.length,cnt={},
  <div><h3>Bila dikonversi ke truk listrik</h3><div id="s-v" style="margin-top:6px"></div></div>
  <button class="btn pri" type="button" data-go="detail">Lihat analisis lengkap ↓</button>`}
 
-function detail(d){const el=$('detail');if(!d){$('det-st').hidden=true;el.innerHTML=`<div class="card pad"><p class="note" style="margin:0">Pilih satu depo di peta atau di tabel. Di sini akan muncul profil usahanya, kondisi jaringan listrik di sekitarnya, dan perkiraan dampaknya ke jaringan bila armadanya diganti truk listrik, lengkap dengan kesimpulan dan rekomendasi.</p></div>`;return}
+function detail(d){const el=$('detail');if(!d){$('det-st').hidden=true;el.innerHTML=`<div class="card pad"><p class="note" style="margin:0">Pilih satu depo di peta atau di daftar depo. Di sini akan muncul profil usahanya, kondisi jaringan listrik di sekitarnya, dan perkiraan dampaknya ke jaringan bila armadanya diganti truk listrik, lengkap dengan kesimpulan dan rekomendasi.</p></div>`;return}
  const P=D.DP,po=POLA[d.pola_operasi_iesr]||[d.pola_operasi_iesr,'',''],rk=P.filter(x=>x.gi_km<d.gi_km).length+1,same=k=>P.filter(x=>x[k]===d[k]).length,known=d.perusahaan&&!/tidak teridentifikasi/i.test(d.perusahaan);
  const ch=[node('🚛','Depo '+esc(d.id),esc(d.lokasi))];
  if(d.gd_nama){ch.push(link(fmt(d.gd_jarak_m)+' m'),node('⚡','Gardu distribusi '+esc(d.gd_nama),`${d.gd_kva?fmt(d.gd_kva)+' kVA':'kapasitas tidak tercatat'} · beban ${d.gd_beban_pct!=null?fmt(d.gd_beban_pct,0)+'%':'tidak ada data'} · ${fmt(d.gd_n_1km)} gardu dalam 1 km`,d.gd_beban_pct));
   if(d.gi_nama)ch.push(link(d.penyulang?'penyulang '+esc(d.penyulang):'penyulang 20 kV'),node('🏭','GI pemasok '+esc(d.gi_nama),d.gi_trafo_mva?`trafo ${fmt(d.gi_trafo_mva)} MVA · siang ${fmt(d.gi_siang_pct,1)}% · malam ${fmt(d.gi_malam_pct,1)}% · sisa ${fmt(d.gi_sisa_mva,1)} MVA`:'data beban trafo tidak tersedia',d.gi_trafo_mva?Math.max(d.gi_siang_pct,d.gi_malam_pct):null))}
  ch.push(link(fmt(d.gi_km,1)+' km garis lurus'),node('🏭','GI terdekat '+esc(d.gi_n),`${esc(d.gi_v||'–')} kV · ${(d.gi_cap||d.gi_mva)?fmt(d.gi_cap||d.gi_mva)+' MVA':'kapasitas –'}${d.gi_ntr?' ('+d.gi_ntr+' trafo)':''} · ${d.gi_ld!=null?`beban puncak siang ${fmt(d.gi_ps,0)}%, malam ${fmt(d.gi_pm,0)}% · trafo terpadat ${fmt(d.gi_ldmax,0)}% · sisa ${fmt(d.gi_s80,0)} MVA ke batas 80%${d.gi_par?' · data sebagian trafo':''}`:'beban di luar cakupan data'}${NGI[d.gi_id]>1?` · tumpuan ${NGI[d.gi_id]} depo`:''}`,d.gi_ld));
  if(d.alt)ch.push(link('pembanding'),node('🔀','GI alternatif '+esc(d.alt.g.n),`${fmt(d.alt.km,1)} km · ${fmt(d.alt.g.cap)} MVA · beban puncak ${fmt(d.alt.g.ld,0)}% · sisa ${fmt(d.alt.s,0)} MVA ke batas 80%`,d.alt.g.ld));
- el.innerHTML=`<div class="det"><div class="card pad"><div class="dh"><div class="dic">${JI(d.tipe_fasilitas)}</div><div style="flex:1;min-width:200px"><h3>Detail pool · ${esc(d.id)}</h3><div class="nm" style="font:700 20px/1.2 var(--disp)">${esc(d.nama)}</div><div class="sub">${esc(d.lokasi)}, ${esc(d.provinsi)} · <a href="${gmaps(d.lat,d.lon)}" target="_blank" rel="noopener">Buka di Google Maps</a></div></div><div><span class="pill p${d.siap}">${SL(d.siap)}</span> <span class="pill pN">${esc(d.pola_operasi_iesr)}</span></div></div><div id="d-v" style="margin-top:10px"></div></div>
+ el.innerHTML=`<div class="det"><div class="card pad"><div class="dh"><div class="dic">${JI(d.tipe_fasilitas)}</div><div style="flex:1;min-width:200px"><h3>Detail pool · ${esc(d.id)}</h3><div class="nm" style="font:700 20px/1.2 var(--disp)">${esc(d.nama)}</div><div class="sub">${esc(d.lokasi)}, ${esc(d.provinsi)} · <a href="${gmaps(d.lat,d.lon)}" target="_blank" rel="noopener">Buka di Google Maps</a></div></div><div><span class="pill ${PC(KD[d.q.k][0])}">${KD[d.q.k][1]}</span> <span class="pill p${d.siap}">${SL(d.siap)}</span> <span class="pill pN">${esc(d.pola_operasi_iesr)}</span></div></div><div id="d-v" style="margin-top:10px"></div></div>
  <div class="pane" data-pane="profil"><div class="g2c">
   <div class="card pad"><h3>Profil usaha</h3><div class="tiles" style="margin-top:8px"><div class="tile"><small>Jenis usaha</small><b>${esc(d.tipe_fasilitas)}</b></div><div class="tile"><small>Perusahaan</small><b>${esc(d.perusahaan)}</b></div><div class="tile"><small>Komoditas</small><b>${esc(d.komoditas_indikatif)}</b></div><div class="tile"><small>Pola operasi</small><b>${esc(po[0])}</b></div></div>
    <p class="note" style="margin:10px 0 0"><b>Ciri pola ini.</b> ${po[1]} ${po[2]}</p>
@@ -1165,7 +1165,7 @@ function initMap(land){map=L.map('map',{preferCanvas:true,zoomSnap:1,minZoom:4,m
  [['l-dp','dp'],['l-gi','gi'],['l-ln','ln'],['l-gd','gd']].forEach(([i,k])=>$(i).onchange=e=>{e.target.checked?map.addLayer(LY[k]):map.removeLayer(LY[k]);top()});top();
  $('cby').onchange=e=>{cby=e.target.value;cflt=null;recolor()};map.on('moveend',viewInsight);regi();recolor()}
 
-/* ---------- gambaran RFP ---------- */
+/* ---------- Monitoring: depo & gardu (dulu gambaran RFP) ---------- */
 function count(el,to,d=0,suf=''){const t0=performance.now(),rm=matchMedia('(prefers-reduced-motion:reduce)').matches;const f=t=>{const k=rm?1:Math.min(1,(t-t0)/900),e=1-Math.pow(1-k,3);el.textContent=fmt(to*e,d)+suf;if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
 function rfp(){const P=D.DP,km=P.map(d=>d.gi_km).sort((a,b)=>a-b),med=km[Math.floor(km.length/2)],mva=D.GI.reduce((a,g)=>a+(g.mva||0),0);
  const K=[[P.length,0,'','depo & pool terpetakan','🏭'],[new Set(P.map(d=>d.provinsi)).size,0,' / 38','provinsi tercakup','🗺️'],[med,1,' km','median jarak depo ke GI','📏'],[100*P.filter(d=>d.gi_km<=5).length/P.length,0,'%','depo dalam 5 km dari GI','🎯'],[D.GI.length,0,'','gardu induk nasional','⚡'],[mva/1000,1,' GVA','kapasitas GI terpetakan','🔋'],[P.filter(d=>d.gi_ld!=null).length,0,'','depo dengan data beban GI','📊'],[P.filter(d=>d.gd_nama).length,0,'','depo dengan gardu 20 kV (Jabar)','🔌']];
@@ -1177,10 +1177,10 @@ function rfp(){const P=D.DP,km=P.map(d=>d.gi_km).sort((a,b)=>a-b),med=km[Math.fl
  const pr={};P.forEach(d=>pr[d.provinsi]=(pr[d.provinsi]||0)+1);const pa=Object.entries(pr).sort((a,b)=>b[1]-a[1]).slice(0,10);$('b-prov').innerHTML=pa.map(([n,v])=>`<div class="bar"><span>${esc(n)}</span><i style="width:0" data-w="${100*v/pa[0][1]}"></i><em>${v}</em></div>`).join('');
  try{profil()}catch(e){console.error(e)}try{statistik()}catch(e){console.error(e)}try{bebanGI()}catch(e){console.error(e)}
  requestAnimationFrame(()=>document.querySelectorAll('.bar i[data-w]').forEach(i=>i.style.width=i.dataset.w+'%'));table()}
-const COLS=[['id','ID'],['nama','Depo'],['tipe_fasilitas','Jenis usaha'],['perusahaan','Perusahaan'],['provinsi','Provinsi'],['pola_operasi_iesr','Pola'],['siap','Siap'],['gi_n','GI terdekat'],['gi_km','Jarak GI (km)',1],['gi_mva','GI (MVA)',1],['gi_ld','Beban puncak GI (%)',1],['gi_s80','Sisa GI ke 80% (MVA)',1],['gd_jarak_m','Gardu 20 kV (m)',1],['gd_beban_pct','Beban gardu (%)',1]];let sk='gi_km',sd=1;
+const COLS=[['id','ID'],['nama','Depo'],['qo','Kuota GI'],['siap','Siap'],['gi_n','GI terdekat'],['gi_km','Jarak GI (km)',1],['gi_ld','Beban puncak GI (%)',1],['gi_s80','Sisa GI ke 80% (MVA)',1],['qme','Butuh 50 truk (MVA)',1],['gi_mva','GI (MVA)',1],['tipe_fasilitas','Jenis usaha'],['perusahaan','Perusahaan'],['provinsi','Provinsi'],['pola_operasi_iesr','Pola'],['gd_jarak_m','Gardu 20 kV (m)',1],['gd_beban_pct','Beban gardu (%)',1]];let sk='gi_km',sd=1;
 function table(){const s=$('q').value.toLowerCase(),F=D.DP.filter(d=>!s||(d.id+' '+d.nama+' '+d.perusahaan+' '+d.provinsi+' '+d.gi_n+' '+d.lokasi+' '+d.tipe_fasilitas+' '+d.komoditas_indikatif+' '+d.pola_operasi_iesr).toLowerCase().includes(s)).sort((a,b)=>{const x=a[sk],y=b[sk];if(x==null)return 1;if(y==null)return -1;return(x>y?1:x<y?-1:0)*sd});
  $('tb').tHead.rows[0].innerHTML=COLS.map(c=>`<th data-k="${c[0]}" class="${c[2]?'r':''}">${c[1]}${sk===c[0]?(sd>0?' ↑':' ↓'):''}</th>`).join('');
- $('tb').tBodies[0].innerHTML=F.map(d=>`<tr data-id="${d.id}">`+COLS.map(c=>c[0]==='siap'?`<td><span class="pill p${d.siap}">${d.siap==='N'?'–':d.siap}</span></td>`:`<td class="${c[2]?'r':''}">${c[2]?fmt(d[c[0]],c[0]==='gi_km'||c[0]==='gi_ld'?1:0):esc(d[c[0]])}</td>`).join('')+'</tr>').join('')}
+ $('tb').tBodies[0].innerHTML=F.map(d=>`<tr data-id="${d.id}">`+COLS.map(c=>c[0]==='siap'?`<td><span class="pill p${d.siap}">${d.siap==='N'?'–':d.siap}</span></td>`:c[0]==='qo'?`<td><span class="pill ${PC(KD[d.q.k][0])}" title="${KD[d.q.k][1]}">${KD[d.q.k][2]}</span></td>`:`<td class="${c[2]?'r':''}">${c[2]?fmt(d[c[0]],c[0]==='gi_km'||c[0]==='gi_ld'||c[0]==='qme'?1:0):esc(d[c[0]])}</td>`).join('')+'</tr>').join('')}
 $('tb').tHead.onclick=e=>{const k=e.target.dataset.k;if(!k)return;sd=sk===k?-sd:1;sk=k;table()};$('tb').tBodies[0].onclick=e=>{const tr=e.target.closest('tr');if(!tr)return;const d=D.DP.find(x=>x.id===tr.dataset.id);goView('peta');pick(d,true)};$('q').oninput=table;
 
 /* ---------- animasi: batang tumbuh, cincin terisi, angka menghitung (diulang tiap panel dibuka) ---------- */
@@ -1254,7 +1254,7 @@ head();gantt();mon();checks();setInterval(()=>{head();gantt()},6e4);
  try{land=JSON.parse($('d-land').textContent)}catch(e){console.error(e)}
  try{rfp()}catch(e){console.error(e)}try{dash()}catch(e){console.error(e)}
  if(!window.L){$('map').innerHTML='<p class="note" style="padding:16px">Pustaka peta (Leaflet) tidak termuat. Muat ulang halaman.</p>';try{side(null)}catch(e){console.error(e)}return}
- try{initMap(land);side(null)}catch(e){console.error(e);$('side').innerHTML='<p class="note">Peta gagal digambar ('+esc(e.message)+'). Tabel dan ringkasan di bawah tetap bisa dipakai.</p>'}})();
+ try{initMap(land);side(null)}catch(e){console.error(e);$('side').innerHTML='<p class="note">Peta gagal digambar ('+esc(e.message)+'). Menu lain, termasuk daftar depo di Monitoring, tetap bisa dipakai.</p>'}})();
 connect();
 {let h=decodeURIComponent(location.hash.slice(1));if(h==='rfp'||h==='info')h='mon';if(h&&$(h)&&$(h).classList.contains('view'))goView(h)}
 </script>
