@@ -1,0 +1,20 @@
+// middleware.js ditulis sebagai modul ES di paket CommonJS, jadi diuji lewat salinan sementara berakhiran .mjs
+import fs from 'node:fs';import {fileURLToPath} from 'node:url';const here=fileURLToPath(new URL('.',import.meta.url)),tmp=here+'../.mw-uji.mjs';fs.copyFileSync(here+'../middleware.js',tmp);
+const {default:mw}=await import(tmp);fs.unlinkSync(tmp);let fail=0;const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)fail++};
+const R=(path,o={})=>mw(new Request('https://x.test'+path,o));const lanjut=r=>r.headers.get('x-middleware-next')==='1';
+let r=await R('/');ok(r.status===401&&(await r.text()).includes('Kode akses')&&!lanjut(r),'tanpa kode: / → halaman masuk (401), tidak diteruskan');
+r=await R('/pantau_hdv_depo_gardu.html');const t=await r.text();ok(r.status===401&&!t.includes('d-core')&&t.includes('name="ke" value="/pantau_hdv_depo_gardu.html"'),'berkas dasbor tidak terkirim; tujuan diingat');
+r=await R('/survei.js');ok(r.status===401,'survei.js terkunci');
+r=await R('/api/survey');ok(r.status===401&&(await r.json()).ok===false,'API terkunci (401 JSON)');
+const post=(kode,ke='/')=>R('/masuk',{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({kode,ke}).toString()});
+let t0=Date.now();r=await post('0000');ok(r.status===401&&(await r.text()).includes('Kode salah')&&!r.headers.get('set-cookie')&&Date.now()-t0>=850,'kode salah ditolak, tanpa cookie, dengan jeda '+(Date.now()-t0)+' ms');
+r=await post('1234','/pantau_hdv_depo_gardu.html?x=1');const ck=r.headers.get('set-cookie')||'';ok(r.status===303&&r.headers.get('location')==='/pantau_hdv_depo_gardu.html?x=1'&&/HttpOnly/.test(ck)&&/Secure/.test(ck)&&/SameSite=Lax/.test(ck)&&!ck.includes('1234'),'kode benar → cookie HttpOnly+Secure (tidak memuat kodenya), diarahkan ke tujuan');
+const kue=ck.split(';')[0];
+r=await R('/pantau_hdv_depo_gardu.html',{headers:{cookie:kue}});ok(lanjut(r),'dengan cookie: halaman diteruskan');
+r=await R('/api/survey',{headers:{cookie:'a=b; '+kue}});ok(lanjut(r),'dengan cookie: API diteruskan');
+r=await R('/',{headers:{cookie:'hdv_akses=palsu'}});ok(r.status===401,'cookie palsu ditolak');
+r=await post('1234','https://jahat.example/');ok(r.headers.get('location')==='/','tujuan ke situs lain diabaikan (tidak bisa dipakai untuk pengalihan)');
+r=await post('1234','//jahat.example');ok(r.headers.get('location')==='/','tujuan //… diabaikan');
+r=await R('/keluar',{headers:{cookie:kue}});ok(r.status===303&&/Max-Age=0/.test(r.headers.get('set-cookie')),'keluar menghapus cookie');
+r=await R('/masuk');ok(r.status===401&&(await r.text()).includes('<form'),'GET /masuk menampilkan formulir');
+process.exit(fail?1:0);
