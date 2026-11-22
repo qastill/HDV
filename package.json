@@ -3,8 +3,11 @@
   "private": true,
   "version": "1.0.0",
   "description": "Dasbor Pantau HDV Depo–Gardu dan API entri survei",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
-    "@vercel/blob": "^2.0.0"
+    "@vercel/blob": "^2.0.0",
+    "@vercel/functions": "^3.11.3"
   }
 }

@@ -31,6 +31,7 @@ const keep=()=>{try{localStorage.setItem(LS,JSON.stringify(L))}catch(_){}},keepS
 const all=()=>memo||(memo={...S,...L.dirty}),list=(k,pool)=>Object.values(all()).filter(r=>r.k===k&&r.data&&(!pool||r.pool===pool)),rec=(k,id)=>{const r=all()[k+':'+id];return r&&r.data?r.data:null};
 function save(k,id,data){L.dirty[k+':'+id]={k,pool:id.split(/[-:]/)[0],id,ts:Date.now(),data};memo=null;keep();clearTimeout(tPush);tPush=setTimeout(push,45000);refresh()}
 async function pull(){try{let r=await fetch(API,{headers:L.pin?{'x-pin':L.pin}:{},cache:'no-store'}),bad='';if(r.status===401){bad=(await r.json().catch(()=>({}))).error||'PIN salah';r=await fetch(API,{cache:'no-store'})}
+  if(r.status===401&&location.protocol!=='file:'){location.reload();return}
   if(!r.ok)throw 0;const j=await r.json();
   if(j.ready===false){auth=false;net='server belum aktif';warned=''}else{S=j.recs||{};auth=!!j.auth;net=bad?'PIN ditolak':'tersambung';warned=bad;memo=null;lastSync=new Date();keepSnap()}}
  catch(_){net=location.protocol==='file:'?'berkas lokal (tanpa server)':'luring'}refresh()}
