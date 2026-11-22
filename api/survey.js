@@ -6,6 +6,8 @@ const crypto = require('crypto');
 const fs = require('fs');
 
 const KEY = `survei/${process.env.VERCEL_ENV || 'lokal'}/data.json`;
+// PIN admin. Bawaan dipilih pemilik proyek; ganti lewat variabel lingkungan SURVEY_PIN tanpa mengubah kode.
+const PIN = process.env.SURVEY_PIN || '1234';
 const PRIV_F1 = ['perusahaan', 'nama_pool', 'alamat', 'lat', 'lon', 'narasumber', 'hp']; // rahasia per F1 bagian E
 const MAX_REC = 24 * 1024, MAX_BATCH = 600, TTL = 30000;
 const ID = { f1: /^P([1-9]|10)$/, f2: /^P([1-9]|10)-\d{3}$/, f3: /^P([1-9]|10)-\d{3}:[1-7]$/ };
@@ -63,7 +65,7 @@ async function load(fresh) {
 }
 
 function isAuth(req) {
-  const pin = process.env.SURVEY_PIN, got = req.headers['x-pin'];
+  const pin = PIN, got = req.headers['x-pin'];
   return !!pin && !!got && crypto.timingSafeEqual(sha(got), sha(pin));
 }
 
@@ -95,15 +97,15 @@ module.exports = async (req, res) => {
     if (req.method === 'GET') {
       const admin = req.headers['x-pin'] !== undefined;
       res.setHeader('Cache-Control', admin || !READY ? 'private, no-store' : 'public, s-maxage=60, stale-while-revalidate=300');
-      if (!READY) return res.status(200).json({ ok: true, ready: false, pin: !!process.env.SURVEY_PIN, auth: false, n: 0, at: Date.now(), recs: {}, error: NOT_READY });
-      if (admin && !auth) return res.status(401).json({ ok: false, error: process.env.SURVEY_PIN ? 'PIN salah' : 'PIN belum diatur di server' });
+      if (!READY) return res.status(200).json({ ok: true, ready: false, pin: !!PIN, auth: false, n: 0, at: Date.now(), recs: {}, error: NOT_READY });
+      if (admin && !auth) return res.status(401).json({ ok: false, error: PIN ? 'PIN salah' : 'PIN belum diatur di server' });
       const m = await load(false);
       return res.status(200).json({ ok: true, ready: true, auth, n: Object.keys(m.doc.recs).length, at: Date.now(), recs: auth ? m.doc.recs : publicView(m.doc.recs) });
     }
     if (req.method === 'POST') {
       res.setHeader('Cache-Control', 'no-store');
       if (!READY) return res.status(503).json({ ok: false, ready: false, error: NOT_READY });
-      if (!process.env.SURVEY_PIN) return res.status(503).json({ ok: false, error: 'PIN belum diatur di server' });
+      if (!PIN) return res.status(503).json({ ok: false, error: 'PIN belum diatur di server' });
       if (!auth) return res.status(401).json({ ok: false, error: 'PIN salah' });
       const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body || {};
       if (!Array.isArray(body.recs) || body.recs.length > MAX_BATCH) return res.status(400).json({ ok: false, error: 'format entri tidak dikenali' });
