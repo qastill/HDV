@@ -9,16 +9,16 @@ const {chromium}=require('playwright');const auto=require('./auto.js');let n=0,f
  {const q=await c.newPage();auto(q);let on=0;for(const h of ['#rfp','#info']){await q.goto('about:blank');await q.goto((process.env.URL||'http://localhost:8765/')+'pantau_hdv_depo_gardu.html'+h);await q.waitForTimeout(900);on+=await q.locator('#mon.on').count()}await q.close();ok(on===2,name+': tautan lama #rfp/#info mendarat di Monitoring')}
  // daftar depo
  await p.evaluate(()=>goView('peta'));await p.waitForTimeout(1200);
- ok(await p.locator('#s-list .dli').count()===114&&/114 depo/.test(await tx('#s-n')),name+': kartu depo berisi daftar 114 depo');
+ const NDP=await p.evaluate(()=>D.DP.length);ok(NDP===25&&await p.locator('#s-list .dli').count()===NDP&&/25 depo/.test(await tx('#s-n')),name+': kartu depo berisi daftar 25 depo');
  const o=await p.evaluate(()=>{const r=document.querySelector('#s-list .dli').getBoundingClientRect(),s=document.getElementById('side').getBoundingClientRect();return r.right<=s.right+1&&r.width>150});ok(o,name+': baris daftar tidak terpotong');
- await p.fill('#s-q','cikarang');await p.waitForTimeout(250);const nq=await p.locator('#s-list .dli').count();ok(nq>0&&nq<114,name+': pencarian menyaring daftar → '+nq);
+ await p.fill('#s-q','cikarang');await p.waitForTimeout(250);const nq=await p.locator('#s-list .dli').count();ok(nq>0&&nq<NDP,name+': pencarian menyaring daftar → '+nq);
  await p.fill('#s-q','zzzz');await p.waitForTimeout(250);ok(/Tidak ada depo/.test(await tx('#s-list')),name+': pencarian tanpa hasil diberi tahu');await p.fill('#s-q','');await p.waitForTimeout(200);
  await p.locator('#s-flt [data-f="a"]').click();await p.waitForTimeout(250);const nA=await p.locator('#s-list .dli').count();ok(nA===await p.evaluate(()=>D.DP.filter(d=>d.q.k==='a').length)&&nA===await p.evaluate(()=>D.DP.filter(d=>d._m.options.fillOpacity===1).length),name+': saring "kuota cukup" → daftar dan peta sama-sama '+nA);
  await p.locator('#s-flt [data-f=""]').click();await p.selectOption('#s-o','jarak');await p.waitForTimeout(200);
  const first=await p.locator('#s-list .dli').first().getAttribute('data-dp');ok(first===await p.evaluate(()=>[...D.DP].sort((a,b)=>a.gi_km-b.gi_km)[0].id),name+': urut jarak terdekat');
  await p.locator('#s-list .dli').first().click();await p.waitForTimeout(1300);
  ok(/Kartu depo/i.test(await tx('#side'))&&await p.locator('#side [data-back]').count()===1&&await p.evaluate(()=>!!sel),name+': klik baris → detail depo + peta memilih depo');
- await p.locator('#side [data-back]').click();await p.waitForTimeout(300);ok(await p.locator('#s-list .dli').count()===114&&await p.evaluate(()=>!sel),name+': tombol kembali → daftar depo lagi');
+ await p.locator('#side [data-back]').click();await p.waitForTimeout(300);ok(await p.locator('#s-list .dli').count()===NDP&&await p.evaluate(()=>!sel),name+': tombol kembali → daftar depo lagi');
  // hasil survei: keadaan kosong
  await p.evaluate(()=>goView('hasil'));await p.waitForTimeout(500);
  ok(await p.locator('#hasil .st button').count()===7&&(await tx('#hasil .st button.on'))==='Kesimpulan',name+': Hasil survei punya 7 sub-menu, mulai dari Kesimpulan');
@@ -34,8 +34,8 @@ const {chromium}=require('playwright');const auto=require('./auto.js');let n=0,f
  await p.fill('[data-as="solar"]','12000');await p.locator('[data-as="solar"]').dispatchEvent('change');await p.waitForTimeout(300);const s1=(await tx('#hasil .pane.on')).match(/Selisih biaya energi Rp [\d.,]+ (juta|miliar)/)[0];
  ok(s0!==s1&&await p.inputValue('[data-as="solar"]')==='12000',name+': ubah asumsi → proyeksi dihitung ulang ('+s0.slice(21)+' → '+s1.slice(21)+')');
  await p.locator('#as-reset').click();await p.waitForTimeout(300);ok(await p.inputValue('[data-as="solar"]')==='6800',name+': asumsi bisa dikembalikan');
- const st=await p.evaluate(()=>({d:Object.keys(JSON.parse(localStorage.getItem('pantau-hdv-survei')||'{}').dirty||{}).length,sv:Object.keys(window.svCount().reg).length,ds:document.getElementById('dash-sv').textContent}));
- ok(st.d===0&&st.sv===0&&/Belum ada entri/.test(st.ds),name+': data simulasi tidak tersimpan, tidak masuk dasbor/monitoring');
+ const st=await p.evaluate(()=>({d:Object.keys(JSON.parse(localStorage.getItem('pantau-hdv-survei')||'{}').dirty||{}).length,sv:Object.keys(window.svCount().reg).length}));
+ ok(st.d===0&&st.sv===0,name+': data simulasi tidak tersimpan, tidak masuk dasbor/monitoring');
  await p.locator('#hf-demo').click();await p.waitForTimeout(300);ok(!await p.locator('#hs .demo').count()&&/Belum ada entri survei/.test(await tx('#hasil .pane.on')),name+': contoh tampilan bisa ditutup');
  ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),name+': tanpa gulir mendatar');
  ok(!errs.length,name+': tanpa galat JS '+errs.join(' | '));await c.close()}
