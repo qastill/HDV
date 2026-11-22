@@ -7,7 +7,7 @@ const {chromium}=require('playwright');const auto=require('./auto.js');let n=0,f
  ok(t.rows.length===10&&t.rows.every((r,i)=>r.startsWith('P'+(i+1)+' ·'))&&!/NaN|undefined|null/.test(t.txt),name+': tabel lokasi memuat 10 pool survei');
  ok(t.cek.length===13&&t.cek.filter(x=>/Keluaran:/.test(x)).length===5,name+': ketentuan RFP: 8 target survei + 5 keluaran');
  if(!SEED){ok(t.prog.join('|')==='0 / 10|0 / 10|0 / 500|0 / 3.500',name+': tanpa entri, semua target masih nol');
-  ok(t.todo.length===8&&/P1 · Mulai survei di Tanjung Priok/.test(t.todo[0])&&/50 truk, 350 lembar diary/.test(t.todo[0])&&/2 tugas lain/.test(t.txt),name+': daftar tugas menyebut pool yang harus disurvei, berurutan');
+  {const off=t.net==='server belum aktif'?1:0;ok(t.todo.length===8&&(!off||/Aktifkan penyimpanan server/.test(t.todo[0]))&&/P1 · Mulai survei di Tanjung Priok/.test(t.todo[off])&&/50 truk, 350 lembar diary/.test(t.todo[off])&&new RegExp((2+off)+' tugas lain').test(t.txt),name+': daftar tugas menyebut pool yang harus disurvei, berurutan'+(off?' (didahului tugas mengaktifkan penyimpanan server)':''))}
   ok(t.cek.every(x=>x.startsWith('○'))&&t.rows.every(r=>/Belum mulai/.test(r)&&/Isi F1 profil pool/.test(r)),name+': belum ada ketentuan yang terpenuhi; tiap pool menyebut yang masih kurang');
   await p.locator('#hs .pane[data-pane=tugas] tbody [data-buka]').nth(4).click();await p.waitForTimeout(400);
   ok(await p.evaluate(()=>PANE.hasil==='entri'&&document.getElementById('en-pool').value==='P5'&&document.querySelector('#en .tab.on').dataset.tab==='f1'),name+': tombol Buka di baris P5 → tab Entri data, pool P5, formulir F1');
