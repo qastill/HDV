@@ -1,5 +1,5 @@
 const auto=require('./auto.js');const {chromium,devices}=require('playwright');const URL=process.env.URL||'http://localhost:8765/';
-const V=[['peta',['peta','profil','skenario','rekom']],['hasil',['simpul','kondisi','charging','proyeksi','daya','statistik','unduh','entri']],['mon',['jadwal','pool','lapor','ringkas','usaha','beban','insight','statistik','daftar']]];
+const V=[['peta',['peta','profil','skenario','rekom']],['hasil',['tugas','simpul','kondisi','charging','proyeksi','daya','statistik','unduh','entri']],['mon',['jadwal','pool','lapor','ringkas','usaha','beban','insight','statistik','daftar']]];
 (async()=>{const b=await chromium.launch();let fail=0;const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)fail++};
 for(const [name,opt] of [['laptop 1366×768',{viewport:{width:1366,height:768}}],['layar 1920×1080',{viewport:{width:1920,height:1080}}],['ponsel',{...devices['iPhone 13']}]]){
 const ctx=await b.newContext(opt);const p=await ctx.newPage();{const og=p.goto.bind(p);p.goto=async(...a)=>{const r=await og(...a);if(await p.locator('form[action="/masuk"] #kode').count()){await p.fill('#kode',process.env.KODE||'1234');await Promise.all([p.waitForNavigation({waitUntil:'load'}),p.click('form[action="/masuk"] button')])}return r}}const errs=[];p.on('pageerror',e=>errs.push(e.message));

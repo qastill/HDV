@@ -23,7 +23,7 @@ const {chromium}=require('playwright');const auto=require('./auto.js');let n=0,f
  await p.locator('#side [data-back]').click();await p.waitForTimeout(300);ok(await p.locator('#s-list .dli').count()===NDP&&await p.evaluate(()=>!sel),name+': tombol kembali → daftar depo lagi');
  // hasil survei: keadaan kosong
  await p.evaluate(()=>goView('hasil'));await p.waitForTimeout(500);
- ok(await p.locator('#hasil .st button').count()===8&&(await tx('#hasil .st button.on'))==='Kesimpulan',name+': Survei punya 8 sub-menu (7 hasil + Entri data), mulai dari Kesimpulan');
+ ok(await p.locator('#hasil .st button').count()===9&&(await tx('#hasil .st button.on'))==='Tugas',name+': Survei punya 9 sub-menu, mulai dari Tugas');await p.locator('#hasil .st button[data-pane="simpul"]').click();await p.waitForTimeout(250);
  ok(/Belum ada entri survei/.test(await tx('#hasil .pane.on'))&&!await p.locator('#hs .sim').count(),name+': tanpa entri tidak ada kesimpulan, hanya penjelasan');
  // contoh tampilan
  ok(await p.evaluate(()=>new Set([...document.querySelectorAll('#hs [id]')].map(e=>e.id)).size===document.querySelectorAll('#hs [id]').length),name+': tidak ada id ganda di Hasil survei');await p.locator('#hasil .st button[data-pane="charging"]').click();await p.locator('#hasil .pane.on [data-demo]').click();await p.waitForTimeout(300);ok((await tx('#hasil .st button.on'))==='Analisis charging'&&/DATA SIMULASI/.test(await tx('#hs')),name+': tombol contoh di panel mana pun bekerja dan tetap di panel itu');await p.locator('#hasil .st button[data-pane="simpul"]').click();await p.waitForTimeout(500);

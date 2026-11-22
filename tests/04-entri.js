@@ -1,6 +1,6 @@
 const auto=require('./auto.js');const {chromium,devices}=require('playwright');const fs=require('fs');const URL=process.env.URL||'http://localhost:8765/',PIN=process.env.PIN||'uji-1234',POOL=process.env.POOL||'P3';
 (async()=>{const b=await chromium.launch();let fail=0;const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)fail++};
-const ctx=await b.newContext({viewport:{width:1400,height:1000}});const p=auto(await ctx.newPage());const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.type()==='error'&&!/Failed to load resource/.test(m.text()))errs.push(m.text())});p.on('dialog',d=>d.accept());
+const ctx=await b.newContext({viewport:{width:1400,height:1000}});await ctx.addInitScript(()=>{window.SV_TUNDA=45000});const p=auto(await ctx.newPage());const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.type()==='error'&&!/Failed to load resource/.test(m.text()))errs.push(m.text())});p.on('dialog',d=>d.accept());
 await p.goto(URL);await p.waitForTimeout(3500);const T=id=>p.evaluate(i=>document.getElementById(i)?.textContent||'',id);
 ok((await T('hs-sub')).includes('Belum ada entri')||/lembar diary/.test(await T('hs-sub')),'bagian Hasil survei tampil: '+(await T('hs-sub')).slice(0,70));
 // masuk
@@ -44,8 +44,12 @@ await p.click('#en-sync');await p.waitForTimeout(2500);ok(/Semua entri sudah ter
 // hasil & monitoring ikut berubah
 const hs=await T('hs');ok(/3 \/ 3\.500/.test(hs)&&/Berapa jauh truk berjalan/i.test(hs)&&/Di mana truk bermalam/i.test(hs)&&/Kebutuhan daya tiap pool/i.test(hs)&&!/NaN|undefined|Infinity/.test(hs),'Hasil survei terisi otomatis, tanpa NaN');
 ok(/3 \/ 3\.500/.test(await T('mk'))&&/dihitung otomatis/.test(await T('mon-sub')),'Monitoring ikut terhitung dari entri: '+(await T('mon-sub')));
-const row=await p.evaluate(P=>[...document.querySelectorAll('#hs table tbody tr')].map(r=>r.innerText.replace(/\t/g,' | ')).find(t=>t.startsWith(P)),POOL);console.log('   pool:',row);
+const row=await p.evaluate(P=>[...document.querySelectorAll('#hs .pane[data-pane=daya] table tbody tr')].map(r=>r.innerText.replace(/\t/g,' | ')).find(t=>t.startsWith(P)),POOL);console.log('   pool:',row);
 ok(/60/.test(row)&&/197/.test(row)&&/Sukatani/.test(row),'tabel kebutuhan daya pool memakai armada F1, daya PLN, dan GI terdekat');
+{const x=await p.evaluate(P=>{const q=s=>document.querySelector(s),tg=q('#hs .pane[data-pane=tugas]'),row=[...tg.querySelectorAll('tbody tr')].find(r=>r.cells[0].textContent.startsWith(P));return{sim:q('#hs .sim').innerText,rek:document.querySelectorAll('#hs .rek li').length,kcl:!!q('#hs .kcl'),row:row.innerText.replace(/\s+/g,' '),cek:tg.querySelector('.cek').innerText.replace(/\s+/g,' '),todo:[...tg.querySelectorAll('.todo li')].map(l=>l.innerText.replace(/\s+/g,' ')).join(' / ')}},POOL);
+ ok(/Hasil sementara · 3 dari 3\.500/.test(x.sim)&&/% hari operasi cocok/.test(x.sim)&&!/Belum bisa disimpulkan/.test(x.sim)&&!x.kcl&&x.rek>=2,'begitu ada entri, hasil dan rekomendasi langsung tampil (hasil sementara, '+x.rek+' rekomendasi)');
+ ok(/2 \/ 50/.test(x.row)&&/Berjalan/.test(x.row)&&/Daftarkan 48 truk lagi/.test(x.row)&&/lembar diary lagi/.test(x.row),'daftar tugas mengikuti entri: '+x.row.slice(0,150));
+ ok(/1 \/ 10/.test(x.cek)&&/2 \/ 500/.test(x.cek)&&new RegExp(POOL+' · Daftarkan 48 truk lagi').test(x.todo),'ketentuan RFP dan urutan tugas ikut terhitung')}
 // pengunjung tanpa PIN: lihat hasil, tidak lihat identitas
 const c2=await b.newContext({viewport:{width:1400,height:1000}});const v=auto(await c2.newPage());await v.goto(URL);await v.waitForTimeout(3500);
 const pub=await v.evaluate(P=>({hs:document.getElementById('hs').textContent,st:surveiDebug.state(),html:document.body.textContent}),POOL);
