@@ -60,5 +60,5 @@ ok(/4 \/ 3\.500/.test(await T('hs')),'hasil sekarang 4 truk-hari');
 // CSV
 const [dl]=await Promise.all([p.waitForEvent('download'),p.click('[data-csv=trip]')]);const csv=fs.readFileSync(await dl.path(),'utf8');ok(csv.split('\n').length===6&&/Pelabuhan Patimban/.test(csv),'unduh CSV perjalanan: '+(csv.split('\n').length-1)+' baris');
 const [dk]=await Promise.all([p.waitForEvent('download'),p.click('[data-csv=kamus]')]);ok(fs.readFileSync(await dk.path(),'utf8').split('\n').length>60,'unduh kamus data');
-await p.evaluate(()=>document.getElementById('entri').scrollIntoView());await p.click('.tab[data-tab=mx]');await p.waitForTimeout(300);await p.locator('#entri').screenshot({path:'e-matrix.png'});
+await p.click('.tab[data-tab=mx]');await p.waitForTimeout(300);await p.locator('#en').screenshot({path:'e-matrix.png'});
 ok(errs.length===0,'tanpa galat JS '+errs.join(' | '));await b.close();process.exit(fail?1:0)})();

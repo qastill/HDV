@@ -1,10 +1,10 @@
 const auto=require('./auto.js');const {chromium,devices}=require('playwright');const URL=process.env.URL||'http://localhost:8765/';
-const V=[['dash',[null]],['peta',['peta','profil','skenario','rekom']],['hasil',['simpul','kondisi','charging','proyeksi','daya','statistik','unduh']],['mon',['jadwal','pool','lapor','ringkas','usaha','beban','insight','statistik','daftar']],['entri',[null]]];
+const V=[['peta',['peta','profil','skenario','rekom']],['hasil',['simpul','kondisi','charging','proyeksi','daya','statistik','unduh','entri']],['mon',['jadwal','pool','lapor','ringkas','usaha','beban','insight','statistik','daftar']]];
 (async()=>{const b=await chromium.launch();let fail=0;const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)fail++};
 for(const [name,opt] of [['laptop 1366×768',{viewport:{width:1366,height:768}}],['layar 1920×1080',{viewport:{width:1920,height:1080}}],['ponsel',{...devices['iPhone 13']}]]){
 const ctx=await b.newContext(opt);const p=await ctx.newPage();{const og=p.goto.bind(p);p.goto=async(...a)=>{const r=await og(...a);if(await p.locator('form[action="/masuk"] #kode').count()){await p.fill('#kode',process.env.KODE||'1234');await Promise.all([p.waitForNavigation({waitUntil:'load'}),p.click('form[action="/masuk"] button')])}return r}}const errs=[];p.on('pageerror',e=>errs.push(e.message));
 await p.goto(URL);await p.waitForTimeout(4500);
-ok(await p.evaluate(()=>document.querySelectorAll('.view.on').length===1&&document.querySelector('.view.on').id==='dash'),name+': dibuka di Dasbor utama, hanya satu tampilan aktif');
+ok(await p.evaluate(()=>document.querySelectorAll('.view.on').length===1&&document.querySelector('.view.on').id==='peta'&&PANE.peta!=='profil'&&document.getElementById('map').offsetHeight>200&&document.querySelectorAll('#dash-t .dtile').length===4),name+': dibuka di Dasbor (angka + peta), hanya satu tampilan aktif');
 await p.evaluate(()=>pick(D.DP[0],false));await p.waitForTimeout(400);
 let bad=[],inner=[];for(const [v,panes] of V)for(const pn of panes){await p.click(`.menu button[data-view="${v}"]`);if(pn)await p.click(`#${v} .st button[data-pane="${pn}"]`);await p.waitForTimeout(250);
  const m=await p.evaluate(([v,pn])=>{const el=document.getElementById(v),vb=el.querySelector('.vbody'),on=document.querySelectorAll('.view.on');const de=document.documentElement;
