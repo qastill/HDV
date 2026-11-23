@@ -28,6 +28,12 @@ Dasbor pemantauan untuk pekerjaan survei truk berat (MDV/HDV) dan pemetaan depo�
 
 Klik satu depo di peta, lalu tekan **Mulai survei** di kartu atau detailnya dan pilih slot pool (P1–P10). Formulir F1 pool itu langsung terisi dari data depo (nama, lokasi, koordinat, pola operasi, gardu induk terdekat), dan menu Survei ikut berubah: pool tercatat berjalan, daftar tugasnya muncul, dan kartu depo menampilkan kemajuan truk dan lembar diary. Di panel **Skenario** depo itu muncul kolom entri armada (MDV rigid, HDV rigid, HDV tractor + trailer, parkir malam) yang tersimpan ke F1; jumlah truk, jarak harian, dan waktu parkir skenario lalu diambil dari F1, F2, dan diary, dan sumber tiap angka ditulis di bawahnya. Depo yang belum disurvei memakai 50 truk sebagai angka awal dan menyebutnya begitu. Sambungan depo ↔ pool (`depo_id`) termasuk identitas rahasia: server hanya mengirimkannya ke pemegang PIN.
 
+## Entri data
+
+Tab pertama adalah **F3 · Diary harian** dan langsung bisa diisi. Truk yang belum terdaftar dipilih lewat “＋ Truk baru”: cukup pilih kelas MDV/HDV, truknya terdaftar di F2 saat lembar disimpan. Jam bisa diketik `0730` atau `07.30`; kolom “Dari” baris berikutnya terisi otomatis dari “Ke”, dan baris baru muncul sendiri.
+
+Pool tidak terbatas pada P1–P10. Kotak **Pool** bisa dicari: pilih pool survei, pilih salah satu depo di peta (pool baru tersambung ke depo itu), atau ketik nama pool yang belum terdata. Pool baru diberi kode `N` + 4 huruf/angka acak (misalnya `NK3F9`) supaya dua perangkat yang bekerja luring tidak membuat kode yang sama; nama pool tetap rahasia bagi pengunjung tanpa PIN.
+
 ## Pengaturan di Vercel
 
 | Variabel | Fungsi | Bawaan |

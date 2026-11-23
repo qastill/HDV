@@ -12,7 +12,8 @@ let bad=[],inner=[];for(const [v,panes] of V)for(const pn of panes){await p.clic
  if(m.y||m.x||!m.one||!m.pane||!m.vis)bad.push(v+'/'+pn+JSON.stringify(m));if(m.inner>4)inner.push(v+(pn?'/'+pn:'')+' '+m.inner+'px')}
 ok(bad.length===0,name+': 21 tampilan/panel, halaman tidak pernah bergulir dan hanya satu yang tampil '+bad.join(' '));
 console.log('   panel yang masih perlu gulir di dalam:',inner.length?inner.join(', '):'tidak ada');
-if(!name.startsWith('ponsel'))ok(inner.length<=6,name+': paling banyak 6 panel perlu gulir dalam ('+inner.length+')');
+// formulir entri F3 sengaja terbuka penuh (perlu gulir), jadi tidak dihitung
+if(!name.startsWith('ponsel')){const lain=inner.filter(x=>!/^hasil\/entri /.test(x));ok(lain.length<=6,name+': paling banyak 6 panel (selain formulir entri) perlu gulir dalam ('+lain.length+')')}
 // peta menyesuaikan ukuran setelah kembali
 await p.click('.menu button[data-view="peta"]');await p.click('#peta .st button[data-pane="peta"]');await p.waitForTimeout(500);const mp=await p.evaluate(()=>{const r=document.getElementById('map').getBoundingClientRect(),c=document.querySelector('#map canvas').getBoundingClientRect();return{h:r.height,w:r.width,bottom:r.bottom,ih:innerHeight,cw:c.width,sz:map.getSize()}});
 ok(mp.h>300&&Math.abs(mp.sz.x-mp.w)<2&&Math.abs(mp.sz.y-mp.h)<2&&mp.cw>mp.w*.9,name+`: peta memenuhi ruang (${Math.round(mp.w)}×${Math.round(mp.h)}) dan ukurannya sinkron`);
