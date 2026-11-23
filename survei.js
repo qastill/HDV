@@ -35,7 +35,7 @@ const F3C=[f('h8_berangkat','Jam berangkat pertama dari pool (H8)','time'),f('h8
 /* ---- keadaan & penyimpanan ---- */
 /* Entri diunggah beberapa detik setelah disimpan, dan data server ditarik ulang tiap setengah menit. */
 const TUNDA=window.SV_TUNDA||6000,TARIK=30000;
-let L={pin:'',enm:'',pool:'P1',dirty:{}},S={},auth=false,net='menyambung',lastSync=null,tab='f3',cur=null,editTruk=null,flt={kelas:'',pola:''},memo=null,view=null,tPush=null,busy=false,warned='';
+let L={pin:'',enm:'',pool:'P1',dirty:{}},S={},auth=false,net='menyambung',lastSync=null,tab=null,cur=null,editTruk=null,flt={kelas:'',pola:''},memo=null,view=null,tPush=null,busy=false,warned='';
 try{Object.assign(L,JSON.parse(localStorage.getItem(LS)||'{}'))}catch(_){}
 try{S=JSON.parse(localStorage.getItem(SNAP)||'{}')||{}}catch(_){}
 if(!L.dirty||typeof L.dirty!=='object')L.dirty={};
@@ -209,7 +209,7 @@ function csv(k){const F1f=F1.flatMap(s=>s[1]),d0=today();
  const c=F3T.map(x=>x.k);dl(`f3-perjalanan-${d0}.csv`,[['pool','truk','hari','tanggal','no'].concat(c,['km','menit_jalan'])].concat(A.flatMap(d=>(d.x.trips||[]).filter(r=>r&&(r.b||r.ke||r.odo)).map((r,i)=>[d.pool,d.truk,d.hari,d.x.tgl,i+1].concat(c.map(x=>r[x]),[d.c.T[i]&&d.c.T[i].d,d.c.T[i]&&d.c.T[i].dur])))))}
 function wire(){const a=$('hf-k'),b=$('hf-p');if(a){a.value=flt.kelas;b.value=flt.pola;a.onchange=()=>{flt.kelas=a.value;hasil()};b.onchange=()=>{flt.pola=b.value;hasil()}}
  const dm=x=>{demo=x;hasil()},d1=$('hf-demo'),rs=$('as-reset');if(d1)d1.onclick=()=>dm(!demo);document.querySelectorAll('#hs [data-demo]').forEach(x=>x.onclick=()=>dm(true));
- document.querySelectorAll('#hs [data-buka]').forEach(b=>b.onclick=()=>{const [p,t]=b.dataset.buka.split(':');L.pool=p;tab=t||'mx';cur=null;editTruk=null;keep();entry();if(typeof goPane==='function')goPane($('hasil'),'entri')});
+ document.querySelectorAll('#hs [data-buka]').forEach(b=>b.onclick=()=>{const [p,t]=b.dataset.buka.split(':');L.pool=p;tab=!t||t==='mx'?'f3':t;cur=null;editTruk=null;keep();entry();if(typeof goPane==='function')goPane($('hasil'),'entri')});
  document.querySelectorAll('#hs [data-as]').forEach(i=>i.onchange=()=>{const v=+i.value;if(v>0){AS[i.dataset.as]=v;try{localStorage.setItem(LS+'-as',JSON.stringify(AS))}catch(_){}}hasil()});
  if(rs)rs.onclick=()=>{AS={...AS0};try{localStorage.removeItem(LS+'-as')}catch(_){}hasil()}}
 
@@ -232,12 +232,12 @@ function entry(){const el=$('en');if(!el)return;
   <label class="enx"><span class="enl">Enumerator</span><input id="en-enm" maxlength="60" value="${esc(L.enm)}" placeholder="Nama"></label>
   <form class="enx enp" id="en-login"><label><span class="enl">PIN admin</span><input type="password" id="en-pin" autocomplete="current-password" value="${esc(L.pin)}"></label><button class="btn" type="submit">Masuk</button></form></div>
   <div class="ens"><div class="chips" id="en-st"></div><button class="btn" type="button" id="en-sync">Unggah sekarang</button></div><div class="msg" id="en-msg" role="status"></div>
-  <div class="tabs" role="tablist">${[['f3','F3 · Diary harian'],['mx','Rekap 7 hari'],['f2','F2 · Truk'],['f1','F1 · Profil pool']].map(t=>`<button type="button" class="tab${tab===t[0]?' on':''}" data-tab="${t[0]}" role="tab" aria-selected="${tab===t[0]}">${t[1]}</button>`).join('')}</div><div id="en-body"></div></div>`;
+  <nav class="alur" id="en-alur" aria-label="Urutan pengisian"></nav><p class="alg"><span><i class="g-ok"></i>selesai</span><span><i class="g-isi"></i>sebagian</span><span><i class="g-kosong"></i>belum</span></p><div id="en-body"></div></div>`;
  $('en-login').onsubmit=e=>{e.preventDefault();L.pin=$('en-pin').value.trim();L.enm=$('en-enm').value.trim();keep();warned='';net='menyambung';stat();pull().then(()=>{body();if(auth)push()})};
  $('en-enm').onchange=()=>{L.enm=$('en-enm').value.trim();keep()};
  $('en-sync').onclick=()=>{L.pin=$('en-pin').value.trim();L.enm=$('en-enm').value.trim();keep();push().then(pull)};
- el.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{if(!pindah())return;tab=b.dataset.tab;el.querySelectorAll('.tab').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-selected',x===b)});body()});
- pkWire();stat();body()}
+ $('en-alur').onclick=e=>{const b=e.target.closest('[data-tab]');if(b&&pindah())keLangkah(b.dataset.tab)};
+ if(!tab)tab=langkah(L.pool).next||'f3';pkWire();stat();body()}
 /* Isian F3 yang belum disimpan tidak hilang diam-diam saat pindah truk, hari, tab, atau pool. */
 const pindah=()=>{if(!ubah)return true;if(!confirm('Isian lembar ini belum disimpan. Tinggalkan?'))return false;ubah=false;return true};
 function pkOpen(o){const d=$('en-pd'),b=$('en-pool');if(!d)return;d.hidden=!o;b.setAttribute('aria-expanded',o);if(o){$('en-pq').value='';pkList('');$('en-pq').focus()}}
@@ -254,44 +254,71 @@ function pkAct(){const o=[...$('en-pl').querySelectorAll('.pko')];o.forEach((x,i
 function pkPilih(b){if(!pindah())return;pkOpen(false);let p=b.dataset.pool,m='';const pv=$('en-pin').value;L.enm=$('en-enm').value.trim();
  if(b.dataset.depo){const d=depoOf(b.dataset.depo);p=poolOfDepo(d.id)||poolBaru();svIsi(d,p);m=`${d.nama} jadi pool ${p}.`}
  else if(b.dataset.baru){p=poolBaru();save('f1',p,{nama_pool:b.dataset.baru,draf:1,enum:L.enm});m=`Pool ${p} · ${b.dataset.baru} dibuat.`}
- L.pool=p;cur=null;editTruk=null;nkls='';keep();entry();$('en-pin').value=pv;if(m)flash(m)}
+ L.pool=p;cur=null;editTruk=null;tab=langkah(p).next||'f3';keep();entry();$('en-pin').value=pv;if(m)flash(m)}
 function pkWire(){const b=$('en-pool'),q=$('en-pq'),l=$('en-pl');b.onclick=()=>pkOpen($('en-pd').hidden);q.oninput=()=>pkList(q.value);
  q.onkeydown=e=>{const o=l.querySelectorAll('.pko');if(e.key==='ArrowDown'){e.preventDefault();pkI=Math.min(o.length-1,pkI+1);pkAct()}else if(e.key==='ArrowUp'){e.preventDefault();pkI=Math.max(0,pkI-1);pkAct()}else if(e.key==='Enter'){e.preventDefault();if(o[pkI])pkPilih(o[pkI])}else if(e.key==='Escape'){pkOpen(false);b.focus()}};
  l.onclick=e=>{const o=e.target.closest('.pko');if(o)pkPilih(o)};
  if(!pkDoc){pkDoc=true;document.addEventListener('click',e=>{const k=$('en-pk');if(k&&!k.contains(e.target)&&$('en-pd')&&!$('en-pd').hidden)pkOpen(false)})}}
 function stat(){const s=$('en-st');if(s)s.innerHTML=status();const m=$('en-msg');if(m)m.textContent=warned||''}
-function body(){const el=$('en-body');if(!el)return;ubah=false;({mx:matrix,f1:formF1,f2:formF2,f3:formF3})[tab](el)}
-function matrix(el){const tr=truksOf(L.pool),n=tr.length,done=list('f3',L.pool).filter(r=>r.data.status).length;
- if(!n){el.innerHTML=`<p class="note" style="margin:14px 0 0">Belum ada truk di ${esc(L.pool)}. Isi lembar di tab F3; truk baru langsung terdaftar.</p>`;return}
- el.innerHTML=`<div class="mxh"><span><b>${done} dari ${n*7} lembar</b> terisi</span><span class="lgd"><span><i class="q-A"></i>A</span><span><i class="q-B"></i>B</span><span><i class="q-C"></i>C</span><span><i class="q-T"></i>libur</span><span><b class="wr">!</b> cek</span><span><b class="dt">•</b> belum terunggah</span></span></div><div class="tw" style="max-height:520px"><table class="mx"><thead><tr><th>Truk</th><th>Kelas</th>${[1,2,3,4,5,6,7].map(h=>`<th class="c">H${h}</th>`).join('')}<th class="r">Km</th></tr></thead><tbody>${tr.map(t=>{let km=0;return `<tr style="cursor:default"><td><b>${t.id}</b>${t.data.status==='C'?' <span class="sub">cad.</span>':''}</td><td>${t.data.kelas==='H'?'HDV':t.data.kelas==='M'?'MDV':'–'}</td>${[1,2,3,4,5,6,7].map(h=>{const id=t.id+':'+h,x=rec('f3',id);if(!x)return `<td class="c" data-d="${id}" title="Isi lembar">＋</td>`;const c=dayCalc(x);km+=c.km||0;return `<td class="c q-${x.status==='T'?'T':x.kualitas||'N'}" data-d="${id}" title="${x.tgl||''}">${x.status==='T'?'libur':c.km!=null?fmt(c.km,0):'✓'}${c.w.length?'<b class="wr">!</b>':''}${L.dirty['f3:'+id]?'<b class="dt">•</b>':''}</td>`}).join('')}<td class="r">${fmt(km,0)}</td></tr>`}).join('')}</tbody></table></div>`;
- el.querySelectorAll('[data-d]').forEach(td=>td.onclick=()=>{const [t,h]=td.dataset.d.split(':');cur={truk:t,hari:+h};tab='f3';document.querySelectorAll('#en .tab').forEach(x=>{x.classList.toggle('on',x.dataset.tab==='f3');x.setAttribute('aria-selected',x.dataset.tab==='f3')});body()})}
+/* Status tiap langkah untuk satu pool: ok = selesai, isi = sebagian, kosong = belum. */
+const isi=v=>v!=null&&v!==''&&!(Array.isArray(v)&&!v.length),kurang=t=>[1,2,3,4,5,6,7].some(h=>!rec('f3',t+':'+h));
+function langkah(p){const f1=rec('f1',p),tr=truksOf(p),nt=tr.length,nd=list('f3',p).filter(r=>r.data.status).length,tg=nt*7;
+ const s1=f1&&!f1.draf?'ok':f1?'isi':'kosong',s2=nt>=TGT.truk?'ok':nt?'isi':'kosong',s3=nt&&nd>=tg?'ok':nd?'isi':'kosong';
+ return{s1,s2,s3,nt,nd,tg,next:s1!=='ok'?'f1':!nt?'f2':nd<tg?'f3':nt<TGT.truk?'f2':null}}
+function alur(){const el=$('en-alur');if(!el)return;const g=langkah(L.pool);
+ const S=[['f1','1','Data pool','F1 · '+(g.s1==='ok'?'tersimpan':g.s1==='isi'?'belum disimpan':'belum diisi'),g.s1],['f2','2','Data truk','F2 · '+g.nt+' / '+TGT.truk+' truk',g.s2],['f3','3','Diary 7 hari','F3 · '+fmt(g.nd)+' / '+fmt(g.nt?g.tg:TGT.truk*TGT.hari)+' lembar',g.s3]];
+ el.innerHTML=S.map((x,i)=>`${i?'<span class="arr" aria-hidden="true">›</span>':''}<button type="button" class="tab stp s-${x[4]}${g.next===x[0]?' nx':''}${tab===x[0]?' on':''}" data-tab="${x[0]}" aria-current="${tab===x[0]?'step':'false'}"><i>${x[4]==='ok'?'✓':x[1]}</i><span><b>${x[2]}</b><small>${x[3]}</small></span>${g.next===x[0]?'<em>Isi ini dulu</em>':''}</button>`).join('')}
+/* Pindah langkah. Data truk = truk baru (bila belum 50); Diary = truk yang diary-nya belum lengkap. */
+function keLangkah(t){const tr=truksOf(L.pool);tab=t;
+ if(t==='f2')cur=tr.length<TGT.truk?{truk:'+',hari:1}:{truk:tr[0].id,hari:1};
+ if(t==='f3'){const x=tr.find(z=>kurang(z.id))||tr[0];if(!x){tab='f2';cur={truk:'+',hari:1};body();return flash('Belum ada truk. Isi data truk dulu.')}cur={truk:x.id,hari:hariKosong(x.id)}}
+ body()}
+function body(){const el=$('en-body');if(!el)return;ubah=false;alur();if(tab==='f1')return formF1(el);
+ el.innerHTML='<div class="tkw"><aside class="tkl" id="en-tkl"></aside><section class="tkp" id="en-tkp"></section></div>';trukList();panel()}
+const dq=x=>x?'d-'+(x.status==='T'?'T':x.kualitas||'N'):'';
+function trukList(){const el=$('en-tkl');if(!el)return;const tr=truksOf(L.pool),done=list('f3',L.pool).filter(r=>r.data.status).length;
+ el.innerHTML=`<div class="tkh"><b>Truk di ${esc(L.pool)}</b><span class="sub">${tr.length} / ${TGT.truk} truk · ${done} dari ${tr.length*7} lembar</span></div><div class="tks"><button type="button" class="tk tk-baru${cur&&cur.truk==='+'?' on':''}" data-truk="+">＋ Truk baru</button>${tr.map(t=>{const hs=[1,2,3,4,5,6,7].map(h=>rec('f3',t.id+':'+h)),n=hs.filter(Boolean).length;
+  return `<button type="button" class="tk${cur&&cur.truk===t.id?' on':''}" data-truk="${t.id}"><span class="tkn"><b>${t.id}</b><small>${t.data.kelas==='H'?'HDV':t.data.kelas==='M'?'MDV':'–'}${t.data.bodi?' · '+esc(t.data.bodi):''}</small>${L.dirty['f2:'+t.id]?'<b class="dt">•</b>':''}</span><span class="dd">${hs.map((x,i)=>`<i class="${dq(x)}" title="Hari ${i+1}${x?': '+esc(x.tgl||'terisi'):': belum'}"></i>`).join('')}</span><small class="tkc s-${n===7?'ok':n?'isi':'kosong'}">${n}/7</small></button>`}).join('')}</div>`;
+ el.onclick=e=>{const b=e.target.closest('[data-truk]');if(!b||!pindah())return;const id=b.dataset.truk;cur=id==='+'?{truk:'+',hari:1}:{truk:id,hari:hariKosong(id)};if(id==='+')tab='f2';else if(tab!=='f2')tab='f3';alur();trukList();panel()}}
+function panel(){const el=$('en-tkp');if(!el)return;const tr=truksOf(L.pool);
+ if(!cur||(cur.truk!=='+'&&!tr.some(t=>t.id===cur.truk))){const x=tab==='f3'?(tr.find(z=>kurang(z.id))||tr[0]):null;cur=x?{truk:x.id,hari:hariKosong(x.id)}:{truk:'+',hari:1}}
+ if(cur.truk==='+')tab='f2';const baru=cur.truk==='+',t=baru?null:rec('f2',cur.truk),n=baru?0:[1,2,3,4,5,6,7].filter(h=>rec('f3',cur.truk+':'+h)).length;
+ el.innerHTML=`<div class="tkph"><h3>${baru?'Truk baru · '+esc(nextTruk(L.pool)):'Truk '+esc(cur.truk)+' · '+(t.kelas==='H'?'HDV':t.kelas==='M'?'MDV':'–')+(t.bodi?' '+esc(t.bodi):'')}</h3><div class="sub2"><button type="button" class="s2 s-${t?'ok':'kosong'}${tab==='f2'?' on':''}" data-sub="f2"><i>${t?'✓':'2'}</i>Data truk</button><span class="arr" aria-hidden="true">›</span><button type="button" class="s2 s-${n===7?'ok':n?'isi':'kosong'}${tab==='f3'?' on':''}" data-sub="f3"><i>${n===7?'✓':'3'}</i>Diary 7 hari · ${n}/7</button></div></div><div id="en-sub"></div>`;
+ el.querySelector('.sub2').onclick=e=>{const b=e.target.closest('[data-sub]');if(!b||b.dataset.sub===tab||!pindah())return;if(b.dataset.sub==='f3'&&baru)return flash('Simpan data truk ini dulu, lalu diary-nya terbuka.');tab=b.dataset.sub;if(tab==='f3')cur.hari=hariKosong(cur.truk);alur();panel()};
+ (tab==='f3'?formF3:formF2)($('en-sub'))}
 function nearGI(lat,lon){if(typeof D==='undefined'||!D||lat==null||lon==null||Math.abs(lat)>15||lon<90||lon>145)return{};let b=null,bd=1e9;const R=6371,rd=Math.PI/180;D.GI.forEach(g=>{if(!/\/20$/.test(g.v||''))return;const a=Math.sin((g.lat-lat)*rd/2)**2+Math.cos(lat*rd)*Math.cos(g.lat*rd)*Math.sin((g.lon-lon)*rd/2)**2,d=2*R*Math.asin(Math.sqrt(a));if(d<bd){bd=d;b=g}});return b?{gi_n:b.n,gi_km:+bd.toFixed(2),gi_mva:b.mva||null,gi_ld:b.ld==null?null:b.ld}:{}}
-function formF1(el){const d=rec('f1',L.pool)||{},dp=d.depo_id?depoOf(d.depo_id):null,pub=!auth&&S['f1:'+L.pool]&&!L.dirty['f1:'+L.pool];
- el.innerHTML=`<form id="f1f">${d.depo_id?`<p class="note" id="f1-dp" style="margin:14px 0 0">Depo <b>${esc(d.depo_id)}${dp?' · '+esc(dp.nama):''}</b>${d.draf?' · data awal dari peta, lengkapi lalu simpan':''} · <button class="lnk" type="button" id="f1-lepas">Lepas sambungan</button></p>`:''}${pub?'<p class="note" style="margin:14px 0 0"><b>Mode baca.</b> Masuk dengan PIN untuk mengubah.</p>':''}${F1.map(s=>`<div class="fs"><h3>${s[0]}</h3><div class="fg">${s[1].map(x=>fld(x,d[x.k])).join('')}</div></div>`).join('')}<div class="tiles" id="f1-calc" style="margin-top:12px"></div><div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn pri" type="submit"${pub?' disabled':''}>Simpan profil ${L.pool}</button></div></form>`;
- const fs=F1.flatMap(s=>s[1]),form=$('f1f'),calcD=()=>{const x=grab(form,fs),N=sum([x.n_mdv,x.n_hdv]),t=sum([x.t_mdv,x.t_hdv]),g=nearGI(num(x.lat),num(x.lon)),fleet=sum([x.mdv_rigid,x.hdv_rigid,x.hdv_tt]);
-  $('f1-calc').innerHTML=[['Armada aktif on-road',fleet?fmt(fleet)+' unit':'–'],['Target sampel + cadangan 10%',t?`${t} + ${Math.ceil(t*.1)} = ${t+Math.ceil(t*.1)}`:'–'],['Interval k = N ÷ n',[['MDV',x.n_mdv,x.t_mdv],['HDV',x.n_hdv,x.t_hdv]].filter(r=>r[1]&&r[2]).map(r=>`${r[0]} ${fmt(r[1]/(r[2]+Math.ceil(r[2]*.1)),1)}`).join(' · ')||'–'],['Gardu induk terdekat',g.gi_n?`${esc(g.gi_n)} · ${fmt(g.gi_km,1)} km`:'isi koordinat']].map(t=>`<div class="tile"><small>${t[0]}</small><b>${t[1]}</b></div>`).join('');return{x,g}};
- form.oninput=calcD;calcD();form.onsubmit=e=>{e.preventDefault();const {x,g}=calcD();save('f1',L.pool,{...x,...g,enum:L.enm,...(d.depo_id?{depo_id:d.depo_id}:{})});flash(`Profil ${L.pool} tersimpan.`)};
+const OPSI=['gps_vendor','format','mdv_off','hdv_off','genset_kva','plts_kwp','luas_parkir','tarif'];
+function formF1(el){const d=rec('f1',L.pool)||{},dp=d.depo_id?depoOf(d.depo_id):null,pub=!auth&&S['f1:'+L.pool]&&!L.dirty['f1:'+L.pool],wj=s=>s[1].filter(x=>!OPSI.includes(x.k)),buka=Math.max(0,F1.findIndex(s=>wj(s).some(x=>!isi(d[x.k]))));
+ el.innerHTML=`<form id="f1f" class="f1">${d.depo_id?`<p class="note" id="f1-dp" style="margin:12px 0 0">Depo <b>${esc(d.depo_id)}${dp?' · '+esc(dp.nama):''}</b>${d.draf?' · data awal dari peta, lengkapi lalu simpan':''} · <button class="lnk" type="button" id="f1-lepas">Lepas sambungan</button></p>`:''}${pub?'<p class="note" style="margin:12px 0 0"><b>Mode baca.</b> Masuk dengan PIN untuk mengubah.</p>':''}
+  ${F1.map((s,i)=>`<details class="sec" data-sec="${i}"${i===buka?' open':''}><summary><i class="sn"></i><b>${esc(s[0].replace(/^[A-E]\.\s*/,''))}</b><em class="sc"></em></summary><div class="fg">${s[1].map(x=>fld(x,d[x.k])).join('')}</div></details>`).join('')}
+  <div class="tiles" id="f1-calc" style="margin-top:12px"></div>
+  <div class="sbar"><button class="btn pri" type="submit" data-next="1"${pub?' disabled':''}>Simpan, lanjut ke data truk →</button><button class="btn" type="submit"${pub?' disabled':''}>Simpan</button></div></form>`;
+ const fs=F1.flatMap(s=>s[1]),form=$('f1f'),secUp=()=>form.querySelectorAll('details.sec').forEach((dt,i)=>{const w=wj(F1[i]),x=grab(dt,w),n=w.filter(f=>isi(x[f.k])).length,N=w.length;dt.className='sec s-'+(n===N?'ok':n?'isi':'kosong');dt.querySelector('.sn').textContent=n===N?'✓':'ABCDE'[i];dt.querySelector('.sc').textContent=n+' / '+N+' terisi'}),
+ calcD=()=>{const x=grab(form,fs),N=sum([x.n_mdv,x.n_hdv]),t=sum([x.t_mdv,x.t_hdv]),g=nearGI(num(x.lat),num(x.lon)),fleet=sum([x.mdv_rigid,x.hdv_rigid,x.hdv_tt]);
+  $('f1-calc').innerHTML=[['Armada aktif on-road',fleet?fmt(fleet)+' unit':'–'],['Target sampel + cadangan 10%',t?`${t} + ${Math.ceil(t*.1)} = ${t+Math.ceil(t*.1)}`:'–'],['Interval k = N ÷ n',[['MDV',x.n_mdv,x.t_mdv],['HDV',x.n_hdv,x.t_hdv]].filter(r=>r[1]&&r[2]).map(r=>`${r[0]} ${fmt(r[1]/(r[2]+Math.ceil(r[2]*.1)),1)}`).join(' · ')||'–'],['Gardu induk terdekat',g.gi_n?`${esc(g.gi_n)} · ${fmt(g.gi_km,1)} km`:'isi koordinat']].map(t=>`<div class="tile"><small>${t[0]}</small><b>${t[1]}</b></div>`).join('');secUp();return{x,g}};
+ form.oninput=calcD;calcD();form.onsubmit=e=>{e.preventDefault();const {x,g}=calcD();save('f1',L.pool,{...x,...g,enum:L.enm,...(d.depo_id?{depo_id:d.depo_id}:{})});
+  if(e.submitter&&e.submitter.dataset.next){keLangkah('f2');flash('Data pool tersimpan. Lanjut: data truk.')}else flash(`Data pool ${L.pool} tersimpan.`)};
  const lp=$('f1-lepas');if(lp)lp.onclick=()=>{const p=L.pool;if(d.draf)save('f1',p,null);else{const x={...d};delete x.depo_id;save('f1',p,x)}body();flash(`Depo dilepas dari ${p}.`)}}
-function formF2(el){const tr=list('f2',L.pool).sort((a,b)=>a.id.localeCompare(b.id)),nx=L.pool+'-'+String((tr.length?Math.max(...tr.map(t=>+t.id.split('-')[1])):0)+1).padStart(3,'0'),id=editTruk||nx,d=rec('f2',id)||{pola:(rec('f1',L.pool)||{}).pola};
- el.innerHTML=`<form id="f2f"><div class="fs"><h3>${editTruk?'Ubah truk '+id:'Tambah truk · kode '+id}</h3><div class="fg">${F2.map(x=>fld(x,d[x.k])).join('')}</div></div><div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn pri" type="submit">${editTruk?'Simpan perubahan':'Simpan truk '+id}</button>${editTruk?'<button class="btn" type="button" id="f2-new">Batal, tambah truk baru</button><button class="btn" type="button" id="f2-del">Hapus truk ini</button>':''}</div></form>
- <div class="tw" style="max-height:360px"><table><thead><tr><th>Kode</th><th>Kelas</th><th>Status</th><th>Bodi</th><th>Merek</th><th class="r">JBB (t)</th><th class="r">km/L</th><th>Pola</th><th>Rute utama</th><th>Parkir</th><th></th></tr></thead><tbody>${tr.map(t=>`<tr data-t="${t.id}"><td><b>${t.id}</b>${L.dirty['f2:'+t.id]?' <b class="dt">•</b>':''}</td><td>${esc(t.data.kelas||'')}</td><td>${esc(t.data.status||'')}</td><td>${esc(t.data.bodi||'')}</td><td>${esc((t.data.merek||'')+' '+(t.data.tahun||''))}</td><td class="r">${fmt(t.data.jbb,1)}</td><td class="r">${fmt(t.data.kml,1)}</td><td>${esc(t.data.pola||'')}</td><td style="white-space:normal">${esc(t.data.rute||'')}</td><td>${esc(t.data.parkir||'')}</td><td>ubah</td></tr>`).join('')||'<tr style="cursor:default"><td colspan="11" class="note">Belum ada truk terdaftar untuk pool ini.</td></tr>'}</tbody></table></div>`;
- $('f2f').onsubmit=e=>{e.preventDefault();const x=grab($('f2f'),F2);if(!x.kelas){flash('Pilih kelas truk (M atau H) dulu.');return}save('f2',id,{...x,enum:L.enm});editTruk=null;flash(`Truk ${id} tersimpan.`);formF2(el)};
- if(editTruk){$('f2-new').onclick=()=>{editTruk=null;formF2(el)};$('f2-del').onclick=()=>{if(!confirm(`Hapus truk ${id} beserta lembar diary-nya?`))return;save('f2',id,null);for(let h=1;h<=7;h++)if(rec('f3',id+':'+h))save('f3',id+':'+h,null);editTruk=null;formF2(el)}}
- el.querySelectorAll('tr[data-t]').forEach(r=>r.onclick=()=>{editTruk=r.dataset.t;formF2(el);el.scrollIntoView({behavior:'smooth',block:'start'})})}
+
+function formF2(el){const baru=!cur||cur.truk==='+',id=baru?nextTruk(L.pool):cur.truk,d=rec('f2',id)||{pola:(rec('f1',L.pool)||{}).pola,status:'U'};
+ el.innerHTML=`<form id="f2f" class="f2"><p class="sub" style="margin:12px 0 0">${baru?`Kode otomatis <b>${id}</b>. `:''}Yang wajib hanya <b>kelas</b>; sisanya isi bila ada.</p><div class="fg">${F2.map(x=>fld(x,d[x.k])).join('')}</div>
+  <div class="sbar">${baru?'<button class="btn pri" type="submit" data-next="1">Simpan, lanjut isi diary →</button><button class="btn" type="submit" data-lagi="1">Simpan, tambah truk lagi</button>':'<button class="btn pri" type="submit" data-next="1">Simpan, buka diary →</button><button class="btn" type="submit">Simpan</button><button class="btn" type="button" id="f2-del">Hapus truk</button>'}</div></form>`;
+ const kl=$('e-kelas').closest('label');kl.classList.add('req');kl.firstChild.textContent='Kelas (wajib)';
+ $('f2f').oninput=()=>{ubah=true;kl.classList.remove('need')};
+ $('f2f').onsubmit=e=>{e.preventDefault();const x=grab($('f2f'),F2);if(!x.kelas){kl.classList.add('need');return flash('Pilih kelas truk (MDV atau HDV) dulu.')}save('f2',id,{...x,enum:L.enm});ubah=false;const b=e.submitter&&e.submitter.dataset;
+  if(b&&b.next){cur={truk:id,hari:hariKosong(id)};tab='f3'}else if(b&&b.lagi){cur={truk:'+',hari:1};tab='f2'}else cur={truk:id,hari:hariKosong(id)};
+  body();flash(`Truk ${id} tersimpan.${b&&b.next?' Isi diary hari '+cur.hari+'.':''}`)};
+ if(!baru)$('f2-del').onclick=()=>{if(!confirm(`Hapus truk ${id} beserta lembar diary-nya?`))return;save('f2',id,null);for(let h=1;h<=7;h++)if(rec('f3',id+':'+h))save('f3',id+':'+h,null);cur=null;ubah=false;body();flash(`Truk ${id} dihapus.`)}}
 const TMAIN=['b','t','dari','ke','odo','keg','muat','lama','bbm'],TMORE=['sopir','sumber','cat'],TL={b:'Berangkat',t:'Tiba',dari:'Dari',ke:'Ke',odo:'Odometer tiba',keg:'Kegiatan',muat:'Muatan',lama:'Bongkar/antre (mnt)',bbm:'Isi BBM (L)',sopir:'Sopir',sumber:'Sumber',cat:'Catatan'};
 const F3X=k=>F3T.find(x=>x.k===k),tCell=(k,v,i)=>`<label class="c-${k}"><span>${TL[k]}</span>${inp(F3X(k),v,'t'+i+'-')}</label>`;
 const tripRow=(r,i)=>{const more=TMORE.some(k=>r[k]!=null&&r[k]!=='');return `<div class="tr" data-i="${i}"><b class="no">${i+1}</b><div class="trg">${TMAIN.map(k=>tCell(k,r[k],i)).join('')}<button type="button" class="trm" aria-expanded="${more}" aria-label="Sopir, sumber, catatan" title="Sopir, sumber, catatan">⋯</button></div><div class="trx"${more?'':' hidden'}>${TMORE.map(k=>tCell(k,r[k],i)).join('')}</div></div>`};
 const segF=(k,l,opts,v)=>`<div class="lb"><span>${l}</span><div class="seg" data-seg="${k}"><input type="hidden" data-k="${k}" id="e-${k}" value="${esc(v||'')}">${opts.map(o=>`<button type="button" data-v="${o[0]}" class="${String(v)===o[0]?'on':''}" aria-pressed="${String(v)===o[0]}">${o[1]}</button>`).join('')}</div></div>`;
 const truksOf=p=>list('f2',p).sort((a,b)=>a.id.localeCompare(b.id)),nextTruk=p=>{const tr=truksOf(p);return p+'-'+String((tr.length?Math.max(...tr.map(t=>+t.id.split('-')[1])):0)+1).padStart(3,'0')},hariKosong=t=>{for(let h=1;h<=7;h++)if(!rec('f3',t+':'+h))return h;return 7};
-function formF3(el){const tr=truksOf(L.pool);
- if(!cur||(cur.truk!=='+'&&!tr.some(t=>t.id===cur.truk))||(cur.auto&&tr.length))cur=tr.length?{truk:tr[0].id,hari:hariKosong(tr[0].id)}:{truk:'+',hari:1,auto:1};
- const baru=cur.truk==='+',tid=baru?nextTruk(L.pool):cur.truk,id=tid+':'+cur.hari,t2=rec('f2',tid)||{},prev=cur.hari>1?rec('f3',tid+':'+(cur.hari-1)):null,prevOdo=prev?num(prev.odo_akhir):num(t2.odo0),ada=rec('f3',id);
+function formF3(el){if(!cur||cur.truk==='+')return formF2(el);const tid=cur.truk,id=tid+':'+cur.hari,t2=rec('f2',tid)||{},prev=cur.hari>1?rec('f3',tid+':'+(cur.hari-1)):null,prevOdo=prev?num(prev.odo_akhir):num(t2.odo0),ada=rec('f3',id);
  const d=ada||{tgl:prev&&prev.tgl?addDay(prev.tgl,1):today(),status:'J',odo_awal:prevOdo==null?'':prevOdo,trips:[{dari:prev?(prev.parkir==='A'||!prev.lokasi_parkir?'Pool':prev.lokasi_parkir):'Pool'}]},rows=(d.trips&&d.trips.length?d.trips:[{}]).concat([{}]).slice(0,10);
  const FF=[...F3H,...F3F,...F3C],fl=k=>fld(FF.find(x=>x.k===k),d[k]);
  el.innerHTML=`<form id="f3f" class="f3" autocomplete="off">
-  <div class="f3top"><label class="f3t"><span>Truk</span><select id="f3-t">${tr.map(t=>`<option value="${t.id}"${t.id===cur.truk?' selected':''}>${t.id} · ${t.data.kelas==='H'?'HDV':t.data.kelas==='M'?'MDV':'–'}${t.data.bodi?' '+esc(t.data.bodi):''}</option>`).join('')}<option value="+"${baru?' selected':''}>＋ Truk baru · ${esc(tid&&baru?tid:nextTruk(L.pool))}</option></select></label>
-   ${baru?segF('kelas_baru','Kelas',[['M','MDV'],['H','HDV']],nkls):''}
-   <div class="lb"><span>Hari ke</span><div class="seg hari" id="f3-h">${[1,2,3,4,5,6,7].map(h=>{const r=rec('f3',tid+':'+h);return `<button type="button" data-h="${h}" class="${h===cur.hari?'on':''}${r?' ok':''}" aria-pressed="${h===cur.hari}" title="${r?esc(r.tgl||'terisi'):'belum diisi'}">${h}</button>`}).join('')}</div></div></div>
+  <div class="f3top"><div class="lb"><span>Hari ke</span><div class="seg hari" id="f3-h">${[1,2,3,4,5,6,7].map(h=>{const r=rec('f3',tid+':'+h);return `<button type="button" data-h="${h}" class="${h===cur.hari?'on':''}${r?' ok '+dq(r):''}" aria-pressed="${h===cur.hari}" title="${r?esc(r.tgl||'terisi'):'belum diisi'}">${h}</button>`}).join('')}</div></div><span class="sub">${ada?'Lembar ini sudah terisi; simpan untuk memperbarui.':'Lembar baru.'}</span></div>
   <div class="fg f3k">${fl('tgl')}${segF('status','Status',[['J','Jalan'],['T','Tidak jalan']],d.status)}${fl('alasan')}${fl('odo_awal')}${fl('mulai')}</div>
   <div class="fs" id="f3-tr"><div class="f3s"><h3>Perjalanan</h3><span class="sub">jam 07.30 atau 0730 · lewat tengah malam 01.30+1</span></div><div id="f3-rows">${rows.map(tripRow).join('')}</div><button class="btn" type="button" id="f3-add">＋ Baris</button></div>
   <div class="fs"><h3>Akhir hari</h3><div class="fg">${fl('odo_akhir')}${fl('tiba_parkir')}${fl('parkir')}${fl('lokasi_parkir')}</div></div>
@@ -302,7 +329,7 @@ function formF3(el){const tr=truksOf(L.pool);
  const form=$('f3f'),rowsEl=$('f3-rows'),read=()=>{const x={...grab(form,F3H),...grab(form,F3F),...(cur.hari===7?grab(form,F3C):{})};x.trips=[...rowsEl.querySelectorAll('.tr')].map(r=>grab(r,F3T)).filter(r=>r.b||r.t||r.ke||r.odo!=null||r.keg||r.bbm!=null||r.lama!=null);return x};
  const chk=()=>{const x=read(),c=dayCalc(x,prevOdo),sug=c.w.length?'B':'A';$('e-alasan').closest('label').hidden=x.status!=='T';$('f3-tr').hidden=x.status==='T';$('e-lokasi_parkir').closest('label').hidden=!x.parkir||x.parkir==='A';
   const r=[c.km>0&&x.status!=='T'?`<b>${fmt(c.km,0)} km</b>`:null,c.n?c.n+' perjalanan':null,c.st!=null||c.tp!=null?hm(c.st)+' – '+hm(c.tp):null,c.liters?'BBM '+fmt(c.liters,0)+' L':null,c.km?'setara '+fmt(c.km*1.2,0)+' kWh':null].filter(Boolean);
-  $('f3-chk').innerHTML=`<div class="chkr">${r.join(' · ')||(x.status==='T'?'Tidak jalan':'Belum ada perjalanan')}</div>${c.w.length?`<ul class="wl">${c.w.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:c.n||x.status==='T'?'<p class="okl">✓ Lolos cek logika</p>':''}<p class="sub" style="margin:4px 0 0">Kualitas ${x.kualitas||sug}${x.kualitas?'':' (otomatis)'}${c.auto?' · ada jam yang dihitung lewat tengah malam':''}</p>`;return{x,c,sug}};
+  const tampil=ada||ubah;$('f3-chk').hidden=!tampil;if(!tampil)return{x,c,sug};$('f3-chk').innerHTML=`<div class="chkr">${r.join(' · ')||(x.status==='T'?'Tidak jalan':'Belum ada perjalanan')}</div>${c.w.length?`<ul class="wl">${c.w.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:c.n||x.status==='T'?'<p class="okl">✓ Lolos cek logika</p>':''}<p class="sub" style="margin:4px 0 0">Kualitas ${x.kualitas||sug}${x.kualitas?'':' (otomatis)'}${c.auto?' · ada jam yang dihitung lewat tengah malam':''}</p>`;return{x,c,sug}};
  const addRow=dari=>{const n=rowsEl.querySelectorAll('.tr').length;if(n>=10)return false;rowsEl.insertAdjacentHTML('beforeend',tripRow(dari?{dari}:{},n));if(dari)rowsEl.lastElementChild.querySelector('[data-k=dari]').dataset.auto=1;return true};
  /* baris berikutnya: "Dari" otomatis = "Ke" baris sebelumnya; baris kosong baru muncul sendiri */
  const autoRow=e=>{const t=e.target,r=t.closest&&t.closest('#f3-rows .tr');if(!r)return;const R=[...rowsEl.querySelectorAll('.tr')],i=R.indexOf(r);if(t.dataset.k==='dari')delete t.dataset.auto;
@@ -310,22 +337,19 @@ function formF3(el){const tr=truksOf(L.pool);
   if(i===R.length-1&&Object.keys(grab(r,F3T)).some(k=>k!=='dari'))addRow(r.querySelector('[data-k=ke]').value)};
  form.oninput=e=>{ubah=true;autoRow(e);chk()};
  form.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.tm){const v=tmNorm(t.value);if(v!==t.value){t.value=v;chk()}}});
- form.onclick=e=>{const sb=e.target.closest('.seg button[data-v]');if(sb){const g=sb.parentElement,h=g.querySelector('input[type=hidden]');h.value=sb.dataset.v;g.classList.remove('need');g.querySelectorAll('button').forEach(b=>{b.classList.toggle('on',b===sb);b.setAttribute('aria-pressed',b===sb)});if(h.dataset.k==='kelas_baru')nkls=sb.dataset.v;else ubah=true;chk();return}
+ form.onclick=e=>{const sb=e.target.closest('.seg button[data-v]');if(sb){const g=sb.parentElement,h=g.querySelector('input[type=hidden]');h.value=sb.dataset.v;g.querySelectorAll('button').forEach(b=>{b.classList.toggle('on',b===sb);b.setAttribute('aria-pressed',b===sb)});ubah=true;chk();return}
   const hb=e.target.closest('#f3-h button[data-h]');if(hb){if(+hb.dataset.h===cur.hari||!pindah())return;cur.hari=+hb.dataset.h;formF3(el);return}
   const m=e.target.closest('.trm');if(m){const x=m.closest('.tr').querySelector('.trx');x.hidden=!x.hidden;m.setAttribute('aria-expanded',!x.hidden);if(!x.hidden)x.querySelector('select,input').focus()}};
  chk();
- $('f3-t').onchange=e=>{const v=e.target.value;if(!pindah()){e.target.value=cur.truk;return}cur={truk:v,hari:v==='+'?1:hariKosong(v)};formF3(el)};
  $('f3-add').onclick=()=>{if(!addRow(''))flash('Paling banyak 10 baris per hari.')};
- if($('f3-del'))$('f3-del').onclick=()=>{if(confirm(`Hapus lembar ${id}?`)){save('f3',id,null);ubah=false;formF3(el)}};
- form.onsubmit=e=>{e.preventDefault();const {x,c,sug}=chk();
-  if(baru&&!$('e-kelas_baru').value){$('e-kelas_baru').parentElement.classList.add('need');return flash('Pilih kelas truk: MDV atau HDV.')}
+ if($('f3-del'))$('f3-del').onclick=()=>{if(confirm(`Hapus lembar ${id}?`)){save('f3',id,null);ubah=false;panel()}};
+ form.onsubmit=e=>{e.preventDefault();const {x,c}=chk();const sug=c.w.length?'B':'A';
   if(!x.status)return flash('Pilih status hari.');if(x.status==='T')x.trips=[];if(!x.kualitas)x.kualitas=sug;
-  if(baru){const f=rec('f1',L.pool)||{};save('f2',tid,{kelas:$('e-kelas_baru').value,status:'U',...(f.pola?{pola:f.pola}:{}),enum:L.enm});nkls=''}
-  save('f3',id,{...x,enum:L.enm});ubah=false;const nx=e.submitter&&e.submitter.dataset.next;cur={truk:tid,hari:cur.hari};
-  if(nx){if(cur.hari<7)cur.hari++;else{const T=truksOf(L.pool),i=T.findIndex(t=>t.id===tid);cur=i>=0&&i<T.length-1?{truk:T[i+1].id,hari:hariKosong(T[i+1].id)}:{truk:'+',hari:1}}}
-  formF3(el);flash(`Lembar ${id} tersimpan${baru?' · truk '+tid+' terdaftar':''}${c.w.length?' · '+c.w.length+' peringatan':''}.`);if(nx)el.scrollIntoView({behavior:'smooth',block:'start'})}}
+  save('f3',id,{...x,enum:L.enm});ubah=false;const nx=e.submitter&&e.submitter.dataset.next;
+  if(nx&&cur.hari<7){cur.hari++;panel()}else if(nx){const T=truksOf(L.pool),i=T.findIndex(t=>t.id===tid),y=T.slice(i+1).concat(T.slice(0,i)).find(t=>kurang(t.id));cur=y?{truk:y.id,hari:hariKosong(y.id)}:{truk:'+',hari:1};tab=y?'f3':'f2';body()}else panel();
+  flash(`Lembar ${id} tersimpan${c.w.length?' · '+c.w.length+' peringatan':''}.${nx&&cur.truk==='+'?' Semua diary terisi; tambah truk berikutnya.':''}`);if(nx)$('en-tkp').scrollIntoView({behavior:'smooth',block:'start'})}}
 let tFlash=null;function flash(t){warned='';const m=$('en-msg');if(m){m.textContent=t;clearTimeout(tFlash);tFlash=setTimeout(stat,6000)}}
-function refresh(){stat();if(tab==='mx'&&$('en-body'))matrix($('en-body'));try{hasil()}catch(e){console.error(e)}try{if(typeof mon==='function')mon()}catch(e){console.error(e)}try{if(typeof svSlot==='function')svSlot()}catch(e){console.error(e)}}
+function refresh(){stat();try{alur();trukList()}catch(e){console.error(e)}try{hasil()}catch(e){console.error(e)}try{if(typeof mon==='function')mon()}catch(e){console.error(e)}try{if(typeof svSlot==='function')svSlot()}catch(e){console.error(e)}}
 
 /* ---- Mulai survei dari kartu depo: depo disambungkan ke satu slot pool, F1 terisi dari data depo ---- */
 const POLA_D={'Pelabuhan':'P','Quasi-shuttle':'Q','Regional multi-purpose':'R'},POLA_P={'Pelabuhan':'P','Quasi-shuttle':'Q','Regional':'R'};
@@ -350,7 +374,7 @@ function svIsi(d,p){const lama=rec('f1',p)||{},po=POLA_D[d.pola_operasi_iesr],is
  if(d.perusahaan&&!/tidak teridentifikasi/i.test(d.perusahaan))isi.perusahaan=d.perusahaan;if(po)isi.pola=po;Object.keys(isi).forEach(k=>{if(isi[k]==null||isi[k]==='')delete isi[k]});
  const baru=!Object.keys(lama).length;save('f1',p,{...isi,...nearGI(d.lat,d.lon),...lama,depo_id:d.id,...(baru?{draf:1,enum:L.enm}:{})});return baru}
 function svSambung(d,p){const baru=svIsi(d,p);svBuka(p,'f1');flash(`${d.id} tersambung ke ${p}.${baru?' Lengkapi profilnya lalu simpan.':''}`)}
-function svBuka(p,t){L.pool=p;tab=t;cur=null;editTruk=null;keep();entry();if(typeof goView==='function')goView('hasil','entri')}
+function svBuka(p,t){L.pool=p;tab=t==='mx'?'f3':t;cur=null;editTruk=null;keep();entry();if(typeof goView==='function')goView('hasil','entri')}
 document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-mulai],[data-lanjut],[data-slot],[data-barudp],#svd-x');if(!t){if(e.target===$('svd'))svTutup();return}
  if(t.id==='svd-x')return svTutup();if(t.dataset.mulai)return svPilih(depoOf(t.dataset.mulai));
  if(t.dataset.lanjut){const r=rec('f1',t.dataset.lanjut);return svBuka(t.dataset.lanjut,r&&!r.draf?'f3':'f1')}

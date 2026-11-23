@@ -30,7 +30,11 @@ Klik satu depo di peta, lalu tekan **Mulai survei** di kartu atau detailnya dan 
 
 ## Entri data
 
-Tab pertama adalah **F3 · Diary harian** dan langsung bisa diisi. Truk yang belum terdaftar dipilih lewat “＋ Truk baru”: cukup pilih kelas MDV/HDV, truknya terdaftar di F2 saat lembar disimpan. Jam bisa diketik `0730` atau `07.30`; kolom “Dari” baris berikutnya terisi otomatis dari “Ke”, dan baris baru muncul sendiri.
+Entri data berurutan dalam satu pool: **1 Data pool → 2 Data truk → 3 Diary 7 hari**. Tiap langkah berwarna (hijau selesai, kuning sebagian, abu belum) dan langkah berikutnya diberi label **Isi ini dulu**. Semua langkah tetap bisa dibuka kapan saja.
+
+- **Data pool (F1)** dibagi lima bagian yang bisa dilipat, masing-masing dengan hitungan isian. "Simpan, lanjut ke data truk" membuka langkah 2.
+- **Data truk (F2)**: daftar truk pool ada di kiri, tiap truk dengan tujuh kotak hari berwarna. "＋ Truk baru" membuka formulir truk; yang wajib hanya kelas. "Simpan, lanjut isi diary" membuka diary truk itu.
+- **Diary 7 hari (F3)**: hari dipilih dengan tombol 1–7. Jam bisa diketik `0730`; "Dari" baris berikutnya terisi dari "Ke"; baris baru muncul sendiri. "Simpan, lanjut" berpindah ke hari berikutnya, lalu ke truk berikutnya yang diary-nya belum lengkap.
 
 Pool tidak terbatas pada P1–P10. Kotak **Pool** bisa dicari: pilih pool survei, pilih salah satu depo di peta (pool baru tersambung ke depo itu), atau ketik nama pool yang belum terdata. Pool baru diberi kode `N` + 4 huruf/angka acak (misalnya `NK3F9`) supaya dua perangkat yang bekerja luring tidak membuat kode yang sama; nama pool tetap rahasia bagi pengunjung tanpa PIN.
 
