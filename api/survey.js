@@ -10,7 +10,9 @@ const KEY = `survei/${process.env.VERCEL_ENV || 'lokal'}/data.json`;
 const PIN = process.env.SURVEY_PIN || '1234';
 const PRIV_F1 = ['perusahaan', 'nama_pool', 'alamat', 'lat', 'lon', 'narasumber', 'hp', 'depo_id']; // rahasia per F1 bagian E
 const MAX_REC = 24 * 1024, MAX_BATCH = 600, TTL = 30000;
-const ID = { f1: /^P([1-9]|10)$/, f2: /^P([1-9]|10)-\d{3}$/, f3: /^P([1-9]|10)-\d{3}:[1-7]$/ };
+// Pool: P1–P10 (rencana) atau N + 4 huruf/angka (pool yang dibuat di lapangan).
+const POOL = '(?:P(?:[1-9]|10)|N[2-9A-HJ-NP-Z]{4})';
+const ID = { f1: new RegExp(`^${POOL}$`), f2: new RegExp(`^${POOL}-\\d{3}$`), f3: new RegExp(`^${POOL}-\\d{3}:[1-7]$`) };
 const empty = () => ({ v: 1, recs: {} });
 const sha = (s) => crypto.createHash('sha256').update(String(s)).digest();
 let mem = null; // { doc, etag, at }
