@@ -12,14 +12,14 @@ await p.click('.tab[data-tab=f1]');const set=async(k,v)=>{const el=p.locator(`#e
 for(const [k,v] of [['perusahaan','PT Uji Rahasia'],['nama_pool','Pool Uji'],['kab','Subang'],['prov','Jawa Barat'],['lat','-6.2637'],['lon','107.1758'],['jenis_usaha','3pl'],['pola','P'],['hdv_rigid','20'],['hdv_tt','40'],['pln_va','197000'],['beban_kw','120'],['jarak_gardu_m','150'],['ruang_charger','Y'],['n_hdv','60'],['t_hdv','50']])await set(k,v);
 await p.locator('#en-body [data-k=komoditas] input[value="6"]').check();
 const f1c=await T('f1-calc');ok(/60 unit/.test(f1c)&&/50 \+ 5 = 55/.test(f1c)&&/Sukatani/.test(f1c)&&!/500/.test(f1c),'F1 hitung otomatis: armada, sampel+cadangan, GI terdekat → '+f1c.replace(/\n/g,' ').slice(0,150));
-await p.click('#f1f button[type=submit]');await p.waitForTimeout(300);
+await p.click('#f1f button[type=submit]:not([data-next])');await p.waitForTimeout(300);ok(await p.evaluate(()=>[...document.querySelectorAll('#f1f details.sec')].every(d=>/s-(ok|isi|kosong)/.test(d.className))&&/s-(ok|isi)/.test(document.querySelector('#f1f details.sec').className)&&document.querySelector('#en-alur [data-tab=f1]').classList.contains('s-ok')),'F1 tersimpan: langkah 1 hijau, tiap bagian diberi warna isian');
 // F2: dua truk
 await p.click('.tab[data-tab=f2]');
-for(const t of [{kelas:'H',status:'U',jenis:'T',bodi:'car carrier',merek:'Hino',tahun:2019,jbb:26,bbm:'S',kml:3.2,pola:'P',komoditas:'6',rute:'Patimban → Cikarang',odo0:120000,gps:'Y',parkir:'A',tiba_h0:'19.30'},{kelas:'H',status:'U',jenis:'R',bodi:'box',merek:'Isuzu',tahun:2021,jbb:16,bbm:'S',kml:4.0,pola:'P',komoditas:'6',rute:'Patimban → Karawang',odo0:80000,gps:'T',parkir:'A',tiba_h0:'18.10'}]){for(const [k,v] of Object.entries(t))await set(k,v);await p.click('#f2f button[type=submit]');await p.waitForTimeout(250)}
-ok((await p.locator('#en-body tr[data-t]').count())===2,'F2: dua truk terdaftar, kode otomatis '+(await p.locator('#en-body tr[data-t] td b').allInnerTexts()).join(', '));
+for(const t of [{kelas:'H',status:'U',jenis:'T',bodi:'car carrier',merek:'Hino',tahun:2019,jbb:26,bbm:'S',kml:3.2,pola:'P',komoditas:'6',rute:'Patimban → Cikarang',odo0:120000,gps:'Y',parkir:'A',tiba_h0:'19.30'},{kelas:'H',status:'U',jenis:'R',bodi:'box',merek:'Isuzu',tahun:2021,jbb:16,bbm:'S',kml:4.0,pola:'P',komoditas:'6',rute:'Patimban → Karawang',odo0:80000,gps:'T',parkir:'A',tiba_h0:'18.10'}]){for(const [k,v] of Object.entries(t))await set(k,v);await p.click('#f2f button[data-lagi]');await p.waitForTimeout(250)}
+ok((await p.locator('#en-tkl .tk[data-truk]:not([data-truk="+"])').count())===2,'F2: dua truk terdaftar di daftar truk pool, kode otomatis '+(await p.locator('#en-tkl .tk .tkn b').allInnerTexts()).join(', '));
 // F3 hari 1 truk 1
-await p.click('.tab[data-tab=mx]');await p.waitForTimeout(200);ok((await T('en-body')).includes('0 dari 14 lembar'),'tabel lembar harian: 0 dari 14');
-await p.locator('#en-body td[data-d]').first().click();await p.waitForTimeout(300);
+ok((await T('en-tkl')).includes('0 dari 14 lembar'),'daftar truk: 0 dari 14 lembar');
+await p.click('.tab[data-tab=f3]');await p.waitForTimeout(300);ok(await p.evaluate(P=>document.querySelector('#en-tkl .tk.on').dataset.truk===P+'-001'&&document.querySelector('#f3-h button.on').textContent==='1',POOL),'langkah 3 membuka diary truk pertama, hari 1');
 ok((await p.inputValue('#e-odo_awal'))==='120000','F3 odometer awal terisi dari F2 (120000)');
 await set('mulai','06.00');
 const trip=async(i,o)=>{for(const [k,v] of Object.entries(o)){const el=p.locator(`#f3-rows .tr[data-i="${i}"] [data-k="${k}"]`);if((await el.evaluate(e=>e.tagName))==='SELECT')await el.selectOption(v);else await el.fill(String(v))}};
@@ -38,7 +38,7 @@ await set('odo_akhir',120650);await set('tiba_parkir','01.20+1');await set('park
 chk=await T('f3-chk');ok(/365 km/.test(chk)&&/01\.20 \(\+1\)/.test(chk),'F3 menangani jam lewat tengah malam: 365 km, parkir 01.20 (+1)');console.log('   cek:',chk.replace(/\n+/g,' | ').slice(0,260));
 await p.click('#f3f button[type=submit]:not([data-next])');await p.waitForTimeout(300);
 // hari tidak jalan untuk truk 2
-await p.selectOption('#f3-t',POOL+'-002');await p.waitForTimeout(300);await set('status','T');await set('alasan','servis');await p.click('#f3f button[type=submit]:not([data-next])');await p.waitForTimeout(300);
+await p.click(`#en-tkl [data-truk="${POOL}-002"]`);await p.waitForTimeout(300);await set('status','T');await set('alasan','servis');await p.click('#f3f button[type=submit]:not([data-next])');await p.waitForTimeout(300);
 // unggah
 ok(/6\s+entri menunggu/.test(await T('en-st')),'entri menunggu unggah: '+(await T('en-st')).replace(/\n/g,' | '));
 await p.click('#en-sync');await p.waitForTimeout(2500);ok(/Semua entri sudah terunggah/.test(await T('en-st')),'Unggah sekarang → '+(await T('en-st')).replace(/\n/g,' | '));
@@ -56,14 +56,14 @@ const c2=await b.newContext({viewport:{width:1400,height:1000}});const v=auto(aw
 const pub=await v.evaluate(P=>({hs:document.getElementById('hs').textContent,st:surveiDebug.state(),html:document.body.textContent}),POOL);
 ok(/3 \/ 3\.500/.test(pub.hs)&&!pub.st.auth,'pengunjung tanpa PIN melihat hasil yang sama (mode baca)');
 ok(!JSON.stringify(pub.st.S).includes('PT Uji Rahasia')&&!pub.html.includes('PT Uji Rahasia')&&!JSON.stringify(pub.st.S).includes('Uji Otomatis'),'nama perusahaan & enumerator TIDAK terkirim ke pengunjung tanpa PIN');
-await pilihPool(v,POOL);await v.click('.tab[data-tab=f1]');await v.waitForTimeout(200);ok(await v.locator('#f1f button[type=submit]').isDisabled(),'tanpa PIN, profil pool tidak bisa ditimpa');
+await pilihPool(v,POOL);await v.click('.tab[data-tab=f1]');await v.waitForTimeout(200);ok(await v.locator('#f1f button[data-next]').isDisabled()&&await v.locator('#f1f button[type=submit]:not([data-next])').isDisabled(),'tanpa PIN, profil pool tidak bisa ditimpa');
 // luring: entri tetap aman
-await ctx.route('**/api/survey',r=>r.abort());await p.click('.tab[data-tab=f3]');await p.selectOption('#f3-t',POOL+'-002');await p.click('#f3-h button[data-h="2"]');await p.waitForTimeout(300);await set('status','T');await set('alasan','libur');await p.click('#f3f button[type=submit]:not([data-next])');await p.click('#en-sync');await p.waitForTimeout(1500);
+await ctx.route('**/api/survey',r=>r.abort());await p.click('.tab[data-tab=f3]');await p.click(`#en-tkl [data-truk="${POOL}-002"]`);await p.click('#f3-h button[data-h="2"]');await p.waitForTimeout(300);await set('status','T');await set('alasan','libur');await p.click('#f3f button[type=submit]:not([data-next])');await p.click('#en-sync');await p.waitForTimeout(1500);
 ok(/1\s+entri menunggu unggah/.test(await T('en-st'))&&/aman di perangkat/.test(await T('en-msg')),'tanpa sinyal: entri tetap tersimpan → '+(await T('en-msg')).slice(0,90));
 await ctx.unroute('**/api/survey');await p.reload();await p.waitForTimeout(4000);ok(/Semua entri sudah terunggah/.test(await T('en-st')),'sinyal kembali + muat ulang → entri tertunda terunggah otomatis');
 ok(/4 \/ 3\.500/.test(await T('hs')),'hasil sekarang 4 truk-hari');
 // CSV
 const [dl]=await Promise.all([p.waitForEvent('download'),p.click('[data-csv=trip]')]);const csv=fs.readFileSync(await dl.path(),'utf8');ok(csv.split('\n').length===6&&/Pelabuhan Patimban/.test(csv),'unduh CSV perjalanan: '+(csv.split('\n').length-1)+' baris');
 const [dk]=await Promise.all([p.waitForEvent('download'),p.click('[data-csv=kamus]')]);ok(fs.readFileSync(await dk.path(),'utf8').split('\n').length>60,'unduh kamus data');
-await p.click('.tab[data-tab=mx]');await p.waitForTimeout(300);await p.locator('#en').screenshot({path:'e-matrix.png'});
+await p.locator('#en').screenshot({path:'e-matrix.png'});
 ok(errs.length===0,'tanpa galat JS '+errs.join(' | '));await b.close();process.exit(fail?1:0)})();

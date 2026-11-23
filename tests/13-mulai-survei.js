@@ -34,7 +34,7 @@ const {chromium}=require('playwright');const auto=require('./auto.js');let n=0,f
  await p.locator('#svd-x').click();await p.waitForTimeout(200);ok(!await p.evaluate(()=>document.getElementById('svd').open),name+': pilihan slot bisa ditutup');
  await p.evaluate(id=>pick(D.DP.find(x=>x.id===id),false),d.id);await p.waitForTimeout(400);await p.locator('#side [data-lanjut]').click();await p.waitForTimeout(600);
  ok(await p.evaluate(()=>document.querySelector('.view.on').id==='hasil'&&PANE.hasil==='entri'&&document.getElementById('en-pool').value==='P6'&&document.querySelector('#en .tab.on').dataset.tab==='f1'),name+': “Lanjutkan survei” kembali ke F1 pool itu selama profilnya belum lengkap');
- await p.locator('#en-body [data-k="jenis_usaha"]').selectOption('3pl');await p.locator('#f1f button[type=submit]').click();await p.waitForTimeout(600);r=await st();
+ await p.locator('#en-body [data-k="jenis_usaha"]').selectOption('3pl');await p.locator('#f1f button[type=submit]:not([data-next])').click();await p.waitForTimeout(600);r=await st();
  ok(r&&r.depo_id===d.id&&!r.draf&&r.jenis_usaha==='3pl'&&r.nama_pool===d.nama,name+': menyimpan F1 mempertahankan sambungan depo dan menandai profil lengkap');
  await p.evaluate(()=>goView('hasil','tugas'));await p.waitForTimeout(400);t=await tx('#hs');ok(/profil pool \(F1\)\s*1 \/ 10/.test(t)&&/P6 · Daftarkan 50 truk lagi/.test(t),name+': setelah F1 disimpan, Tugas beralih ke pendaftaran truk');
  await p.evaluate(id=>{goView('peta','peta');pick(D.DP.find(x=>x.id===id),false)},d.id);await p.waitForTimeout(400);ok(/F1 ✓/.test(await tx('#side .dsv')),name+': kartu depo ikut menandai F1 ✓');
