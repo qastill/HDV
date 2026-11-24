@@ -49,7 +49,7 @@ const U=(process.env.URL||'http://localhost:8765/'),PIN=process.env.PIN||'uji-12
  await p.locator('#en-alur [data-tab="f3"]').click();await p.waitForTimeout(200);ok(await p.evaluate(id=>document.querySelector('#en-tkl .tk.on').dataset.truk===id&&document.querySelector('#f3-h button.on').textContent==='2',T1),name+': langkah 3 langsung ke hari berikutnya yang belum diisi');
  await p.locator('.sub2 [data-sub="f2"]').click();await p.waitForTimeout(200);ok(await p.evaluate(()=>document.getElementById('e-kelas').value==='H')&&await p.locator('#f2-del').count()===1,name+': data truk bisa dibuka lagi dari panel truk');
  // 7. pool baru ikut di Tugas dan Monitoring
- await p.evaluate(()=>goView('hasil','tugas'));await p.waitForTimeout(300);ok((await tx('#hs .pane[data-pane=tugas] table')).includes(P2),name+': pool baru tampil di tabel Tugas');
+ await p.evaluate(()=>goView('hasil','tugas'));await p.waitForTimeout(300);ok((await tx('#sv-tg .pane[data-pane=tugas] table')).includes(P2),name+': pool baru tampil di tabel Tugas');
  await p.evaluate(()=>goView('mon','pool'));await p.waitForTimeout(300);ok((await tx('#pools')).includes(P2),name+': pool baru tampil di Monitoring');
  // 8. Mulai survei dari depo: ada pilihan pool baru
  await p.evaluate(()=>goView('peta','peta'));await p.locator('#dash-t [data-det="depo"]').click();await p.waitForTimeout(250);await p.locator('#dlg-tb tr[data-dp="DEPO-020"] [data-mulai]').click();await p.waitForTimeout(250);await p.locator('#svd [data-barudp]').click();await p.waitForTimeout(500);L=await st();
