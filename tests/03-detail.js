@@ -19,9 +19,9 @@ ok(/MW/.test(await T('s-v')),name+': kartu samping berisi kesimpulan → '+(awai
 const c1=await T('d-c');await p.evaluate(()=>{const z=document.getElementById('z1');z.value=300;z.dispatchEvent(new Event('input'));const k=document.getElementById('z2');k.value=600;k.dispatchEvent(new Event('input'))});
 const c2=await T('d-c');ok(c1!==c2&&/300 truk/.test(c2),name+': geser skenario → kesimpulan berubah');
 console.log('   KESIMPULAN(300 truk, 600 km):',c2.slice(0,330));console.log('   VONIS:',await T('d-v'));
-if(name==='desktop'){await p.evaluate(()=>{goView('peta','detail');dsGo('skenario')});await p.waitForTimeout(400);await p.screenshot({path:`d-${TAG}-detail.png`,fullPage:false});
+if(name==='desktop'){await p.evaluate(()=>{goView('peta','detail');dsGo('analisa')});await p.waitForTimeout(400);await p.screenshot({path:`d-${TAG}-detail.png`,fullPage:false});
  await p.locator('.pdet').screenshot({path:`d-${TAG}-detail-full.png`});await p.evaluate(()=>goView('peta'))}
-else{await p.evaluate(()=>{goView('peta','detail');dsGo('skenario')});await p.locator('.pdet').screenshot({path:`d-${TAG}-detail-mobile.png`});await p.evaluate(()=>goView('peta'))}
+else{await p.evaluate(()=>{goView('peta','detail');dsGo('analisa')});await p.locator('.pdet').screenshot({path:`d-${TAG}-detail-mobile.png`});await p.evaluate(()=>goView('peta'))}
 // depo yang GI-nya paling jauh
 await p.fill('#q','DEPO-017');await p.waitForTimeout(200);await p.locator('#tb tbody tr').first().click();await p.waitForTimeout(1500);det=await DT();
 ok(/Perlu kajian khusus|penguatan/.test(await T('d-v'))&&!/NaN|undefined|Infinity|null/.test(det),name+': DEPO-017 (GI 6,7 km) → '+(await T('d-v')));
