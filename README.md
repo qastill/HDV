@@ -8,10 +8,10 @@ Satu halaman penuh dengan satu baris menu di atas (tanpa sub-menu). Tiap menu ad
 
 | Menu | Isi |
 |---|---|
-| 🏭 Depo (halaman pertama) | Angka **114 depo** (klik → daftar depo dengan kolom **▶ Mulai survei** di kiri, filter lokasi/pola operasi/jenis usaha/bidang), peta dengan legenda yang memuat ringkasan tampilan peta, dan panel Ringkasan berisi diagram lingkar jarak ke GI, pola operasi, dan jenis usaha. Klik depo → kartu depo dengan tombol **Jaringan depo ini** dan **Skenario & rekomendasi**. |
-| ⚡ Grid | Jaringan di sekitar depo terpilih (gardu distribusi, penyulang, GI pemasok, beban harian), angka gardu induk/trafo/gardu distribusi (klik → rinciannya), ringkasan depo & gardu, beban gardu induk termasuk beban harian, statistik depo & jaringan. |
-| 💡 Rekomendasi | Skenario truk listrik, dampak ke jaringan, kesimpulan, dan rekomendasi untuk depo terpilih; lalu gambaran semua depo (insight utama, GI tumpuan depo). |
-| 🧭 Monitoring survei | Jadwal & progres, tugas per pool, hasil & rekomendasi survei, kondisi operasi, charging, proyeksi, daya per pool, statistik survei, unduh data, lapor harian & keluaran kontrak. Formulir entri hanya dibuka dari **▶ Mulai survei** di daftar depo (atau tombol Buka di tugas pool) dan tampil sendiri dengan tombol **← Monitoring survei**. |
+| 🏭 Depo (halaman pertama) | Angka **114 depo** (klik → daftar depo dengan kolom **▶ Mulai survei** di kiri, filter lokasi/pola operasi/jenis usaha/bidang), peta dengan legenda yang memuat ringkasan tampilan peta, dan panel Ringkasan berisi diagram lingkar jarak ke GI, pola operasi, dan jenis usaha (klik irisan → daftar depo kelompok itu). Klik depo → popup dengan **▶ Mulai survei** dan kartu depo dengan tombol **Jaringan depo ini** dan **Skenario & rekomendasi**. |
+| ⚡ Grid | Selalu dibuka di halaman utama: angka gardu induk/trafo/gardu distribusi (klik → rinciannya), kesiapan sambungan A/B/C beserta artinya dan jarak ke GI, beban gardu distribusi terdekat, depo per provinsi dan kabupaten/kota (lengkap), beban gardu induk termasuk beban harian, statistik. Setiap angka, cincin, batang, dan irisan bisa diklik untuk membuka daftar depo di baliknya. Jaringan di sekitar satu depo dibuka dari kartu depo sebagai halaman dalam dengan tombol **← Grid**. |
+| 💡 Rekomendasi | Gambaran semua depo (insight utama, GI tumpuan depo) dan hasil survei truk (kesimpulan & rekomendasi, kondisi operasi, charging, proyeksi, daya per pool, statistik survei). Skenario satu depo dibuka dari kartu depo sebagai halaman dalam dengan tombol **← Rekomendasi**. |
+| 🧭 Monitoring survei | Jadwal & progres, tugas per pool, lapor harian & keluaran kontrak, unduh data. Formulir entri hanya dibuka dari **▶ Mulai survei** (daftar depo atau popup depo) atau tombol Buka di tugas pool, dan tampil sendiri dengan tombol **← Monitoring survei**. |
 
 ## Berkas
 
