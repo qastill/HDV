@@ -97,7 +97,10 @@ def baca(xlsx):
                 if v is not None and v > 120 and v > 2 * md:
                     print(f'  ~ {r[1]} {r[3]} tgl {i + 1} {lbl}: {v}% (median {md}%) dianggap salah catat')
                     arr[i] = None
-        T.append(dict(gi=r[1].strip().upper(), id=r[2], trf=str(r[3]).strip().title(), mva=mva, si=si, ma=ma))
+        trf = str(r[3]).strip().title()
+        if re.match(r'^ktt\b', trf, re.I):  # trafo milik pelanggan tegangan tinggi: nama perusahaan tidak ditampilkan
+            trf = 'Trafo pelanggan'
+        T.append(dict(gi=r[1].strip().upper(), id=r[2], trf=trf, mva=mva, si=si, ma=ma))
     hari = max((i + 1 for t in T for i in range(31) if t['si'][i] is not None or t['ma'][i] is not None), default=0)
     for t in T:
         t['si'], t['ma'] = t['si'][:hari], t['ma'][:hari]
