@@ -13,8 +13,8 @@ const U=(process.env.URL||'http://localhost:8765/'),PIN=process.env.PIN||'uji-12
  await p.fill('#en-pq','gunung putri');await p.waitForTimeout(150);a=await p.evaluate(()=>[...document.querySelectorAll('#en-pl .pko')].map(o=>o.innerText.replace(/\n/g,' ')));
  ok(a.some(t=>/Pool baru: “gunung putri”/.test(t))&&await p.locator('#en-pl [data-det=depo]').count()===1,name+': cari “gunung putri” → pilihan pool baru dan tautan ke daftar depo');
  await p.locator('#en-pl [data-det=depo]').click();await p.waitForTimeout(400);ok(await p.evaluate(()=>document.getElementById('dlg').open&&!!document.querySelector('#dlg [data-mulai="DEPO-016"]')),name+': tautan membuka daftar depo dengan tombol ▶ Mulai survei');
- await p.locator('#dlg [data-mulai="DEPO-016"]').click();await p.waitForTimeout(500);await p.locator('#svd [data-barudp]').click();await p.waitForTimeout(600);let L=await st();let f1=L.dirty['f1:'+L.pool];
- ok(NP.test(L.pool)&&f1&&f1.data.depo_id==='DEPO-016'&&f1.data.draf===1&&/Multi Prima/.test(await tx('#en-pool')),name+`: ▶ Mulai survei → Pool baru membuat pool ${L.pool} yang tersambung ke DEPO-016`);
+ await p.locator('#dlg [data-mulai="DEPO-016"]').click();await p.waitForTimeout(500);await p.waitForTimeout(300);let L=await st();let f1=L.dirty['f1:'+L.pool];
+ ok(NP.test(L.pool)&&f1&&f1.data.depo_id==='DEPO-016'&&f1.data.draf===1&&/Multi Prima/.test(await tx('#en-pool')),name+`: ▶ Mulai survei langsung membuat pool ${L.pool} yang tersambung ke DEPO-016`);
  await p.click('#en-pool');await p.fill('#en-pq','Pool Uji Cikande Baru');await p.keyboard.press('ArrowDown');await p.keyboard.press('Enter');await p.waitForTimeout(400);L=await st();const P2=L.pool;f1=L.dirty['f1:'+P2];
  ok(NP.test(P2)&&f1&&f1.data.nama_pool==='Pool Uji Cikande Baru'&&/Pool Uji Cikande Baru/.test(await tx('#en-pool')),name+`: mengetik nama yang belum terdata membuat pool baru ${P2}`);
  await p.click('#en-pool');await p.fill('#en-pq','cikande');await p.waitForTimeout(150);ok(await p.evaluate(id=>{const o=document.querySelector('#en-pl .pko');return o&&o.dataset.pool===id&&o.classList.contains('act')},P2),name+': pool baru langsung muncul di daftar, paling atas saat dicari');await p.keyboard.press('Escape');await p.waitForTimeout(150);
@@ -51,9 +51,9 @@ const U=(process.env.URL||'http://localhost:8765/'),PIN=process.env.PIN||'uji-12
  // 7. pool baru ikut di Tugas dan Monitoring
  await p.evaluate(()=>goView('hasil','tugas'));await p.waitForTimeout(300);ok((await tx('#sv-tg .pane[data-pane=tugas] table')).includes(P2),name+': pool baru tampil di tabel Tugas');
  await p.evaluate(()=>goView('mon','pool'));await p.waitForTimeout(300);ok((await tx('#pools')).includes(P2),name+': pool baru tampil di Monitoring');
- // 8. Mulai survei dari depo: ada pilihan pool baru
- await p.evaluate(()=>goView('peta','peta'));await p.locator('#dash-t [data-det="depo"]').click();await p.waitForTimeout(250);await p.locator('#dlg-tb tr[data-dp="DEPO-020"] [data-mulai]').click();await p.waitForTimeout(250);await p.locator('#svd [data-barudp]').click();await p.waitForTimeout(500);L=await st();
- ok(NP.test(L.pool)&&L.dirty['f1:'+L.pool].data.depo_id==='DEPO-020'&&await p.evaluate(()=>document.querySelector('.view.on').id==='hasil'&&document.querySelector('#en-alur .stp.on').dataset.tab==='f1'),name+`: “Pool baru untuk depo ini” membuat ${L.pool} dan membuka langkah 1`);
+ // 8. Mulai survei dari depo: langsung pool baru khusus depo itu
+ await p.evaluate(()=>goView('peta','peta'));await p.locator('#dash-t [data-det="depo"]').click();await p.waitForTimeout(250);await p.locator('#dlg-tb tr[data-dp="DEPO-020"] [data-mulai]').click();await p.waitForTimeout(600);L=await st();
+ ok(NP.test(L.pool)&&L.dirty['f1:'+L.pool].data.depo_id==='DEPO-020'&&await p.evaluate(()=>document.querySelector('.view.on').id==='hasil'&&document.querySelector('#en-alur .stp.on').dataset.tab==='f1'),name+`: ▶ Mulai survei langsung membuat ${L.pool} dan membuka langkah 1`);
  if(LOKAL&&name==='laptop'){ // server menerima kode pool baru, nama pool tetap rahasia
   await p.fill('#en-pin',PIN);await p.click('#en-login button[type=submit]');await p.waitForTimeout(1500);await p.click('#en-sync');await p.waitForTimeout(1800);
   ok(/Semua entri sudah terunggah/.test(await tx('#en-st')),name+': entri pool baru terunggah ke server');

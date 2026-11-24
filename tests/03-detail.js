@@ -13,7 +13,7 @@ ok((await p.locator('#i-gi .gt2').count())===8,name+': 8 GI tumpuan');
 // pilih depo Jabar dengan data lengkap (DEPO-001) lewat API klik tabel
 await p.fill('#q','DEPO-001');await p.waitForTimeout(200);await p.locator('#tb tbody tr').first().click();await p.waitForTimeout(2500);
 const DT=async()=>(await T('side'))+(await T('g-dep'))+(await T('r-dep'));let det=await DT();
-for(const k of ['Profil usaha','Kondisi jaringan','Skenario','Dampak ke jaringan','Kesimpulan','Rekomendasi','Skema sambungan','Waktu charging','Manajemen beban','Gardu distribusi CPCG','GI pemasok','Data yang masih harus dilengkapi'])if(!det.toLowerCase().includes(k.toLowerCase())){ok(false,name+': detail memuat "'+k+'"')}
+for(const k of ['Profil depo','Sistem kelistrikan','Skenario','Dampak ke jaringan','Kesimpulan','Rekomendasi','Skema sambungan','Waktu charging','Manajemen beban','Gardu distribusi CPCG','GI pemasok','Data yang masih harus dilengkapi'])if(!det.toLowerCase().includes(k.toLowerCase())){ok(false,name+': detail memuat "'+k+'"')}
 ok(!/NaN|undefined|Infinity|null/.test(det),name+': detail DEPO-001 tanpa NaN/undefined');
 ok(/MW/.test(await T('s-v')),name+': kartu samping berisi kesimpulan → '+(await T('s-v')).replace(/\n/g,' | '));
 const c1=await T('d-c');await p.evaluate(()=>{const z=document.getElementById('z1');z.value=300;z.dispatchEvent(new Event('input'));const k=document.getElementById('z2');k.value=600;k.dispatchEvent(new Event('input'))});
@@ -39,7 +39,7 @@ const gp=await p.evaluate(()=>({pop:document.querySelector('.leaflet-popup-conte
 ok(/13 depo/.test(gp.pop)&&/MVA/.test(gp.pop)&&gp.lines>=13,name+': klik GI tumpuan → popup + '+gp.lines+' garis ke depo');console.log('   POPUP GI:',gp.pop.replace(/\n/g,' | ').slice(0,260));
 if(name==='desktop'){await p.evaluate(()=>document.getElementById('map').scrollIntoView({block:'center'}));await p.waitForTimeout(1500);await p.screenshot({path:`d-${TAG}-gi.png`})}
 // klik depo dari popup GI
-await p.locator('.leaflet-popup-content a[data-dp]').first().click();await p.waitForTimeout(2500);ok(/Kartu depo/i.test(await T('side'))&&/Depo terpilih/i.test(await T('r-dep')),name+': tautan depo di popup GI membuka kartu depo dan rekomendasinya');
+await p.locator('.leaflet-popup-content a[data-dp]').first().click();await p.waitForTimeout(2500);ok(/Kartu depo/i.test(await T('side'))&&/Depo terpilih/i.test(await T('g-dep'))&&/Bila armadanya beralih/i.test(await T('r-dep')),name+': tautan depo di popup GI membuka kartu depo dan rekomendasinya');
 ok(!(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth)),name+': tanpa scroll horizontal');
 ok(errs.length===0,name+': tanpa galat JS '+errs.join(' | '));await ctx.close()}
 await b.close();process.exit(fail?1:0)})();
