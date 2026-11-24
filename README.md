@@ -4,10 +4,14 @@ Dasbor pemantauan untuk pekerjaan survei truk berat (MDV/HDV) dan pemetaan depo�
 
 ## Isi situs
 
-| Menu | Isi |
+Satu halaman penuh tanpa menu samping. Bilah atas berisi empat tombol; pilihan turunannya tampil di baris kedua.
+
+| Tombol | Isi |
 |---|---|
-| Dasbor | Tiga angka utama yang bisa diklik untuk rinciannya (depo, gardu induk beserta trafonya, gardu distribusi), peta seluruh depo dan gardu induk berwarna menurut kecukupan kuota, ringkasan sebaran, serta detail tiap depo: profil dan jaringan, skenario truk listrik, rekomendasi. Rincian depo bisa disaring per lokasi, pola operasi, jenis usaha, dan bidang, dan kolom paling kirinya berisi tombol **Mulai survei**. |
-| Monitoring | Satu menu dengan tiga kelompok sub-menu: **Survei** (Tugas, Entri data, Jadwal & progres, Per pool, Lapor harian), **Hasil survei** (hasil dan rekomendasi, kondisi operasi, analisis charging, proyeksi, daya per pool, statistik, unduh data), dan **Depo & jaringan** (depo & gardu, profil usaha, beban gardu induk termasuk beban harian, insight, statistik, daftar depo). |
+| 🗺️ Dasbor | Peta, Profil & jaringan, Skenario, Rekomendasi. Tiga angka utama bisa diklik untuk rinciannya; rincian depo bisa disaring per lokasi, pola operasi, jenis usaha, dan bidang, dan kolom paling kirinya berisi tombol **Mulai survei**. |
+| 🧭 Survei | Tugas, Entri data, Jadwal & progres, Lapor harian. |
+| 📈 Hasil survei | Hasil & rekomendasi, kondisi operasi, analisis charging, proyeksi, daya per pool, statistik survei, unduh data. |
+| ⚡ Jaringan | Ringkasan depo & gardu, profil usaha, beban gardu induk (termasuk beban harian), insight jaringan, statistik depo. |
 
 ## Berkas
 

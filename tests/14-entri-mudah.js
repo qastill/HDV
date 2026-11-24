@@ -9,11 +9,12 @@ const U=(process.env.URL||'http://localhost:8765/'),PIN=process.env.PIN||'uji-12
  ok(!/Formulir F1–F3 v1\.1|Tanpa PIN, bagian ini hanya bisa dibaca|Penyimpanan server belum diaktifkan\. Entri|Rekap 7 hari/.test(a),name+': kalimat penjelasan panjang dan tab terpisah sudah hilang');
  // 2. pemilih pool: 10 pool rencana + semua depo + pool baru
  await p.click('#en-pool');await p.waitForTimeout(200);a=await p.evaluate(()=>({pool:document.querySelectorAll('#en-pl [data-pool]').length,depo:document.querySelectorAll('#en-pl [data-depo]').length,nd:D.DP.length,fokus:document.activeElement.id}));
- ok(a.pool>=10&&a.depo===a.nd&&a.fokus==='en-pq',name+`: daftar pool memuat ${a.pool} pool survei dan ${a.depo} depo, kolom cari langsung aktif`);
+ ok(a.pool>=10&&a.depo===0&&a.fokus==='en-pq',name+`: daftar pool memuat ${a.pool} pool survei, tanpa daftar depo (survei depo hanya dari ▶ Mulai survei), kolom cari langsung aktif`);
  await p.fill('#en-pq','gunung putri');await p.waitForTimeout(150);a=await p.evaluate(()=>[...document.querySelectorAll('#en-pl .pko')].map(o=>o.innerText.replace(/\n/g,' ')));
- ok(a.some(t=>/Multi Prima Usahatama/.test(t))&&a.some(t=>/Pool baru: “gunung putri”/.test(t)),name+': cari “gunung putri” → depo yang cocok dan pilihan pool baru');
- await p.locator('#en-pl [data-depo="DEPO-016"]').click();await p.waitForTimeout(400);let L=await st();let f1=L.dirty['f1:'+L.pool];
- ok(NP.test(L.pool)&&f1&&f1.data.depo_id==='DEPO-016'&&f1.data.draf===1&&/Multi Prima/.test(await tx('#en-pool')),name+`: memilih depo membuat pool ${L.pool} yang tersambung ke DEPO-016`);
+ ok(a.some(t=>/Pool baru: “gunung putri”/.test(t))&&await p.locator('#en-pl [data-det=depo]').count()===1,name+': cari “gunung putri” → pilihan pool baru dan tautan ke daftar depo');
+ await p.locator('#en-pl [data-det=depo]').click();await p.waitForTimeout(400);ok(await p.evaluate(()=>document.getElementById('dlg').open&&!!document.querySelector('#dlg [data-mulai="DEPO-016"]')),name+': tautan membuka daftar depo dengan tombol ▶ Mulai survei');
+ await p.locator('#dlg [data-mulai="DEPO-016"]').click();await p.waitForTimeout(500);await p.locator('#svd [data-barudp]').click();await p.waitForTimeout(600);let L=await st();let f1=L.dirty['f1:'+L.pool];
+ ok(NP.test(L.pool)&&f1&&f1.data.depo_id==='DEPO-016'&&f1.data.draf===1&&/Multi Prima/.test(await tx('#en-pool')),name+`: ▶ Mulai survei → Pool baru membuat pool ${L.pool} yang tersambung ke DEPO-016`);
  await p.click('#en-pool');await p.fill('#en-pq','Pool Uji Cikande Baru');await p.keyboard.press('ArrowDown');await p.keyboard.press('Enter');await p.waitForTimeout(400);L=await st();const P2=L.pool;f1=L.dirty['f1:'+P2];
  ok(NP.test(P2)&&f1&&f1.data.nama_pool==='Pool Uji Cikande Baru'&&/Pool Uji Cikande Baru/.test(await tx('#en-pool')),name+`: mengetik nama yang belum terdata membuat pool baru ${P2}`);
  await p.click('#en-pool');await p.fill('#en-pq','cikande');await p.waitForTimeout(150);ok(await p.evaluate(id=>{const o=document.querySelector('#en-pl .pko');return o&&o.dataset.pool===id&&o.classList.contains('act')},P2),name+': pool baru langsung muncul di daftar, paling atas saat dicari');await p.keyboard.press('Escape');await p.waitForTimeout(150);
