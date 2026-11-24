@@ -247,7 +247,7 @@ function pkList(q){const qn=nz(q),hit=s=>!qn||nz(s).includes(qn),cnt={},PA=pools
  const opt=(at,a,b,c,on)=>`<button type="button" role="option" class="pko${on?' on':''}" ${at} aria-selected="${!!on}"><b>${a}</b><span>${b}${c?`<small>${c}</small>`:''}</span></button>`;
  let h='';
  if(P.length)h+='<div class="pkg">Pool survei</div>'+P.map(p=>{const c=cnt[p.id];return opt(`data-pool="${p.id}"`,esc(p.id),esc(p.nm),`${esc(p.pola)} · ${c?`${c.t} truk · ${c.d} lembar`:'belum mulai'}`,p.id===L.pool)}).join('');
- if(DP.length)h+='<div class="pkg">Depo di peta</div>'+DP.map(d=>opt(`data-depo="${d.id}"`,'＋',esc(d.nama),`${esc(d.lokasi)} · ${esc(d.id)}`)).join('');
+ if(q.trim()&&DP.length)h+=`<p class="note" style="margin:8px">${DP.length} depo di peta cocok. Survei depo dimulai dari <button type="button" class="lnk" data-det="depo">daftar depo → ▶ Mulai survei</button>.</p>`;
  if(q.trim()&&!ada)h+='<div class="pkg">Belum terdata</div>'+opt(`data-baru="${esc(q.trim())}"`,'＋',`Pool baru: “${esc(q.trim())}”`,'');
  $('en-pl').innerHTML=h||'<p class="note" style="margin:8px">Ketik nama pool.</p>';pkI=0;pkAct()}
 function pkAct(){const o=[...$('en-pl').querySelectorAll('.pko')];o.forEach((x,i)=>x.classList.toggle('act',i===pkI));if(o[pkI]&&o[pkI].scrollIntoView)o[pkI].scrollIntoView({block:'nearest'})}
