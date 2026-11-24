@@ -6,7 +6,7 @@ await p.goto(URL);await p.waitForTimeout(2500);await p.evaluate(()=>goView('peta
 const T=id=>p.evaluate(i=>document.getElementById(i)?.textContent||'',id);
 ok(!(await p.content()).includes('Keyakinan titik'),name+': "Keyakinan titik" sudah dihapus');
 ok((await T('vi')).includes('Di tampilan ini'),name+': insight tampilan peta → '+(await T('vi')).slice(0,150));
-ok((await p.locator('#i-ins li').count())===6&&!/NaN|undefined|Infinity/.test(await T('i-ins')),name+': 6 insight nasional tanpa NaN');
+ok((await p.locator('#i-ins li').count())===8&&!/NaN|undefined|Infinity/.test(await T('i-ins')),name+': 8 insight (termasuk 2 dari beban harian) tanpa NaN');
 ok((await p.locator('#i-pola circle').count())===3,name+': donut pola operasi 3 segmen');
 ok((await p.locator('#i-jenis .bar').count())===11&&(await p.locator('#i-kom .bar').count())===6,name+': batang jenis usaha (11) & komoditas (6)');
 ok((await p.locator('#i-gi .gt2').count())===8,name+': 8 GI tumpuan');
