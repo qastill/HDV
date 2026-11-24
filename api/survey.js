@@ -99,7 +99,8 @@ module.exports = async (req, res) => {
     const auth = isAuth(req);
     if (req.method === 'GET') {
       const admin = req.headers['x-pin'] !== undefined;
-      res.setHeader('Cache-Control', admin || !READY ? 'private, no-store' : 'public, s-maxage=60, stale-while-revalidate=300');
+      // Jangan pernah disimpan CDN: kunci cache Vercel mengabaikan x-pin, jadi salinan publik akan tersaji ke admin.
+      res.setHeader('Cache-Control', 'private, no-store');
       if (!READY) return res.status(200).json({ ok: true, ready: false, pin: !!PIN, auth: false, n: 0, at: Date.now(), recs: {}, error: NOT_READY });
       if (admin && !auth) return res.status(401).json({ ok: false, error: PIN ? 'PIN salah' : 'PIN belum diatur di server' });
       const m = await load(false);
