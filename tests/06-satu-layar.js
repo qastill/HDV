@@ -1,5 +1,5 @@
 const auto=require('./auto.js');const {chromium,devices}=require('playwright');const URL=process.env.URL||'http://localhost:8765/';
-const V=[['peta',['peta','detail']],['mon',['ringkas','beban','statistik','daftar']],['rek',['insight','simpul']],['hasil',['trk','jadwal','tugas','lapor','unduh','entri']]];
+const V=[['peta',['peta','detail']],['mon',['ringkas','beban','statistik','daftar']],['rek',['insight']],['hasil',['trk','jadwal','tugas','simpul','lapor','unduh','entri']]];
 (async()=>{const b=await chromium.launch();let fail=0;const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);if(!c)fail++};
 for(const [name,opt] of [['laptop 1366×768',{viewport:{width:1366,height:768}}],['layar 1920×1080',{viewport:{width:1920,height:1080}}],['ponsel',{...devices['iPhone 13']}]]){
 const ctx=await b.newContext(opt);const p=await ctx.newPage();{const og=p.goto.bind(p);p.goto=async(...a)=>{const r=await og(...a);if(await p.locator('form[action="/masuk"] #kode').count()){await p.fill('#kode',process.env.KODE||'1234');await Promise.all([p.waitForNavigation({waitUntil:'load'}),p.click('form[action="/masuk"] button')])}return r}}const errs=[];p.on('pageerror',e=>errs.push(e.message));
@@ -12,6 +12,9 @@ let bad=[],inner=[];for(const [v,panes] of V)for(const pn of panes){/* buka lewa
  if(m.y||m.x||!m.one||!m.pane||!m.vis)bad.push(v+'/'+pn+JSON.stringify(m));if(m.inner>4)inner.push(v+(pn?'/'+pn:'')+' '+m.inner+'px')}
 ok(bad.length===0,name+': 4 menu dan bagiannya: halaman tidak pernah bergulir, hanya satu menu yang tampil, bagian yang dituju terlihat '+bad.join(' '));
 console.log('   panel yang masih perlu gulir di dalam:',inner.length?inner.join(', '):'tidak ada');
+{await p.click('#tng [data-g="rek"]');await p.waitForTimeout(900);const r=await p.evaluate(()=>{const vb=document.querySelector('#rek .vbody');return{y:vb.scrollHeight-vb.clientHeight,k:document.querySelectorAll('#i-ins li.rkc2').length,ic:document.querySelectorAll('#i-ins .ric').length,vis:document.querySelectorAll('#i-ins .rb,#i-ins .rks').length,rek:document.querySelectorAll('#i-ins .rkr').length,hero:document.querySelectorAll('#i-hero .rkhk>div').length,hs:!!document.querySelector('#rek #hs'),t:document.getElementById('rek').innerText}});
+ ok(r.k===8&&r.ic===8&&r.vis===8&&r.rek===8&&r.hero===4&&!r.hs&&!/NaN|undefined|Infinity/.test(r.t)&&!/belum tentu longgar|sudah padat|menumpuk/i.test(r.t),name+': Rekomendasi: 8 kartu berikon dengan angka, grafik, dan rekomendasi; tanpa bagian hasil survei; bahasa baku');
+ if(!name.startsWith('ponsel'))ok(r.y<=8,name+': Rekomendasi muat satu layar (sisa gulir '+r.y+' px)')}
 // peta menyesuaikan ukuran setelah kembali
 await p.click('#tng [data-g="peta"]');await p.waitForTimeout(500);const mp=await p.evaluate(()=>{const r=document.getElementById('map').getBoundingClientRect(),c=document.querySelector('#map canvas').getBoundingClientRect();return{h:r.height,w:r.width,bottom:r.bottom,ih:innerHeight,cw:c.width,sz:map.getSize()}});
 ok(mp.h>300&&Math.abs(mp.sz.x-mp.w)<2&&Math.abs(mp.sz.y-mp.h)<2&&mp.cw>mp.w*.9,name+`: peta memenuhi ruang (${Math.round(mp.w)}×${Math.round(mp.h)}) dan ukurannya sinkron`);

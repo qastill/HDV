@@ -22,7 +22,7 @@ const {chromium}=require('playwright');const auto=require('./auto.js');let n=0,f
  ok(await p.evaluate(g=>document.getElementById('hd-gi').value===g&&document.getElementById('hd-st').innerText.includes(giOf(g).n),g1),name+': klik baris peta panas → grafik pindah ke GI trafo itu');
  a=await tx('#hd-st');ok(/Sisa kuota malam/.test(a)&&/Hari GI ≥80%/.test(a),name+': ringkasan GI memuat hari ≥80% dan sisa kuota malam');
  // insight
- await p.evaluate(()=>goView('mon','insight'));await p.waitForTimeout(300);a=await tx('#i-ins');ok(/GI lebih padat saat malam/.test(a)&&/Hari padat dalam sebulan/.test(a)&&!/di antaranya/.test(a.split('Beban malam')[1]||''),name+': dua insight baru dari beban harian');
+ await p.evaluate(()=>goView('mon','insight'));await p.waitForTimeout(300);a=await tx('#i-ins');ok(/Profil beban malam hari/.test(a)&&/lebih padat pada malam hari/.test(a)&&/Frekuensi beban puncak/.test(a)&&!/di antaranya/.test(a),name+': dua kartu analisis dari beban harian');
  // popup GI dan detail depo
  await p.evaluate(()=>{goView('peta','peta');const g=D.GI.find(x=>x.n==='Plumpang'&&x.hs);map.setView([g.lat,g.lon],13,{animate:false});g._m.openPopup()});await p.waitForTimeout(800);
  ok(await p.evaluate(()=>{const e=document.querySelector('.leaflet-popup-content');return!!e&&!!e.querySelector('.spk svg')&&/Beban harian November 2026/.test(e.innerText)}),name+': popup GI memuat grafik beban harian');
