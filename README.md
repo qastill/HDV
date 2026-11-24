@@ -10,8 +10,8 @@ Satu halaman penuh dengan satu baris menu di atas (tanpa sub-menu). Tiap menu ad
 |---|---|
 | 🏭 Depo (halaman pertama) | Angka **114 depo** (klik → daftar depo layar penuh: kolom **▶ Mulai survei** di kiri, tombol **ℹ️ Detail** di tiap depo, filter lokasi/pola operasi/jenis usaha/bidang), peta dengan legenda berisi ringkasan tampilan peta, dan panel Ringkasan berisi diagram lingkar jarak ke GI, pola operasi, dan jenis usaha (klik irisan → daftar depo kelompok itu). Klik depo → popup dan kartu depo padat dengan **▶ Mulai survei** dan **ℹ️ Detail depo**. **Detail depo** punya dua menu: **Profil depo & kelistrikan** (profil usaha, gardu distribusi, penyulang, GI, beban harian) dan **Analisa** (skenario truk listrik, dampak ke jaringan, kesimpulan, rekomendasi). |
 | ⚡ Grid | Selalu dibuka di halaman utama: angka gardu induk/trafo/gardu distribusi (klik → rinciannya), kesiapan sambungan A/B/C beserta artinya dan jarak ke GI, beban gardu distribusi terdekat, depo per provinsi dan kabupaten/kota (lengkap), beban gardu induk termasuk beban harian, statistik. Setiap angka, cincin, batang, dan irisan bisa diklik untuk membuka daftar depo di baliknya. |
-| 💡 Rekomendasi | Gambaran semua depo (insight utama, GI tumpuan depo) dan hasil survei truk (kesimpulan & rekomendasi, kondisi operasi, charging, proyeksi, daya per pool, statistik survei). |
-| 🧭 Monitoring survei | Satu layar dengan pilihan menu: **🎯 Tracker survei** (halaman depan: batang menuju target truk × 7 hari, pool per pola operasi, kelas dan jenis truk, kemajuan tiap pool, 8 ketentuan RFP; pool target bisa ditambah ✚ atau dikeluarkan ✓ dengan total 5–15 pool, bawaan 10 pool rencana, dan target 50 truk per pool ikut menyesuaikan), Jadwal & progres, Tugas per pool, Lapor harian, Unduh data. **▶ Mulai survei** selalu khusus depo yang diklik: depo yang belum punya pool langsung dibuatkan pool sendiri dan formulir F1-nya dibuka (terisi dari data depo); depo yang sudah berjalan dibuka lagi. Formulir tampil sendiri dengan tombol **← Monitoring survei**. |
+| 💡 Rekomendasi | Satu layar: ringkasan skenario (jumlah depo, kebutuhan daya, energi per hari, porsi kapasitas GI), delapan kartu analisis bergambar (jarak dan kapasitas, ketersediaan data beban, pembebanan trafo, konsentrasi beban, alternatif GI, hasil penilaian skenario, profil beban malam, frekuensi beban puncak) yang masing-masing memuat angka kunci, grafik, temuan, dan rekomendasi serta bisa diklik untuk melihat deponya, dan delapan gardu induk tumpuan utama. |
+| 🧭 Monitoring survei | Satu layar dengan pilihan menu: **🎯 Tracker survei** (halaman depan: batang menuju target truk × 7 hari, pool per pola operasi, kelas dan jenis truk, kemajuan tiap pool, 10 ketentuan RFP termasuk cakupan 8 komoditas utama dan 3 operator logistik besar; pool target bisa ditambah ✚ atau dikeluarkan ✓ dengan total 5–15 pool, bawaan 10 pool rencana, dan target 50 truk per pool ikut menyesuaikan), Jadwal & progres, Tugas per pool, **Hasil survei** (kesimpulan, kondisi operasi, charging, proyeksi, daya per pool, statistik), Lapor harian, Unduh data. **▶ Mulai survei** selalu khusus depo yang diklik: depo yang belum punya pool langsung dibuatkan pool sendiri dan formulir F1-nya dibuka (terisi dari data depo); depo yang sudah berjalan dibuka lagi. Formulir tampil sendiri dengan tombol **← Monitoring survei**. |
 
 ## Berkas
 
@@ -24,9 +24,7 @@ Satu halaman penuh dengan satu baris menu di atas (tanpa sub-menu). Tiap menu ad
 | `tools/gabung_beban_gi.py` | Menggabungkan data beban GI (xlsx PLN) ke data yang tertanam di halaman. |
 | `tools/gabung_beban_dki.py` | Menggabungkan data GI, trafo, dan beban harian trafo PLN Distribusi Jakarta (`DATA GI DAN TRAFO.xlsx`) ke data yang tertanam di halaman. Aman dijalankan ulang. |
 | `tools/pilih_depo_berdata.py` | Mengisi beban gardu distribusi yang kosong dari berkas Excel. Bisa juga membatasi tampilan ke depo yang datanya ada; `--semua` menampilkan lagi seluruh depo dan gardu induk (keadaan sekarang). |
-| `DATA GI DAN TRAFO.xlsx` | Data sumber: lokasi GI, daftar trafo GI, dan beban harian trafo (siang/malam) PLN Distribusi Jakarta. Tidak ikut ter-deploy. |
-| `beban GI.xlsx` | Data sumber: beban trafo gardu induk. Tidak ikut ter-deploy. |
-| `Gardu_Beban_Lokasi_JABAR.xlsx` | Data sumber: beban dan lokasi gardu distribusi. Tidak ikut ter-deploy. |
+| `unduh.js` | Unduhan keluaran: peta depo & gardu (.shp dalam .zip, GeoJSON), satu berkas Excel banyak lembar, dan formulir kertas F1–F3. Tanpa pustaka luar. |
 | `tests/` | Uji otomatis. Tidak ikut ter-deploy. |
 
 ## Mulai survei dari daftar depo
@@ -79,3 +77,17 @@ bash tests/kunci-situs.sh
 - Enam GI di berkas belum ada di peta (Cawang Baru, JGC, Karet Baru, Ketapang, Mampang Lama, Sunter) dan ditambahkan dengan koordinat dari berkas. Empat GI dicocokkan lewat nama lain di peta (Ciracas, Cireundeu, Grogol Baru, Bintaro Baru); koordinat GI Ciracas di berkas sama dengan GI Cipinang.
 - Warna kuota di peta memakai skenario 50 truk listrik per depo dan bersifat indikatif.
 - Angka di panel Proyeksi memakai asumsi yang bisa diubah; nilai awalnya perkiraan umum, bukan angka resmi.
+
+## Data sumber PLN
+
+Berkas Excel sumber (`DATA GI DAN TRAFO.xlsx`, `beban GI.xlsx`, `Gardu_Beban_Lokasi_JABAR.xlsx`) **tidak lagi disimpan di repo** dan diabaikan lewat `.gitignore`. Simpan di luar repo dan beri jalurnya saat menjalankan skrip di `tools/`. Berkas itu masih ada di riwayat commit lama, dan data hasil olahannya tetap tertanam di halaman (di belakang kunci kode situs). Selama repo ini publik, data tersebut tetap bisa dibaca orang lain; jadikan repo **private** untuk menutupnya.
+
+## Unduhan (menu Monitoring survei → Unduh data)
+
+| Unduhan | Isi |
+|---|---|
+| Excel (.xlsx) | 13 lembar: diary harian, perjalanan, truk, pool, statistik survei (semua / kelas truk / pola operasi / pool), depo, statistik depo, gardu induk, trafo GI, gardu distribusi terdekat, sebaran gardu distribusi, kamus data. |
+| Shapefile (.zip) | 5 lapisan WGS84: `depo`, `gardu_induk`, `gardu_distribusi_terdekat`, `gardu_distribusi_sebaran`, `transmisi`, masing-masing .shp/.shx/.dbf/.prj/.cpg, plus `BACA_SAYA.txt` berisi arti tiap atribut. |
+| GeoJSON (.zip) | Lima lapisan yang sama. |
+| Formulir cetak | F1 profil pool, F2 daftar truk, F3 diary harian (mendatar) untuk dicetak atau disimpan sebagai PDF. |
+| CSV | Diary harian, perjalanan, truk, pool, kamus data, statistik. |

@@ -1,0 +1,36 @@
+// unduhan keluaran RFP: peta .shp/GeoJSON, Excel banyak lembar, formulir cetak F1–F3, dan cakupan komoditas/operator di tracker
+const {chromium}=require('playwright');const auto=require('./auto.js');let n=0,f=0;const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);c?n++:f++};const U=(process.env.URL||'http://localhost:8765/');
+// pembaca ZIP tanpa kompresi (format yang ditulis unduh.js)
+function bukaZip(b){const o={};let p=0;while(b.readUInt32LE(p)===0x04034b50){const met=b.readUInt16LE(p+8),len=b.readUInt32LE(p+18),nl=b.readUInt16LE(p+26),xl=b.readUInt16LE(p+28),nm=b.slice(p+30,p+30+nl).toString('utf8');if(met!==0)throw new Error('terkompresi');o[nm]=b.slice(p+30+nl+xl,p+30+nl+xl+len);p+=30+nl+xl+len}return o}
+(async()=>{const b=await chromium.launch();const c=await b.newContext({viewport:{width:1366,height:768}});const p=await c.newPage();auto(p);const errs=[];p.on('pageerror',e=>errs.push(e.message));
+ await p.goto(U);await p.waitForTimeout(3000);
+ const ambil=async k=>Buffer.from(await p.evaluate(async k=>{const HTMLAnchorKlik=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){};try{const z=window.unduh[k]();const a=new Uint8Array(await z.arrayBuffer());let s='';for(let i=0;i<a.length;i+=8192)s+=String.fromCharCode.apply(null,a.subarray(i,i+8192));return btoa(s)}finally{HTMLAnchorElement.prototype.click=HTMLAnchorKlik}},k),'base64');
+ const N=await p.evaluate(()=>({dp:D.DP.length,gi:D.GI.length,gd:D.DP.filter(d=>d.gd_nama&&d.gd_lat!=null).length,sel:D.GD.length,ln:D.LN.length,tr:D.TR.length}));
+ // 1. Shapefile
+ let z=bukaZip(await ambil('shp'));const L=['depo','gardu_induk','gardu_distribusi_terdekat','gardu_distribusi_sebaran','transmisi'],J=[N.dp,N.gi,N.gd,N.sel,N.ln];
+ ok(L.every(l=>['shp','shx','dbf','prj','cpg'].every(e=>z[l+'.'+e]))&&z['BACA_SAYA.txt']&&Object.keys(z).length===26,'Shapefile: 5 lapisan lengkap (.shp .shx .dbf .prj .cpg) + BACA_SAYA');
+ ok(L.every((l,i)=>{const s=z[l+'.shp'],x=z[l+'.shx'],d=z[l+'.dbf'];return s.readInt32BE(0)===9994&&s.readInt32BE(24)*2===s.length&&s.readInt32LE(32)===(l==='transmisi'?3:1)&&(x.length-100)/8===J[i]&&d.readUInt32LE(4)===J[i]&&d.length===d.readUInt16LE(8)+J[i]*d.readUInt16LE(10)+1}),'Shapefile: kepala berkas sah, jumlah fitur = '+J.join(' / ')+' (depo / GI / GD terdekat / sebaran GD / transmisi)');
+ {const s=z['depo.shp'],d=z['depo.dbf'],x=s.readDoubleLE(112),y=s.readDoubleLE(120),r0=d.slice(d.readUInt16LE(8),d.readUInt16LE(8)+d.readUInt16LE(10)).toString('utf8'),a=await p.evaluate(()=>({x:D.DP[0].lon,y:D.DP[0].lat,id:D.DP[0].id,gi:D.DP[0].gi_n}));
+  ok(x===a.x&&y===a.y&&r0.includes(a.id)&&r0.includes(a.gi)&&/WGS_1984/.test(z['depo.prj'].toString())&&z['depo.cpg'].toString()==='UTF-8','Shapefile depo: koordinat dan atribut baris pertama cocok dengan data ('+a.id+', GI '+a.gi+'), proyeksi WGS84');
+  const kol=[];for(let o=32;d[o]!==0x0D;o+=32)kol.push(d.slice(o,o+11).toString().replace(/\0+$/,''));ok(['gi_km','gi_mva','gi_beban','gd_kva','gd_beban','kuota'].every(k=>kol.includes(k))&&kol.every(k=>k.length<=10),'Shapefile depo memuat atribut kapasitas, beban, dan jarak ('+kol.length+' kolom, nama ≤10 huruf)')}
+ // 2. GeoJSON
+ z=bukaZip(await ambil('geojson'));ok(L.every((l,i)=>{const g=JSON.parse(z[l+'.geojson'].toString('utf8'));return g.type==='FeatureCollection'&&g.features.length===J[i]&&g.features[0].geometry.type===(l==='transmisi'?'LineString':'Point')}),'GeoJSON: 5 lapisan dengan jumlah fitur yang sama');
+ // 3. Excel
+ z=bukaZip(await ambil('xlsx'));const wb=z['xl/workbook.xml'].toString('utf8'),nama=[...wb.matchAll(/<sheet name="([^"]+)"/g)].map(m=>m[1]),baris=i=>(z[`xl/worksheets/sheet${i+1}.xml`].toString('utf8').match(/<row /g)||[]).length;
+ ok(nama.join('|')==='Baca saya|Diary harian|Perjalanan|Truk|Pool|Statistik survei|Depo|Statistik depo|Gardu induk|Trafo GI|Gardu distribusi|GD sebaran|Kamus data'&&z['[Content_Types].xml']&&z['xl/styles.xml'],'Excel: 13 lembar ('+nama.slice(1,6).join(', ')+', …)');
+ ok(baris(6)===N.dp+1&&baris(8)===N.gi+1&&baris(9)===N.tr+1&&baris(10)===N.gd+1&&baris(7)>20&&baris(12)>60,`Excel: lembar Depo ${baris(6)-1} baris, Gardu induk ${baris(8)-1}, Trafo GI ${baris(9)-1}, Gardu distribusi ${baris(10)-1}; statistik depo dan kamus data terisi`);
+ {const s=z['xl/worksheets/sheet7.xml'].toString('utf8');ok(/<c r="A1" t="inlineStr" s="1">/.test(s)&&/<c r="[A-Z]+2"><v>-?\d/.test(s)&&!/NaN|undefined|Infinity/.test(s)&&/state="frozen"/.test(s),'Excel: judul kolom tebal dan dibekukan, angka tersimpan sebagai angka, tanpa NaN')}
+ ok(baris(5)>=2&&/kelompok/.test(z['xl/worksheets/sheet6.xml'].toString('utf8')),'Excel: lembar Statistik survei tersedia (kelompok: semua, kelas truk, pola operasi, pool)');
+ // 4. Formulir cetak
+ const h=await p.evaluate(()=>window.unduh.formulirHTML()),sk=await p.evaluate(()=>{const S=window.svSkema();return{f1:S.F1.flatMap(s=>s[1]).map(x=>x.l),f2:S.F2.map(x=>x.l),f3:S.F3H.concat(S.F3T,S.F3F,S.F3C).map(x=>x.l)}}),ada=l=>h.includes(l.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])));
+ ok((h.match(/<section class="hal/g)||[]).length===3&&sk.f1.every(ada)&&sk.f2.every(ada)&&sk.f3.every(ada)&&/@page lanskap\{size:A4 landscape/.test(h),`formulir cetak: 3 halaman (F1, F2, F3 mendatar) memuat seluruh ${sk.f1.length}+${sk.f2.length}+${sk.f3.length} isian formulir`);
+ await p.evaluate(()=>goView('hasil','unduh'));await p.waitForTimeout(400);
+ ok(await p.evaluate(()=>['xlsx','shp','geojson','cetak'].every(k=>{const b=document.querySelector(`#sv-un [data-unduh="${k}"]`);return b&&b.offsetHeight>0})&&document.querySelectorAll('#sv-un [data-csv]').length===6),'Unduh data: tombol Excel, Shapefile, GeoJSON, formulir cetak, dan 6 CSV');
+ const [hal]=await Promise.all([c.waitForEvent('page'),p.click('#sv-un [data-unduh="cetak"]')]);await hal.waitForLoadState();ok(/Diary harian truk/.test(await hal.content())&&await hal.locator('.bar button').count()===1,'tombol formulir cetak membuka halaman baru dengan tombol Cetak');await hal.close();
+ const [dl]=await Promise.all([p.waitForEvent('download'),p.click('#sv-un [data-unduh="shp"]')]);ok(/^peta-depo-gardu-shp-\d{4}-\d\d-\d\d\.zip$/.test(dl.suggestedFilename()),'tombol Shapefile mengunduh '+dl.suggestedFilename());
+ // 5. Tracker: cakupan komoditas dan operator besar
+ await p.evaluate(()=>goView('hasil','trk'));await p.waitForTimeout(300);
+ const t=await p.evaluate(()=>({ch:document.querySelectorAll('.t5ch span').length,h:document.querySelector('.t5ch').previousElementSibling.textContent,k:[...document.querySelectorAll('.t5k li')].map(l=>l.innerText.replace(/\s+/g,' ')),j:document.querySelector('.t5k').previousElementSibling.textContent,f1:window.svSkema().F1.flatMap(s=>s[1]).some(x=>x.k==='op_besar')}));
+ ok(t.ch===10&&/^Komoditas \d\/8 · operator besar \d\/3$/.test(t.h)&&t.k.length===10&&/dari 10 terpenuhi/.test(t.j)&&t.k.some(x=>/8 komoditas utama terwakili/.test(x))&&t.k.some(x=>/3 operator logistik besar/.test(x))&&t.f1,'Tracker: cakupan 8 komoditas RFP dan 3 operator besar ('+t.h+'); F1 punya isian operator besar');
+ ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'tanpa gulir mendatar');ok(!errs.length,'tanpa galat JS '+errs.join(' | '));
+ console.log(`\n${n} lolos, ${f} gagal`);await b.close();process.exit(f?1:0)})();

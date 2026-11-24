@@ -48,7 +48,7 @@ const {chromium}=require('playwright');const auto=require('./auto.js');let n=0,f
  // survei gabungan
  await p.locator('#tng [data-g="hasil"]').click();await p.waitForTimeout(500);
  ok(await p.evaluate(()=>document.querySelector('.view.on').id==='hasil'&&document.querySelector('#tng .on').dataset.g==='hasil'&&!document.getElementById('en').offsetHeight&&!document.querySelector('[data-nav="hasil:entri"]'))&&!await p.locator('.menu,.sb').count(),name+': Monitoring survei tanpa tombol entri sendiri; formulir entri tidak tampil');
- await p.locator('#hs .kos [data-det="depo"]').click();await p.waitForTimeout(400);
+ await p.evaluate(()=>goView('hasil','simpul'));await p.waitForTimeout(300);await p.locator('#hs .kos [data-det="depo"]').click();await p.waitForTimeout(400);
  ok(await p.evaluate(()=>document.getElementById('dlg').open&&document.querySelectorAll('#dlg [data-mulai]').length>0),name+': “Mulai survei dari daftar depo” membuka daftar depo berkolom ▶ Mulai survei');
  ok(await p.locator('#dlg [data-mulai]').count()>0,name+': daftar depo berkolom ▶ Mulai survei');await p.keyboard.press('Escape');await p.waitForTimeout(200);
  await p.evaluate(()=>goView('hasil','entri'));await p.waitForTimeout(300);ok(await p.evaluate(()=>PANE.hasil==='entri'&&document.getElementById('en').offsetHeight>60&&!document.getElementById('sv-tg').offsetHeight&&!document.querySelector('#hasil .pane[data-pane=jadwal]').offsetHeight&&document.querySelector('#tng .on').dataset.g==='hasil'),name+': formulir entri tampil sendiri, monitoring disembunyikan');
