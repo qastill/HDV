@@ -1030,7 +1030,7 @@ html,body{height:100%}body{overflow:hidden}
 .t5l{display:flex;gap:6px 16px;flex-wrap:wrap;margin-top:8px;font-size:12.5px;align-items:center}
 .t5c{display:grid;gap:8px}.t5r{display:grid;grid-template-columns:118px minmax(0,1fr) 78px;gap:8px;align-items:center;font-size:12.5px}.t5r span{display:flex;flex-direction:column;line-height:1.2}.t5r small{color:var(--mut);font-size:11.5px}.t5r em{font-style:normal;text-align:right;font-weight:600}
 .t5b{height:10px;border-radius:5px;background:#e7ebef;overflow:hidden}.t5b i{display:block;height:100%;border-radius:5px;transition:width .9s}
-.t5pl{display:grid;gap:4px;max-height:calc(100dvh - 470px);min-height:180px;overflow:auto;padding-right:3px}
+.t5pl{display:grid;gap:4px;max-height:calc(100dvh - 540px);min-height:180px;overflow:auto;padding-right:3px}
 .t5q{display:grid;grid-template-columns:42px minmax(0,1fr) 70px 44px 70px 54px;gap:8px;align-items:center;font:inherit;color:inherit;text-align:left;background:#fff;border:1px solid var(--line);border-radius:9px;padding:6px 9px;cursor:pointer}.t5q:hover{border-color:var(--accent);background:#f1f7f7}.t5q span{display:flex;flex-direction:column;min-width:0;font-size:12.5px}.t5q span,.t5q small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.t5q small{color:var(--mut);font-size:11px}.t5q em{font-style:normal;font-size:11.5px;text-align:right;color:var(--mut)}
 @media(max-width:760px){.t5q{grid-template-columns:38px minmax(0,1fr) 52px 40px}.t5q>.t5b:nth-of-type(2),.t5q>em:last-child{display:none}.t5pl{max-height:none}}
 .t5k{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4px 14px}@media(max-width:760px){.t5k{grid-template-columns:minmax(0,1fr)}}
@@ -1046,15 +1046,19 @@ html,body{height:100%}body{overflow:hidden}
 .skg{border-top:1px solid var(--line);padding-top:8px}.skt{font-size:12.5px;line-height:1.4;margin-bottom:4px}.kv.kv2{display:grid;grid-template-columns:auto auto auto auto;gap:2px 8px;font-size:12px;margin:0 0 6px}.kv.kv2 dt{color:var(--mut)}.kv.kv2 dd{margin:0;font-weight:700;text-align:right}
 #side .pv{font-size:12px;padding:7px 10px}#side .sbt .btn{padding:7px 8px;font-size:12.5px}#side .sbt:has(> :only-child){grid-template-columns:1fr}
 #dlg-so{display:none;width:auto;font-weight:600}@media(max-width:760px){#dlg-so{display:block;flex:1 1 140px}}
-.pdet[data-s="profil"] [data-ds]:not([data-ds="profil"]){display:none}.pdet[data-s="listrik"] [data-ds]:not([data-ds="listrik"]){display:none}.pdet[data-s="skenario"] [data-ds]:not([data-ds="skenario"]){display:none}.pdet[data-s="dampak"] [data-ds]:not([data-ds="dampak"]){display:none}.pdet[data-s="rekom"] [data-ds]:not([data-ds="rekom"]){display:none}
+.pdet[data-s="profil"] [data-ds]:not([data-ds="profil"]){display:none}.pdet[data-s="analisa"] [data-ds]:not([data-ds="analisa"]){display:none}
 .dstop{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.dstop .bk{margin:0!important}.dstop .vtab{margin:0}
 .pdet .det{gap:10px}.pdet #r-dep .det{margin-top:10px!important}.pdet .selh{padding:10px 14px}.pdet .selh .dic{width:40px;height:40px;font-size:20px}.pdet .selh .nm{font-size:17px!important}
 .pdet .g2c{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
-.pdet [data-ds=listrik]{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:18px;align-content:start}.pdet [data-ds=listrik]>h3,.pdet [data-ds=listrik]>p{grid-column:1/-1}.pdet [data-ds=listrik] .chain{grid-column:1}.pdet [data-ds=listrik] .dsc{grid-column:2}.pdet [data-ds=listrik]:not(:has(.dsc)) .chain{grid-column:1/-1}
-.pdet .chain .node{padding-top:8px;padding-bottom:8px}.dsc h3{margin:0 0 6px}
-@media(max-width:900px){.pdet [data-ds=listrik]{grid-template-columns:minmax(0,1fr)}.pdet [data-ds=listrik] .dsc{grid-column:1}.dstop .vtab{flex-wrap:nowrap;overflow-x:auto;width:100%}}
+.pdet .chain .node{padding-top:8px;padding-bottom:8px}.dsc{margin-top:14px}.dsc h3{margin:0 0 6px}
+@media(max-width:900px){.dstop .vtab{flex-wrap:nowrap;overflow-x:auto;width:100%}}
 
-@media(min-width:901px){.pdet .g2c>[data-ds=skenario]{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);column-gap:20px;align-content:start}.pdet .g2c>[data-ds=skenario]>*{grid-column:1/-1}.pdet .g2c>[data-ds=skenario]>.sl{grid-column:1;grid-row:3}.pdet .g2c>[data-ds=skenario]>#z-src{grid-column:1;grid-row:4}.pdet .g2c>[data-ds=skenario]>.tiles{grid-column:2;grid-row:3/span 2;align-self:start;margin-top:10px!important}.pdet .g2c>[data-ds=skenario]>p.note:last-child{grid-column:1/-1}}
+
+.t5q{display:grid;grid-template-columns:52px minmax(0,1fr) 70px 44px 70px 54px 30px;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:9px;padding:5px 8px}.t5q:hover{border-color:var(--accent)}.t5q.off{opacity:.6;background:#f7f9fa}.t5q.off:hover{opacity:1}
+.t5o{font:inherit;color:inherit;background:none;border:0;padding:0;text-align:left;cursor:pointer;min-width:0}.t5o span{display:flex;flex-direction:column;min-width:0;font-size:12.5px}.t5o span,.t5o small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.t5o small{color:var(--mut);font-size:11px}.t5o:hover span{color:var(--accent)}
+.t5x{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--accent);font-weight:700;cursor:pointer;padding:0}.t5x.on{background:var(--ok);border-color:var(--ok);color:#fff}.t5x:disabled{opacity:.4;cursor:not-allowed}.t5x:not(:disabled):hover{border-color:var(--accent)}
+.t5sep{font-size:11.5px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin:8px 0 2px}
+@media(max-width:760px){.t5q{grid-template-columns:46px minmax(0,1fr) 46px 40px 30px}.t5q>.t5b:nth-of-type(2),.t5q>em:nth-of-type(2){display:none}}
 </style></head><body><div class="app" id="app">
 <header class="hb" id="topbar">
  <div class="hb1"><div class="hbb"><b>Pantau HDV</b><small>Depo–Gardu · IESR</small></div>
@@ -1080,10 +1084,10 @@ html,body{height:100%}body{overflow:hidden}
  <aside class="card side" id="side" aria-live="polite"></aside>
 </div>
 </div>
-<div class="pane pdet" data-pane="detail" data-s="profil"><div class="vbody"><div class="dstop"><button class="btn bk" type="button" data-nav="peta:peta">← Peta</button><nav class="vtab" id="ds-tab" aria-label="Bagian detail depo"><button type="button" data-ds-go="profil" class="on">🏭 Profil depo</button><button type="button" data-ds-go="listrik">⚡ Sistem kelistrikan</button><button type="button" data-ds-go="skenario">🔋 Skenario truk listrik</button><button type="button" data-ds-go="dampak">📊 Dampak &amp; kesimpulan</button><button type="button" data-ds-go="rekom">💡 Rekomendasi</button></nav></div><div id="g-dep"></div><div id="r-dep"></div></div></div>
+<div class="pane pdet" data-pane="detail" data-s="profil"><div class="vbody"><div class="dstop"><button class="btn bk" type="button" data-nav="peta:peta">← Peta</button><nav class="vtab" id="ds-tab" aria-label="Bagian detail depo"><button type="button" data-ds-go="profil" class="on">🏭 Profil depo &amp; kelistrikan</button><button type="button" data-ds-go="analisa">📊 Analisa: skenario, dampak &amp; rekomendasi</button></nav></div><div id="g-dep"></div><div id="r-dep"></div></div></div>
 </section>
 
-<section class="view" id="hasil" aria-label="Monitoring survei"><div class="vh"><div><p id="hs-sub">Memuat…</p><p id="mon-sub"></p></div></div><nav class="vtab" id="sv-tab" aria-label="Bagian monitoring survei"><button type="button" data-nav="hasil:trk" class="on">🎯 Tracker 500 truk</button><button type="button" data-nav="hasil:jadwal">📅 Jadwal &amp; progres</button><button type="button" data-nav="hasil:tugas">📋 Tugas per pool</button><button type="button" data-nav="hasil:lapor">📝 Lapor harian</button><button type="button" data-nav="hasil:unduh">⬇️ Unduh data</button></nav><div class="vbody">
+<section class="view" id="hasil" aria-label="Monitoring survei"><div class="vh"><div><p id="hs-sub">Memuat…</p><p id="mon-sub"></p></div></div><nav class="vtab" id="sv-tab" aria-label="Bagian monitoring survei"><button type="button" data-nav="hasil:trk" class="on">🎯 Tracker survei</button><button type="button" data-nav="hasil:jadwal">📅 Jadwal &amp; progres</button><button type="button" data-nav="hasil:tugas">📋 Tugas per pool</button><button type="button" data-nav="hasil:lapor">📝 Lapor harian</button><button type="button" data-nav="hasil:unduh">⬇️ Unduh data</button></nav><div class="vbody">
  <div class="pane on" data-pane="trk"><div id="sv-trk"><div class="card pad"><p class="note" style="margin:0">Memuat tracker…</p></div></div></div>
  <div class="pane" data-pane="jadwal">
  <div class="g2"><div class="card pad"><h3>Jadwal</h3><div class="axis" style="margin-top:10px"><span></span><div id="ax"></div></div><div class="gantt" id="gantt"></div></div>
@@ -1374,7 +1378,7 @@ function detail(d){const gd=$('g-dep'),rd=$('r-dep');if(!gd||!rd)return;const ks
    <div class="tiles" style="margin-top:10px"><div class="tile"><small>Energi per hari</small><b class="big" id="z-mwh">–</b></div><div class="tile"><small>Beban puncak</small><b class="big" id="z-mw">–</b></div><div class="tile"><small>Daya tersambung</small><b class="big" id="z-mva">–</b></div><div class="tile"><small>Charger 230 kW</small><b class="big" id="z-chg">–</b></div></div>
    <p class="note" style="margin:8px 0 0">Angka awal ${fmt(kmOf(d))} km per hari untuk pola ${esc(po[0].toLowerCase())}. Asumsi: 1,2 kWh/km, efisiensi 90%, keserempakan 0,8, faktor daya 0,95.</p></div>
   <div class="card pad"><h3>Dampak ke jaringan</h3><div class="imp" id="d-bars"></div><h3 style="margin-top:14px">Kesimpulan</h3><p id="d-c" style="margin:6px 0 0"></p></div></div><div class="card pad"><h3>Rekomendasi</h3><div class="recs" id="d-r"></div><h3 style="margin-top:14px">Data yang masih harus dilengkapi</h3><ul class="gaps">${gaps(d).map(g=>`<li>${esc(g)}</li>`).join('')}</ul><p class="note" style="margin:8px 0 0">Kesimpulan dan rekomendasi dihitung dari data di halaman ini dan skenario di atas.</p></div></div>`;
- {const tg=(el,k)=>{if(el)el.setAttribute('data-ds',k)},a=gd.querySelectorAll('.g2c>.card'),b=rd.querySelectorAll('.g2c>.card'),c=rd.querySelectorAll('.det>.card');tg(a[0],'profil');tg(a[1],'listrik');tg(c[0],'skenario');tg(b[0],'skenario');tg(b[1],'dampak');tg(c[c.length-1],'rekom')}
+ {const tg=(el,k)=>{if(el)el.setAttribute('data-ds',k)},a=gd.querySelectorAll('.g2c>.card'),b=rd.querySelectorAll('.g2c>.card'),c=rd.querySelectorAll('.det>.card');tg(a[0],'profil');tg(a[1],'profil');tg(c[0],'analisa');tg(b[0],'analisa');tg(b[1],'analisa');tg(c[c.length-1],'analisa')}
 
  /* Angka skenario: dari survei (F1 armada, F2 truk terdaftar, F3 diary) bila depo ini sudah disambungkan ke pool survei; selain itu angka awal. Yang digeser pengguna tidak ditimpa. */
  const V={n:SCN.n,km:kmOf(d),h:SCN.h},MAN={},TG={};let AR=null;const kl=(v,a,b)=>Math.min(b,Math.max(a,v));

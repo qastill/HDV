@@ -12,7 +12,8 @@ const PRIV_F1 = ['perusahaan', 'nama_pool', 'alamat', 'lat', 'lon', 'narasumber'
 const MAX_REC = 24 * 1024, MAX_BATCH = 600, TTL = 30000;
 // Pool: P1–P10 (rencana) atau N + 4 huruf/angka (pool yang dibuat di lapangan).
 const POOL = '(?:P(?:[1-9]|10)|N[2-9A-HJ-NP-Z]{4})';
-const ID = { f1: new RegExp(`^${POOL}$`), f2: new RegExp(`^${POOL}-\\d{3}$`), f3: new RegExp(`^${POOL}-\\d{3}:[1-7]$`) };
+// cfg:pool = daftar pool yang menjadi target survei (5–15 pool), diatur dari Tracker.
+const ID = { f1: new RegExp(`^${POOL}$`), f2: new RegExp(`^${POOL}-\\d{3}$`), f3: new RegExp(`^${POOL}-\\d{3}:[1-7]$`), cfg: /^pool$/ };
 const empty = () => ({ v: 1, recs: {} });
 const sha = (s) => crypto.createHash('sha256').update(String(s)).digest();
 let mem = null; // { doc, etag, at }
