@@ -19,7 +19,9 @@ Dasbor pemantauan untuk pekerjaan survei truk berat (MDV/HDV) dan pemetaan depo�
 | `api/survey.js` | Penyimpanan entri survei di Vercel Blob. |
 | `middleware.js` | Kunci situs dengan kode akses. |
 | `tools/gabung_beban_gi.py` | Menggabungkan data beban GI (xlsx PLN) ke data yang tertanam di halaman. |
+| `tools/gabung_beban_dki.py` | Menggabungkan data GI, trafo, dan beban harian trafo PLN Distribusi Jakarta (`DATA GI DAN TRAFO.xlsx`) ke data yang tertanam di halaman. Aman dijalankan ulang. |
 | `tools/pilih_depo_berdata.py` | Mengisi beban gardu distribusi yang kosong dari berkas Excel. Bisa juga membatasi tampilan ke depo yang datanya ada; `--semua` menampilkan lagi seluruh depo dan gardu induk (keadaan sekarang). |
+| `DATA GI DAN TRAFO.xlsx` | Data sumber: lokasi GI, daftar trafo GI, dan beban harian trafo (siang/malam) PLN Distribusi Jakarta. Tidak ikut ter-deploy. |
 | `beban GI.xlsx` | Data sumber: beban trafo gardu induk. Tidak ikut ter-deploy. |
 | `Gardu_Beban_Lokasi_JABAR.xlsx` | Data sumber: beban dan lokasi gardu distribusi. Tidak ikut ter-deploy. |
 | `tests/` | Uji otomatis. Tidak ikut ter-deploy. |
@@ -69,6 +71,8 @@ bash tests/kunci-situs.sh
 ## Batasan data
 
 - Kedua berkas Excel adalah data mentah PLN yang lebih rinci daripada yang ditampilkan dasbor. Berkasnya dikecualikan dari deploy lewat `.vercelignore`.
-- Dasbor menampilkan seluruh depo (114) dan gardu induk (933). Data beban baru ada untuk 101 gardu induk (346 trafo) dan gardu distribusi di sekitar 25 depo; depo dan GI lainnya diberi kelas “Data beban menyusul” sampai datanya ditambahkan lewat `tools/gabung_beban_gi.py`.
+- Dasbor menampilkan seluruh depo (114) dan gardu induk (939). Data beban ada untuk 172 gardu induk (566 trafo), termasuk beban harian 220 trafo di 76 GI Jakarta dan sekitarnya selama 23 hari November 2026; 62 depo (seluruh 36 depo DKI) sudah punya beban GI. Depo dan GI lainnya diberi kelas “Data beban menyusul”.
+- Beban harian trafo (%) = arus beban ÷ arus maksimum trafo. Dua nilai di berkas sumber yang jelas salah ketik (GI CSW, 417% dan 158% di antara nilai ±70%) tidak dipakai; `tools/gabung_beban_dki.py` mencetak nilai yang dibuang.
+- Enam GI di berkas belum ada di peta (Cawang Baru, JGC, Karet Baru, Ketapang, Mampang Lama, Sunter) dan ditambahkan dengan koordinat dari berkas. Empat GI dicocokkan lewat nama lain di peta (Ciracas, Cireundeu, Grogol Baru, Bintaro Baru); koordinat GI Ciracas di berkas sama dengan GI Cipinang.
 - Warna kuota di peta memakai skenario 50 truk listrik per depo dan bersifat indikatif.
 - Angka di panel Proyeksi memakai asumsi yang bisa diubah; nilai awalnya perkiraan umum, bukan angka resmi.
