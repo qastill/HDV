@@ -51,7 +51,7 @@ const U=(process.env.URL||'http://localhost:8765/'),PIN=process.env.PIN||'uji-12
  await p.evaluate(()=>goView('hasil','tugas'));await p.waitForTimeout(300);ok((await tx('#hs .pane[data-pane=tugas] table')).includes(P2),name+': pool baru tampil di tabel Tugas');
  await p.evaluate(()=>goView('mon','pool'));await p.waitForTimeout(300);ok((await tx('#pools')).includes(P2),name+': pool baru tampil di Monitoring');
  // 8. Mulai survei dari depo: ada pilihan pool baru
- await p.evaluate(()=>{goView('peta','peta');pick(D.DP.find(x=>x.id==='DEPO-020'),false)});await p.waitForTimeout(400);await p.locator('#side [data-mulai]').click();await p.waitForTimeout(250);await p.locator('#svd [data-barudp]').click();await p.waitForTimeout(500);L=await st();
+ await p.evaluate(()=>goView('peta','peta'));await p.locator('#dash-t [data-det="depo"]').click();await p.waitForTimeout(250);await p.locator('#dlg-tb tr[data-dp="DEPO-020"] [data-mulai]').click();await p.waitForTimeout(250);await p.locator('#svd [data-barudp]').click();await p.waitForTimeout(500);L=await st();
  ok(NP.test(L.pool)&&L.dirty['f1:'+L.pool].data.depo_id==='DEPO-020'&&await p.evaluate(()=>document.querySelector('.view.on').id==='hasil'&&document.querySelector('#en-alur .stp.on').dataset.tab==='f1'),name+`: “Pool baru untuk depo ini” membuat ${L.pool} dan membuka langkah 1`);
  if(LOKAL&&name==='laptop'){ // server menerima kode pool baru, nama pool tetap rahasia
   await p.fill('#en-pin',PIN);await p.click('#en-login button[type=submit]');await p.waitForTimeout(1500);await p.click('#en-sync');await p.waitForTimeout(1800);
