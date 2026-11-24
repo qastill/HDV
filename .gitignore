@@ -5,3 +5,5 @@ __pycache__/
 tests/.data.json
 .mw-uji.mjs
 tests/*.png
+# Data sumber PLN (Excel) tidak disimpan di repo; simpan di luar repo dan beri jalurnya ke skrip di tools/.
+*.xlsx

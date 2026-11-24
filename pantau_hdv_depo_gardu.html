@@ -1059,6 +1059,7 @@ html,body{height:100%}body{overflow:hidden}
 .t5x{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--accent);font-weight:700;cursor:pointer;padding:0}.t5x.on{background:var(--ok);border-color:var(--ok);color:#fff}.t5x:disabled{opacity:.4;cursor:not-allowed}.t5x:not(:disabled):hover{border-color:var(--accent)}
 .t5sep{font-size:11.5px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin:8px 0 2px}
 @media(max-width:760px){.t5q{grid-template-columns:46px minmax(0,1fr) 46px 40px 30px}.t5q>.t5b:nth-of-type(2),.t5q>em:nth-of-type(2){display:none}}
+.t5ch{display:flex;flex-wrap:wrap;gap:5px}.t5ch span{font-size:12px;border:1px solid var(--line);border-radius:99px;padding:2px 9px;color:var(--mut);background:#fff}.t5ch span.on{border-color:var(--ok);color:var(--ink);background:#e9f5ee}.t5ch span.x{border-style:dashed}.t5ch b{font-weight:700}
 </style></head><body><div class="app" id="app">
 <header class="hb" id="topbar">
  <div class="hb1"><div class="hbb"><b>Pantau HDV</b><small>Depo–Gardu · IESR</small></div>
@@ -1647,4 +1648,4 @@ head();gantt();mon();checks();setInterval(()=>{head();gantt()},6e4);
 connect();
 {let h=decodeURIComponent(location.hash.slice(1));let pn;if(h==='rfp'||h==='info')h='mon';if(h==='detail-s'||h==='dash')h='peta';if(h==='entri'){h='hasil';pn='entri'}if(h==='detail')h='rek';if(h&&$(h)&&$(h).classList.contains('view'))goView(h,pn)}
 </script>
-<script src="survei.js" defer></script></body></html>
+<script src="survei.js" defer></script><script src="unduh.js" defer></script></body></html>
