@@ -3,9 +3,9 @@ const {chromium}=require('playwright');const auto=require('./auto.js');let n=0,f
 (async()=>{const b=await chromium.launch();for(const [name,vw,vh] of [['laptop',1440,900],['ponsel',390,844]]){const c=await b.newContext({viewport:{width:vw,height:vh}});const p=await c.newPage();auto(p);const errs=[];p.on('pageerror',e=>errs.push(e.message));
  await p.goto((process.env.URL||'http://localhost:8765/')+'pantau_hdv_depo_gardu.html');await p.waitForTimeout(1500);const tx=s=>p.locator(s).first().evaluate(e=>e.textContent);
  const menu=await p.evaluate(()=>[...document.querySelectorAll('.sb .menu button[data-view]')].map(b=>b.dataset.view));
- ok(menu.join()==='peta,mon,hasil'&&!await p.locator('#detail-s,#dash,#entri').count(),name+': menu = '+menu.join());
+ ok(menu.join()==='peta,mon'&&!await p.locator('#detail-s,#dash,#entri').count(),name+': menu = '+menu.join());
  ok(!await p.locator('#info').count()&&!await p.locator('#rfp').count()&&!/Tentang data/.test(await tx('body')),name+': "Tentang data" dan menu RFP terpisah sudah tidak ada');
- ok((await tx('#mon h2'))==='Monitoring'&&await p.locator('#mon .st button').count()===9,name+': Monitoring memuat 9 sub-menu');
+ ok((await tx('#mon h2'))==='Monitoring'&&await p.locator('#mon .stgs button').count()===3&&await p.locator('#mon .stb button').count()===18&&await p.locator('#mon .stg:not([hidden])').count()===1,name+': Monitoring: 3 kelompok (Survei, Hasil survei, Depo & jaringan), 18 sub-menu, satu kelompok tampil');
  {const q=await c.newPage();auto(q);let on=0;for(const h of ['#rfp','#info']){await q.goto('about:blank');await q.goto((process.env.URL||'http://localhost:8765/')+'pantau_hdv_depo_gardu.html'+h);await q.waitForTimeout(900);on+=await q.locator('#mon.on').count()}await q.close();ok(on===2,name+': tautan lama #rfp/#info mendarat di Monitoring')}
  // panel samping: Ringkasan (bawaan) dan Daftar depo
  await p.evaluate(()=>goView('peta','peta'));await p.waitForTimeout(1200);
@@ -23,10 +23,10 @@ const {chromium}=require('playwright');const auto=require('./auto.js');let n=0,f
  await p.locator('#side [data-back]').click();await p.waitForTimeout(300);ok(await p.locator('#s-list .dli').count()===NDP&&await p.evaluate(()=>!sel),name+': tombol kembali → daftar depo lagi');
  // hasil survei: keadaan kosong
  await p.evaluate(()=>goView('hasil'));await p.waitForTimeout(500);
- ok(await p.locator('#hasil .st button').count()===9&&(await tx('#hasil .st button.on span'))==='Tugas'&&await p.locator('#hasil .st .stg').count()===2&&await p.locator('#hasil .st button i').count()===9,name+': Survei punya 9 sub-menu, mulai dari Tugas');await p.locator('#hasil .st button[data-pane="simpul"]').click();await p.waitForTimeout(250);
+ ok(await p.locator('#hasil .stb button').count()===18&&(await tx('#hasil .st .stb button.on span'))==='Tugas'&&await p.locator('#hasil .st .stg').count()===3&&await p.locator('#hasil .stb button i').count()===18,name+': bagian survei memakai sub-menu Monitoring yang sama (18 menu), mulai dari Tugas');await p.locator('#hasil .st button[data-pane="simpul"]').click();await p.waitForTimeout(250);
  ok(/Belum ada entri survei/.test(await tx('#hasil .pane.on'))&&!await p.locator('#hs .sim').count(),name+': tanpa entri tidak ada kesimpulan, hanya penjelasan');
  // contoh tampilan
- ok(await p.evaluate(()=>new Set([...document.querySelectorAll('#hs [id]')].map(e=>e.id)).size===document.querySelectorAll('#hs [id]').length),name+': tidak ada id ganda di Hasil survei');await p.locator('#hasil .st button[data-pane="charging"]').click();await p.locator('#hasil .pane.on [data-demo]').click();await p.waitForTimeout(300);ok((await tx('#hasil .st button.on span'))==='Analisis charging'&&/DATA SIMULASI/.test(await tx('#hs')),name+': tombol contoh di panel mana pun bekerja dan tetap di panel itu');await p.locator('#hasil .st button[data-pane="simpul"]').click();await p.waitForTimeout(500);
+ ok(await p.evaluate(()=>new Set([...document.querySelectorAll('#hs [id]')].map(e=>e.id)).size===document.querySelectorAll('#hs [id]').length),name+': tidak ada id ganda di Hasil survei');await p.locator('#hasil .st button[data-pane="charging"]').click();await p.locator('#hasil .pane.on [data-demo]').click();await p.waitForTimeout(300);ok((await tx('#hasil .st .stb button.on span'))==='Analisis charging'&&/DATA SIMULASI/.test(await tx('#hs')),name+': tombol contoh di panel mana pun bekerja dan tetap di panel itu');await p.locator('#hasil .st button[data-pane="simpul"]').click();await p.waitForTimeout(500);
  ok(/DATA SIMULASI/.test(await tx('#hs .demo'))&&/bukan hasil survei/.test(await tx('#hs-sub')),name+': contoh tampilan diberi label data simulasi');
  ok(await p.locator('#hs .sim').count()===1&&await p.locator('#hs .tmu').count()===6&&/hari operasi cocok/.test(await tx('#hs .sim')),name+': Kesimpulan: 1 kesimpulan utama + 6 temuan');
  ok(await p.locator('#hs .tl i').count()>=2,name+': infografis sehari operasi truk');

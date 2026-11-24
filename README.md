@@ -6,9 +6,8 @@ Dasbor pemantauan untuk pekerjaan survei truk berat (MDV/HDV) dan pemetaan depo�
 
 | Menu | Isi |
 |---|---|
-| Dasbor | Tiga angka utama yang bisa diklik untuk rinciannya (depo, gardu induk beserta trafonya, gardu distribusi), peta seluruh depo dan gardu induk berwarna menurut kecukupan kuota, ringkasan sebaran, daftar depo, serta detail tiap depo: profil dan jaringan, skenario truk listrik, rekomendasi, dan tombol **Mulai survei**. |
-| Monitoring | Jadwal, progres per pool, lapor harian, gambaran depo–gardu, beban GI, statistik, daftar depo. |
-| Survei | Daftar tugas menurut RFP, hasil survei (kesimpulan, kondisi operasi, analisis charging, proyeksi, daya per pool, statistik, unduh data) dan entri formulir F1–F3 dalam satu halaman. |
+| Dasbor | Tiga angka utama yang bisa diklik untuk rinciannya (depo, gardu induk beserta trafonya, gardu distribusi), peta seluruh depo dan gardu induk berwarna menurut kecukupan kuota, ringkasan sebaran, serta detail tiap depo: profil dan jaringan, skenario truk listrik, rekomendasi. Rincian depo bisa disaring per lokasi, pola operasi, jenis usaha, dan bidang, dan kolom paling kirinya berisi tombol **Mulai survei**. |
+| Monitoring | Satu menu dengan tiga kelompok sub-menu: **Survei** (Tugas, Entri data, Jadwal & progres, Per pool, Lapor harian), **Hasil survei** (hasil dan rekomendasi, kondisi operasi, analisis charging, proyeksi, daya per pool, statistik, unduh data), dan **Depo & jaringan** (depo & gardu, profil usaha, beban gardu induk termasuk beban harian, insight, statistik, daftar depo). |
 
 ## Berkas
 
@@ -26,9 +25,9 @@ Dasbor pemantauan untuk pekerjaan survei truk berat (MDV/HDV) dan pemetaan depo�
 | `Gardu_Beban_Lokasi_JABAR.xlsx` | Data sumber: beban dan lokasi gardu distribusi. Tidak ikut ter-deploy. |
 | `tests/` | Uji otomatis. Tidak ikut ter-deploy. |
 
-## Mulai survei dari kartu depo
+## Mulai survei dari daftar depo
 
-Klik satu depo di peta, lalu tekan **Mulai survei** di kartu atau detailnya dan pilih slot pool (P1–P10). Formulir F1 pool itu langsung terisi dari data depo (nama, lokasi, koordinat, pola operasi, gardu induk terdekat), dan menu Survei ikut berubah: pool tercatat berjalan, daftar tugasnya muncul, dan kartu depo menampilkan kemajuan truk dan lembar diary. Di panel **Skenario** depo itu muncul kolom entri armada (MDV rigid, HDV rigid, HDV tractor + trailer, parkir malam) yang tersimpan ke F1; jumlah truk, jarak harian, dan waktu parkir skenario lalu diambil dari F1, F2, dan diary, dan sumber tiap angka ditulis di bawahnya. Depo yang belum disurvei memakai 50 truk sebagai angka awal dan menyebutnya begitu. Sambungan depo ↔ pool (`depo_id`) termasuk identitas rahasia: server hanya mengirimkannya ke pemegang PIN.
+Buka rincian depo (klik angka depo di Dasbor), lalu tekan **Mulai survei** di kolom paling kiri dan pilih slot pool (P1–P10) atau pool baru. Formulir F1 pool itu langsung terisi dari data depo (nama, lokasi, koordinat, pola operasi, gardu induk terdekat), dan menu Survei ikut berubah: pool tercatat berjalan, daftar tugasnya muncul, dan kartu depo menampilkan kemajuan truk dan lembar diary. Di panel **Skenario** depo itu muncul kolom entri armada (MDV rigid, HDV rigid, HDV tractor + trailer, parkir malam) yang tersimpan ke F1; jumlah truk, jarak harian, dan waktu parkir skenario lalu diambil dari F1, F2, dan diary, dan sumber tiap angka ditulis di bawahnya. Depo yang belum disurvei memakai 50 truk sebagai angka awal dan menyebutnya begitu. Sambungan depo ↔ pool (`depo_id`) termasuk identitas rahasia: server hanya mengirimkannya ke pemegang PIN.
 
 ## Entri data
 

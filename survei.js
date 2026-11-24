@@ -357,12 +357,13 @@ const depoOf=id=>typeof D!=='undefined'&&D&&D.DP?D.DP.find(x=>x.id===id)||null:n
 const poolProg=p=>({f1:rec('f1',p),nt:list('f2',p).length,nd:days().filter(d=>d.x.status&&d.pool===p).length});
 let svD=null;
 window.svDepo=function(d){const p=poolOfDepo(d.id);
- if(!p)return `<button class="btn pri" type="button" data-mulai="${d.id}">▶ Mulai survei</button><span class="svs">Depo ini belum disurvei.</span>`;
+ if(!p)return '';
  const g=poolProg(p);return `<span class="pill pA">Survei berjalan · ${p}</span><span class="svs">F1 ${g.f1&&!g.f1.draf?'✓':'belum lengkap'} · truk ${g.nt}/${TGT.truk} · lembar diary ${fmt(g.nd)}/${TGT.truk*TGT.hari}</span><button class="btn pri" type="button" data-lanjut="${p}">Lanjutkan survei →</button>`};
 /* Angka armada dan pola jalan pool yang tersambung ke depo ini, untuk panel Skenario di detail depo. */
 window.svArmada=function(d){const p=poolOfDepo(d.id);if(!p)return null;const A=days(),r=poolRows(A).find(x=>x.id===p)||{},f=rec('f1',p)||{},dp=A.filter(x=>x.pool===p);
  return{pool:p,f1:{mdv_rigid:f.mdv_rigid,hdv_rigid:f.hdv_rigid,hdv_tt:f.hdv_tt,parkir_unit:f.parkir_unit},N:r.N||null,nt:list('f2',p).length,nd:dp.filter(x=>x.x.status).length,njl:dp.filter(x=>x.x.status==='J'&&x.c.km>0).length,kmr:r.kmr==null?null:r.kmr,dwm:r.dwm==null?null:r.dwm}};
 window.svSimpanArmada=function(id,v){const p=poolOfDepo(id);if(!p)return false;const x={...(rec('f1',p)||{})};Object.keys(v).forEach(k=>{if(v[k]==null||isNaN(v[k]))delete x[k];else x[k]=v[k]});save('f1',p,x);return true};
+window.svPoolOf=id=>poolOfDepo(id);window.svMulai=id=>svPilih(depoOf(id));window.svLanjut=p=>{const r=rec('f1',p);svBuka(p,r&&!r.draf?'f3':'f1')};
 function svTutup(){const g=$('svd');if(g&&g.open)g.close?g.close():g.removeAttribute('open')}
 function svPilih(d){const g=$('svd');if(!g||!d)return;svD=d;const mine=POLA_D[d.pola_operasi_iesr];
  $('svd-t').textContent='Mulai survei · '+d.id;$('svd-s').textContent=d.nama+'. Pilih pool untuk depo ini.';
