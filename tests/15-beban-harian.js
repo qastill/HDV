@@ -26,8 +26,8 @@ const {chromium}=require('playwright');const auto=require('./auto.js');let n=0,f
  // popup GI dan detail depo
  await p.evaluate(()=>{goView('peta','peta');const g=D.GI.find(x=>x.n==='Plumpang'&&x.hs);map.setView([g.lat,g.lon],13,{animate:false});g._m.openPopup()});await p.waitForTimeout(800);
  ok(await p.evaluate(()=>{const e=document.querySelector('.leaflet-popup-content');return!!e&&!!e.querySelector('.spk svg')&&/Beban harian November 2026/.test(e.innerText)}),name+': popup GI memuat grafik beban harian');
- await p.evaluate(()=>{map.closePopup();pick(D.DP.find(d=>d.gi_n==='Kandang Sapi'),false);goView('peta','profil')});await p.waitForTimeout(500);
- a=await tx('#detail');ok(/Beban harian GI Kandang Sapi/i.test(a)&&await p.locator('#detail .hchart').count()===1&&/Sisa kuota malam \d+ MVA/.test(a),name+': detail depo DKI memuat grafik beban harian GI terdekat');
+ await p.evaluate(()=>{map.closePopup();pick(D.DP.find(d=>d.gi_n==='Kandang Sapi'),false);goView('mon')});await p.waitForTimeout(500);
+ a=await tx('#g-dep');ok(/Beban harian GI Kandang Sapi/i.test(a)&&await p.locator('#g-dep .hchart').count()===1&&/Sisa kuota malam \d+ MVA/.test(a),name+': detail depo DKI memuat grafik beban harian GI terdekat');
  await p.evaluate(()=>goView('peta','peta'));await p.waitForTimeout(200);ok(/Sisa saat malam/.test(await tx('#side')),name+': kartu depo memuat sisa kuota GI saat malam');
  ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),name+': tanpa gulir mendatar');ok(!errs.length,name+': tanpa galat JS '+errs.join(' | '));await c.close()}
  console.log(`\n${n} lolos, ${f} gagal`);await b.close();process.exit(f?1:0)})();
