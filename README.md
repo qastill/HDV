@@ -4,14 +4,14 @@ Dasbor pemantauan untuk pekerjaan survei truk berat (MDV/HDV) dan pemetaan depo�
 
 ## Isi situs
 
-Satu halaman penuh tanpa menu samping. Bilah atas berisi empat tombol; pilihan turunannya tampil di baris kedua.
+Satu halaman penuh dengan satu baris menu di atas (tanpa sub-menu). Tiap menu adalah satu halaman yang isinya bertumpuk; tiap angka hanya tampil di satu tempat.
 
-| Tombol | Isi |
+| Menu | Isi |
 |---|---|
-| 🗺️ Dasbor | Peta, Profil & jaringan, Skenario, Rekomendasi. Tiga angka utama bisa diklik untuk rinciannya; rincian depo bisa disaring per lokasi, pola operasi, jenis usaha, dan bidang, dan kolom paling kirinya berisi tombol **Mulai survei**. |
-| 🧭 Survei | Tugas, Entri data, Jadwal & progres, Lapor harian. |
-| 📈 Hasil survei | Hasil & rekomendasi, kondisi operasi, analisis charging, proyeksi, daya per pool, statistik survei, unduh data. |
-| ⚡ Jaringan | Ringkasan depo & gardu, profil usaha, beban gardu induk (termasuk beban harian), insight jaringan, statistik depo. |
+| 🏭 Depo (halaman pertama) | Angka **114 depo** (klik → daftar depo dengan kolom **▶ Mulai survei** di kiri, filter lokasi/pola operasi/jenis usaha/bidang), peta dengan legenda yang memuat ringkasan tampilan peta, dan panel Ringkasan berisi diagram lingkar jarak ke GI, pola operasi, dan jenis usaha. Klik depo → kartu depo dengan tombol **Jaringan depo ini** dan **Skenario & rekomendasi**. |
+| ⚡ Grid | Jaringan di sekitar depo terpilih (gardu distribusi, penyulang, GI pemasok, beban harian), angka gardu induk/trafo/gardu distribusi (klik → rinciannya), ringkasan depo & gardu, beban gardu induk termasuk beban harian, statistik depo & jaringan. |
+| 💡 Rekomendasi | Skenario truk listrik, dampak ke jaringan, kesimpulan, dan rekomendasi untuk depo terpilih; lalu gambaran semua depo (insight utama, GI tumpuan depo). |
+| 🧭 Monitoring survei | Jadwal & progres, tugas per pool, hasil & rekomendasi survei, kondisi operasi, charging, proyeksi, daya per pool, statistik survei, unduh data, lapor harian & keluaran kontrak. Formulir entri hanya dibuka dari **▶ Mulai survei** di daftar depo (atau tombol Buka di tugas pool) dan tampil sendiri dengan tombol **← Monitoring survei**. |
 
 ## Berkas
 

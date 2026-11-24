@@ -44,7 +44,7 @@ ok(/6\s+entri menunggu/.test(await T('en-st')),'entri menunggu unggah: '+(await 
 await p.click('#en-sync');await p.waitForTimeout(2500);ok(/Semua entri sudah terunggah/.test(await T('en-st')),'Unggah sekarang → '+(await T('en-st')).replace(/\n/g,' | '));
 // hasil & monitoring ikut berubah
 const hs=await T('hs');ok(/3 \/ 3\.500/.test(hs)&&/Berapa jauh truk berjalan/i.test(hs)&&/Di mana truk bermalam/i.test(hs)&&/Kebutuhan daya tiap pool/i.test(hs)&&!/NaN|undefined|Infinity/.test(hs),'Hasil survei terisi otomatis, tanpa NaN');
-ok(/3 \/ 3\.500/.test(await T('mk'))&&/dihitung otomatis/.test(await T('mon-sub')),'Monitoring ikut terhitung dari entri: '+(await T('mon-sub')));
+ok(/3 \/ 3\.500/.test(await T('hs'))&&/dihitung otomatis/.test(await T('mon-sub')),'Monitoring ikut terhitung dari entri: '+(await T('mon-sub')));
 const row=await p.evaluate(P=>[...document.querySelectorAll('#hs .pane[data-pane=daya] table tbody tr')].map(r=>r.innerText.replace(/\t/g,' | ')).find(t=>t.startsWith(P)),POOL);console.log('   pool:',row);
 ok(/60/.test(row)&&/197/.test(row)&&/Sukatani/.test(row),'tabel kebutuhan daya pool memakai armada F1, daya PLN, dan GI terdekat');
 {const x=await p.evaluate(P=>{const q=s=>document.querySelector(s),tg=q('#hs .pane[data-pane=tugas]'),row=[...tg.querySelectorAll('tbody tr')].find(r=>r.cells[0].textContent.startsWith(P));return{sim:q('#hs .sim').innerText,rek:document.querySelectorAll('#hs .rek li').length,kcl:!!q('#hs .kcl'),row:row.innerText.replace(/\s+/g,' '),cek:tg.querySelector('.cek').innerText.replace(/\s+/g,' '),todo:[...tg.querySelectorAll('.todo li')].map(l=>l.innerText.replace(/\s+/g,' ')).join(' / ')}},POOL);

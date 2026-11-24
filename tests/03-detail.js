@@ -7,23 +7,23 @@ const T=id=>p.evaluate(i=>document.getElementById(i)?.textContent||'',id);
 ok(!(await p.content()).includes('Keyakinan titik'),name+': "Keyakinan titik" sudah dihapus');
 ok((await T('vi')).includes('Di tampilan ini'),name+': insight tampilan peta → '+(await T('vi')).slice(0,150));
 ok((await p.locator('#i-ins li').count())===8&&!/NaN|undefined|Infinity/.test(await T('i-ins')),name+': 8 insight (termasuk 2 dari beban harian) tanpa NaN');
-ok((await p.locator('#i-pola circle').count())===3,name+': donut pola operasi 3 segmen');
-ok((await p.locator('#i-jenis .bar').count())===11&&(await p.locator('#i-kom .bar').count())===6,name+': batang jenis usaha (11) & komoditas (6)');
+ok((await p.locator('#side .dnt').count())===3&&(await p.locator('#side .dnt').nth(1).locator('circle').count())===3,name+': panel Ringkasan: 3 diagram lingkar, pola operasi 3 segmen');
+ok((await p.locator('#side .dnt').nth(2).locator('circle').count())===4&&/114/.test(await p.locator('#side .dnt').nth(2).innerText()),name+': diagram lingkar jenis usaha 4 kelompok, total 114');
 ok((await p.locator('#i-gi .gt2').count())===8,name+': 8 GI tumpuan');
 // pilih depo Jabar dengan data lengkap (DEPO-001) lewat API klik tabel
 await p.fill('#q','DEPO-001');await p.waitForTimeout(200);await p.locator('#tb tbody tr').first().click();await p.waitForTimeout(2500);
-let det=await T('detail');
+const DT=async()=>(await T('side'))+(await T('g-dep'))+(await T('r-dep'));let det=await DT();
 for(const k of ['Profil usaha','Kondisi jaringan','Skenario','Dampak ke jaringan','Kesimpulan','Rekomendasi','Skema sambungan','Waktu charging','Manajemen beban','Gardu distribusi CPCG','GI pemasok','Data yang masih harus dilengkapi'])if(!det.toLowerCase().includes(k.toLowerCase())){ok(false,name+': detail memuat "'+k+'"')}
 ok(!/NaN|undefined|Infinity|null/.test(det),name+': detail DEPO-001 tanpa NaN/undefined');
 ok(/MW/.test(await T('s-v')),name+': kartu samping berisi kesimpulan → '+(await T('s-v')).replace(/\n/g,' | '));
 const c1=await T('d-c');await p.evaluate(()=>{const z=document.getElementById('z1');z.value=300;z.dispatchEvent(new Event('input'));const k=document.getElementById('z2');k.value=600;k.dispatchEvent(new Event('input'))});
 const c2=await T('d-c');ok(c1!==c2&&/300 truk/.test(c2),name+': geser skenario → kesimpulan berubah');
 console.log('   KESIMPULAN(300 truk, 600 km):',c2.slice(0,330));console.log('   VONIS:',await T('d-v'));
-if(name==='desktop'){await p.evaluate(()=>document.getElementById('detail').scrollIntoView());await p.waitForTimeout(400);await p.screenshot({path:`d-${TAG}-detail.png`,fullPage:false});
- await p.evaluate(()=>goView('peta','profil'));await p.locator('#detail').screenshot({path:`d-${TAG}-detail-full.png`})}
-else{await p.evaluate(()=>goView('peta','profil'));await p.locator('#detail').screenshot({path:`d-${TAG}-detail-mobile.png`})}
+if(name==='desktop'){await p.evaluate(()=>goView('rek'));await p.waitForTimeout(400);await p.screenshot({path:`d-${TAG}-detail.png`,fullPage:false});
+ await p.locator('#r-dep').screenshot({path:`d-${TAG}-detail-full.png`});await p.evaluate(()=>goView('peta'))}
+else{await p.evaluate(()=>goView('rek'));await p.locator('#r-dep').screenshot({path:`d-${TAG}-detail-mobile.png`});await p.evaluate(()=>goView('peta'))}
 // depo yang GI-nya paling jauh
-await p.fill('#q','DEPO-017');await p.waitForTimeout(200);await p.locator('#tb tbody tr').first().click();await p.waitForTimeout(1500);det=await T('detail');
+await p.fill('#q','DEPO-017');await p.waitForTimeout(200);await p.locator('#tb tbody tr').first().click();await p.waitForTimeout(1500);det=await DT();
 ok(/Perlu kajian khusus|penguatan/.test(await T('d-v'))&&!/NaN|undefined|Infinity|null/.test(det),name+': DEPO-017 (GI 6,7 km) → '+(await T('d-v')));
 await p.fill('#q','');
 // pewarnaan + filter legenda
@@ -39,7 +39,7 @@ const gp=await p.evaluate(()=>({pop:document.querySelector('.leaflet-popup-conte
 ok(/13 depo/.test(gp.pop)&&/MVA/.test(gp.pop)&&gp.lines>=13,name+': klik GI tumpuan → popup + '+gp.lines+' garis ke depo');console.log('   POPUP GI:',gp.pop.replace(/\n/g,' | ').slice(0,260));
 if(name==='desktop'){await p.evaluate(()=>document.getElementById('map').scrollIntoView({block:'center'}));await p.waitForTimeout(1500);await p.screenshot({path:`d-${TAG}-gi.png`})}
 // klik depo dari popup GI
-await p.locator('.leaflet-popup-content a[data-dp]').first().click();await p.waitForTimeout(2500);ok((await T('detail')).toLowerCase().includes('detail pool'),name+': tautan depo di popup GI membuka detail');
+await p.locator('.leaflet-popup-content a[data-dp]').first().click();await p.waitForTimeout(2500);ok(/Kartu depo/i.test(await T('side'))&&/Depo terpilih/i.test(await T('r-dep')),name+': tautan depo di popup GI membuka kartu depo dan rekomendasinya');
 ok(!(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth)),name+': tanpa scroll horizontal');
 ok(errs.length===0,name+': tanpa galat JS '+errs.join(' | '));await ctx.close()}
 await b.close();process.exit(fail?1:0)})();
