@@ -1,0 +1,36 @@
+// beban gardu induk siang dan malam: satu format untuk semua wilayah (GI, trafo, penyulang 20 kV), tanpa tanggal
+const {chromium,devices}=require('playwright');const auto=require('./auto.js');let n=0,f=0;const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m);c?n++:f++};const U=(process.env.URL||'http://localhost:8765/');
+(async()=>{const b=await chromium.launch();for(const [name,opt] of [['laptop',{viewport:{width:1366,height:768}}],['ponsel',{...devices['iPhone 13']}]]){const c=await b.newContext(opt);const p=await c.newPage();auto(p);const errs=[];p.on('pageerror',e=>errs.push(e.message));
+ await p.goto(U);await p.waitForTimeout(3000);const tx=s=>p.locator(s).first().evaluate(e=>e.innerText);
+ // 1. data tertanam: seragam, tanpa deret bertanggal
+ let a=await p.evaluate(()=>({py:(D.PY||[]).length,up3:new Set((D.PY||[]).map(x=>x[1])).size,lebar:(D.PY||[]).every(x=>x.length===10),td:'TD' in D,hd:'HD' in D,hs:D.GI.some(g=>'hs' in g||'hm' in g),wil:['DKI Jakarta','Jawa Barat'].map(w=>D.GI.filter(g=>g.ps!=null&&g.pm!=null&&WIL(g)===w).length),teks:document.documentElement.innerHTML,gda:Object.keys(D.GDA||{}).length}));
+ ok(a.py===2248&&a.up3===17&&a.lebar&&a.gda>=100,name+`: ${a.py} penyulang 20 kV dari ${a.up3} UP3 dan ringkasan gardu distribusi ${a.gda} GI tertanam dengan beban siang dan malam`);
+ ok(a.td&&!a.hd&&a.hs,name+': deret harian tetap ada untuk GI yang memilikinya, tanpa keterangan bulan');
+ ok(a.wil[0]>=70&&a.wil[1]>=90,name+`: GI berdata beban siang/malam: DKI Jakarta ${a.wil[0]}, Jawa Barat ${a.wil[1]}`);
+ ok(!/20(22|23|24|25)\b/.test(a.teks.replace(/<script[^>]*d-core[\s\S]*?<\/script>/,'').replace(/<script>\/\* Leaflet[\s\S]*?<\/script>/,''))&&!/hari tercatat|akhir pekan|April|D\.HD/.test(a.teks.replace(/<script[^>]*d-core[\s\S]*?<\/script>/,'').replace(/<header[\s\S]*?<\/header>/,'')),name+': tampilan tidak memuat bulan atau tahun data');
+ // 2. bagian Beban gardu induk siang dan malam
+ await p.evaluate(()=>goView('mon','beban'));await p.waitForTimeout(800);
+ a=await p.evaluate(()=>({k:document.querySelectorAll('#bs-k .bski').length,kt:$('bs-k').innerText,dot:document.querySelectorAll('#bs-sc circle.sd').length,gi:$('bs-gi').options.length,hm:document.querySelectorAll('#bs-hm tbody tr').length,txt:$('bs-c').innerText}));
+ ok(a.k===5&&/gardu distribusi berbeban ≥80%/.test(a.kt)&&/GI lebih longgar pada malam hari/.test(a.kt)&&/trafo berbeban puncak ≥80%/.test(a.kt)&&/penyulang berbeban ≥80%/.test(a.kt)&&!/NaN|undefined|Infinity/.test(a.txt),name+': 4 ringkasan (malam lebih longgar, trafo ≥80%, penyulang ≥80%, selisih malam–siang)');
+ ok(a.dot===172&&a.gi===172&&a.hm>0,name+`: grafik sebar siang vs malam ${a.dot} GI, pilihan GI ${a.gi}, peta panas ${a.hm} GI tumpuan depo`);
+ for(const [r,min] of [['Jawa Barat',90],['DKI Jakarta',70]]){await p.click(`#bs-r [data-r="${r}"]`);await p.waitForTimeout(300);const x=await p.evaluate(r=>({d:[...document.querySelectorAll('#bs-sc circle.sd')].map(c=>WIL(giOf(c.dataset.bs))),s:$('bs-sub').textContent}),r);ok(x.d.length>=min&&x.d.every(w=>w===r),name+`: saring wilayah ${r} → ${x.d.length} GI (${x.s})`)}
+ await p.click('#bs-r [data-r=""]');await p.waitForTimeout(300);
+ // GI Jawa Barat: trafo + penyulang
+ const jb=await p.evaluate(()=>giBS('Jawa Barat').find(x=>pyOf(x).length>5&&gdaOf(x)).id);await p.locator(`#bs-sc circle[data-bs="${jb}"]`).dispatchEvent('click');await p.waitForTimeout(300);
+ a=await p.evaluate(()=>({sel:$('bs-gi').value,t:document.querySelectorAll('#bs-d .hlt').length,r:document.querySelectorAll('#bs-d .hlr').length,q:document.querySelectorAll('#bs-d .pyq i').length,txt:$('bs-d').innerText}));
+ ok(a.sel===jb&&a.t===3&&a.q>5&&/Gardu distribusi 20 kV/.test(a.txt)&&/lebih padat pada malam hari/.test(a.txt)&&/Penyulang 20 kV/.test(a.txt)&&/Trafo gardu induk/.test(a.txt)&&/(lebih rendah|lebih tinggi) daripada siang/.test(a.txt),name+`: klik titik GI Jawa Barat → trafo, ${a.q} kotak penyulang, 5 penyulang terpadat, dan ringkasan gardu distribusi`);
+ const dk=await p.evaluate(()=>giBS('DKI Jakarta').find(g=>(trGI()[g.id]||[]).length>1).id);await p.locator('#bs-gi').selectOption(dk);await p.waitForTimeout(300);
+ ok(await p.evaluate(()=>document.querySelectorAll('#bs-d .hlr').length>1&&/Trafo gardu induk/.test($('bs-d').innerText)&&document.querySelectorAll('#bs-d .hmh tbody tr').length>1&&/Peta panas harian trafo/.test($('bs-d').innerText)&&!/Gardu distribusi 20 kV/.test($('bs-d').innerText)),name+': GI DKI Jakarta: format trafo yang sama ditambah peta panas harian; tanpa rincian gardu distribusi karena datanya tidak ada');
+ await p.locator('#bs-f').selectOption('hr');await p.waitForTimeout(200);ok(await p.evaluate(()=>document.querySelectorAll('#bs-hm .hmh tbody tr').length===D.TD.length&&!/akhir pekan/.test($('bs-hm').innerText)),name+': pilihan Harian: peta panas trafo × hari ke-1…ke-n untuk GI yang memiliki data harian');
+ await p.locator('#bs-f').selectOption('top');await p.waitForTimeout(200);let r=await p.evaluate(()=>[...document.querySelectorAll('#bs-hm tbody tr')].map(t=>Math.max(...[...t.querySelectorAll('td[style]')].map(c=>+c.textContent))));ok(r.length===30&&r.every((v,i)=>!i||v<=r[i-1]),name+': peta panas 30 GI terpadat, urut dari yang terpadat');
+ const c0=await p.evaluate(()=>document.querySelector('#bs-hm tbody td[style]').textContent);await p.locator('#bs-m [data-m="si"]').click();await p.waitForTimeout(150);ok(await p.evaluate(()=>document.querySelector('#bs-m .on').dataset.m==='si')&&typeof c0==='string',name+': mode Puncak/Siang/Malam pada peta panas');
+ await p.locator('#bs-hm tbody tr').nth(1).click();await p.waitForTimeout(200);ok(await p.evaluate(()=>$('bs-gi').value===document.querySelectorAll('#bs-hm tbody tr')[1].dataset.bs),name+': klik baris peta panas memilih GI itu');
+ // 3. detail depo dan popup GI
+ await p.evaluate(()=>{pick(D.DP.find(d=>d.gi_n==='Kandang Sapi'),false);goView('peta','detail');dsGo('profil')});await p.waitForTimeout(500);
+ a=await tx('#g-dep');ok(/Beban GI Kandang Sapi: siang dan malam/i.test(a)&&await p.locator('#g-dep .dsc .hlt').count()>=1,name+': Detail depo menampilkan beban GI pemasok siang dan malam per trafo');
+ await p.evaluate(()=>{goView('peta','peta');const g=D.GI.find(x=>x.kode==='BDUTR')||giBS('Jawa Barat')[0];map.setView([g.lat,g.lon],12);g._m.openPopup()});await p.waitForTimeout(700);
+ ok(await p.evaluate(()=>{const e=document.querySelector('.leaflet-popup-content');return!!e&&!!e.querySelector('.spk .hlt')&&!!e.querySelector('.spk .pyq')&&/Penyulang 20 kV/.test(e.innerText)}),name+': popup GI Jawa Barat memuat trafo siang·malam dan kotak penyulang');
+ // 4. kartu Rekomendasi
+ await p.evaluate(()=>goView('rek'));await p.waitForTimeout(600);a=await tx('#i-ins');ok(/Profil beban malam hari/.test(a)&&/GI tumpuan depo/.test(a)&&/Beban penyulang 20 kV/.test(a)&&/berbeban puncak ≥80% dari [0-9.]+ penyulang/.test(a),name+': kartu Rekomendasi memakai beban siang/malam semua wilayah dan beban penyulang');
+ ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),name+': tanpa gulir mendatar');ok(!errs.length,name+': tanpa galat JS '+errs.join(' | '));await c.close()}
+ console.log(`\n${n} lolos, ${f} gagal`);await b.close();process.exit(f?1:0)})();
