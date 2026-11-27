@@ -25,6 +25,7 @@ Satu halaman penuh dengan satu baris menu di atas (tanpa sub-menu). Tiap menu ad
 | `tools/gabung_beban_dki.py` | Menggabungkan data GI, trafo, dan beban harian trafo PLN Distribusi Jakarta (`DATA GI DAN TRAFO.xlsx`) ke data yang tertanam di halaman. Aman dijalankan ulang. |
 | `tools/gabung_penyulang.py` | Menambahkan beban puncak siang dan malam tiap penyulang 20 kV (lembar per UP3 berkas beban GI) ke data yang tertanam di halaman. |
 | `tools/gabung_gardu_gi.py` | Menambahkan ringkasan gardu distribusi 20 kV per gardu induk (jumlah, kapasitas, sebaran beban, beban siang dan malam) ke data yang tertanam di halaman. |
+| `tools/gabung_amr.py` | Menambahkan profil beban 15 menit tiap trafo gardu induk dari rekaman meter (`combined.xlsx`). Kode gardu di berkas meter dicocokkan ke gardu induk di peta (kode GL, kode GI, atau tabel `PETA` di skrip); hanya jam yang disimpan, tanpa tanggal. Meter yang kosong, macet, atau titiknya kurang dari 80% dibuang. |
 | `tools/pilih_depo_berdata.py` | Mengisi beban gardu distribusi yang kosong dari berkas Excel. Bisa juga membatasi tampilan ke depo yang datanya ada; `--semua` menampilkan lagi seluruh depo dan gardu induk (keadaan sekarang). |
 | `unduh.js` | Unduhan keluaran: peta depo & gardu (.shp dalam .zip, GeoJSON), satu berkas Excel banyak lembar, dan formulir kertas F1–F3. Tanpa pustaka luar. |
 | `tests/` | Uji otomatis. Tidak ikut ter-deploy. |
@@ -82,13 +83,13 @@ bash tests/kunci-situs.sh
 
 ## Data sumber PLN
 
-Berkas Excel sumber (`DATA GI DAN TRAFO.xlsx`, `beban GI.xlsx`, `Gardu_Beban_Lokasi_JABAR.xlsx`) **tidak lagi disimpan di repo** dan diabaikan lewat `.gitignore`. Simpan di luar repo dan beri jalurnya saat menjalankan skrip di `tools/`. Berkas itu masih ada di riwayat commit lama, dan data hasil olahannya tetap tertanam di halaman (di belakang kunci kode situs). Selama repo ini publik, data tersebut tetap bisa dibaca orang lain; jadikan repo **private** untuk menutupnya.
+Berkas Excel sumber (`DATA GI DAN TRAFO.xlsx`, `beban GI.xlsx`, `Gardu_Beban_Lokasi_JABAR.xlsx`, `combined.xlsx`) **tidak lagi disimpan di repo** dan diabaikan lewat `.gitignore`. Simpan di luar repo dan beri jalurnya saat menjalankan skrip di `tools/`. Berkas itu masih ada di riwayat commit lama, dan data hasil olahannya tetap tertanam di halaman (di belakang kunci kode situs). Selama repo ini publik, data tersebut tetap bisa dibaca orang lain; jadikan repo **private** untuk menutupnya.
 
 ## Unduhan (menu Monitoring survei → Unduh data)
 
 | Unduhan | Isi |
 |---|---|
-| Excel (.xlsx) | 15 lembar: diary harian, perjalanan, truk, pool, statistik survei (semua / kelas truk / pola operasi / pool), depo, statistik depo, gardu induk, trafo GI, penyulang, gardu distribusi per GI, gardu distribusi terdekat, sebaran gardu distribusi, kamus data. |
+| Excel (.xlsx) | 16 lembar: diary harian, perjalanan, truk, pool, statistik survei (semua / kelas truk / pola operasi / pool), depo, statistik depo, gardu induk, trafo GI, penyulang, gardu distribusi per GI, profil beban 15 menit tiap trafo, gardu distribusi terdekat, sebaran gardu distribusi, kamus data. |
 | Shapefile (.zip) | 5 lapisan WGS84: `depo`, `gardu_induk`, `gardu_distribusi_terdekat`, `gardu_distribusi_sebaran`, `transmisi`, masing-masing .shp/.shx/.dbf/.prj/.cpg, plus `BACA_SAYA.txt` berisi arti tiap atribut. |
 | GeoJSON (.zip) | Lima lapisan yang sama. |
 | Formulir cetak | F1 profil pool, F2 daftar truk, F3 diary harian (mendatar) untuk dicetak atau disimpan sebagai PDF. |
